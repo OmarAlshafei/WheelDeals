@@ -2,11 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 9000;
 
 const app = express();
 
-app.set('port', (process.env.PORT || 5000))
+app.set('port', (process.env.PORT || 9000))
 const MongoClient = require('mongodb').MongoClient;
 require('dotenv').config();
 const url = process.env.MONGODB_URL;
@@ -31,6 +31,58 @@ app.listen(PORT, () => {
 app.post('/api/login', async (req, res, next) => {
 });
 
+// Checks if password meets requirements
+function isComplex(password) {
+    var passwordValidator = require('password-validator');
+
+    var schema = new passwordValidator();
+
+    schema.is().min(8)
+    if (!schema.validate(password)) {
+        return "Password is too short. 8 or more characters."
+    }
+    schema.is().max(100)
+    if (!schema.validate(password)) {
+        return "Password is too long. 100 or less characters."
+    }
+    schema.has().uppercase()
+    if (!schema.validate(password)) {
+        return "Password requires at least one uppercase character."
+    }
+    schema.has().lowercase()
+    if (!schema.validate(password)) {
+        return "Password requires at least one lower case character."
+    }
+    return "Valid Password"
+}
+
 app.post('/api/register', async (req, res, next) => {
+    // incoming: firstName, lastName, userName, email, password
+    // outgoing: message, error
+    var error = '';
+    const { firstName, lastName, userName, email, password } = req.body;
+    var validation = isComplex(password);
+    
+    if (validation != "Valid Password") {
+        ret = { message: '', error: validation}
+        res.status(200).json(ret);
+    }
+    else {
+        const db = client.db('cop4331');
+        const results = await
+            db.collection('Users').insertOne(
+                {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                userName: userName,
+                password: password,
+                }
+            );
+        // console.log(results)
+
+        var ret = { message: 'User Added Successfully', error: '' };
+        res.status(200).json(ret);
+    }
 });
 
