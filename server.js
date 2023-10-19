@@ -8,6 +8,7 @@ const app = express();
 
 app.set('port', (process.env.PORT || 9000))
 const MongoClient = require('mongodb').MongoClient;
+const passwordValidator = require('password-validator');
 require('dotenv').config();
 const url = process.env.MONGODB_URL;
 const client = new MongoClient(url);
@@ -30,8 +31,6 @@ app.listen(PORT, () => {
 
 // Checks if password meets requirements
 function isComplex(password) {
-    var passwordValidator = require('password-validator');
-
     var schema = new passwordValidator();
     
     schema.is().min(8)
