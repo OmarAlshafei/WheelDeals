@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
 
 function Login() {
+  const app_name = 'wheeldeals-d3e9615ad014'
+  function buildPath(route)
+  {
+    if (process.env.NODE_ENV === 'production')
+    {
+      return 'https://' + app_name + '.herokuapp.com/' + route;
+    }
+    else
+    {
+      return 'http://localhost:5000/' + route;
+    }
+  }
+  
   var loginName;
   var loginPassword;
   const [message, setMessage] = useState('');
@@ -10,7 +23,7 @@ function Login() {
     var obj = { login: loginName.value, password: loginPassword.value };
     var js = JSON.stringify(obj);
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const response = await fetch(buildPath('api/login'), {
         method: 'POST',
         body: js,
         headers: { 'Content-Type': 'application/json' },

@@ -94,22 +94,22 @@ app.post('/api/register', async (req, res, next) => {
 });
 
 app.post('/api/login', async (req, res, next) => {
-  // incoming: login, password
-  // outgoing: id, firstName, lastName, error
-  var error = '';
-  const { User, Pass } = req.body;
-  const db = client.db('cop4331');
-  const results = await db.collection('Users').find({ userName: User, password: Pass }).toArray();
-  var id = -1;
-  var fn = '';
-  var ln = '';
-  var em = '';
-  if (results.length > 0) {
-    id = results[0].id;
-    fn = results[0].firstName;
-    ln = results[0].lastName;
-    em = results[0].email;
-  }
-  var ret = { id: id, firstName: fn, lastName: ln, email: em, error: '' };
-  res.status(200).json(ret);
+    // incoming: login, password
+    // outgoing: id, firstName, lastName, error
+    var error = '';
+    const { User, Pass } = req.body;
+    const db = client.db('cop4331');
+    const results = await db.collection('Users').find({ userName: User, password: Pass }).toArray();
+    var id = -1;
+    var fn = '';
+    var ln = '';
+    var em = '';
+    if (results.length > 0) {
+        id = results[0].id;
+        fn = results[0].firstName;
+        ln = results[0].lastName;
+        em = results[0].email;
+    }
+    var ret = { id: id, firstName: fn, lastName: ln, email: em, error: '' };
+    res.status(200).json(ret);
 });
