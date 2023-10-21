@@ -1,0 +1,54 @@
+10/18
+  - Carousel
+      - https://pub.dev/packages/carousel_slider
+      - note that all the pictures have to be URLs, not files
+  - Hamburger/Drawer
+      - https://blog.logrocket.com/how-to-add-navigation-drawer-flutter/
+  - Making rows (cards) clickable
+      - https://www.geeksforgeeks.org/flutter-making-card-clickable/
+  - Using a for-loop to generate rows from list of strings
+      - https://stackoverflow.com/questions/61497662/flutter-for-loop-to-generate-a-row-of-widgets
+  - Navigating to different pages
+      - https://docs.flutter.dev/cookbook/navigation/named-routes
+      - Navigator.pushNamed(context, Routes.HOMESCREEN);
+      - Make sure to import routes.dart in each page
+  - Making the logo clickable to go home
+      - In the app bar, made "leading" widget a GestureDetector
+      - child of GestureDetector is the logo image
+      - on tap, navigate to home screen
+  - TODO
+      - Car table
+          - add more rows --> test scroll
+          - add favorite icon
+          - add type icons
+          - format nicely: increase text size, spacing, etc
+      - Add search bar
+      - Screens
+          - register
+          - favorites
+          - account
+          - car info
+      - Logout button
+          - stay in hamburger or button in Account screen??
+      - better way to do cards
+          - https://www.waldo.com/blog/flutter-card
+      - favorite icons
+          - Icons.favorite
+          - Icons.favorite_outline
+
+      - Had a hard time getting favorite button to toggle
+
+10/21
+      - Fix for getting favorite button to toggle:
+          - https://stackoverflow.com/questions/74754284/iconbutton-selectedicon-not-toggling
+      - Now pressing FB on one card toggles for them all
+          - After I followed below tutorial for a list of cards with JSON objects,
+             the _itemBuilder Widget gets the index of each card in the list
+          - I made a boolean list where each index corresponds to whether each card
+              is favorited
+          - It works!
+      - Search bar
+          - https://api.flutter.dev/flutter/material/SearchBar-class.html
+          - The leading search icon isn't showing up
+      - Looks promising for working with JSON objects
+          - https://stackoverflow.com/questions/58938531/card-list-view-in-flutter-from-object
