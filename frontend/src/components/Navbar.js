@@ -1,45 +1,42 @@
-import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
+import logo from "./main-logo.png";
 
 const Navbar = () => {
   return (
-    <nav class="navbar navbar-light bg-light">
-      <div class="container">
-        {/* Logo */}
-        <Link to="/home" class="navbar-brand" href="#">
-          <img
-            src="https://mdbcdn.b-cdn.net/img/logo/mdb-transaprent-noshadows.webp"
-            height="20"
-            alt="MDB Logo"
-            loading="lazy"
-          />
+    <nav className="navbar navbar-light bg-light">
+      <div className="container">
+        <Link to="/home" className="navbar-brand">
+          <img src={logo} height="40" alt="Logo" loading="lazy" />
         </Link>
-
-        {/* Links */}
-        <ul class="nav nav-pills">
-          <li class="nav-item">
-            <Link to="/" class="nav-link" href="#">
+        <ul className="nav nav-pills">
+          <li className="nav-item">
+            <Link to="/home" className="nav-link">
               Home
             </Link>
           </li>
 
-          <li class="nav-item">
-            <Link to="/account" class="nav-link" href="#">
+          <li className="nav-item">
+            <Link to="/account" className="nav-link">
               Account
             </Link>
           </li>
 
-          <li class="nav-item">
-            <Link to="/favorite" class="nav-link" href="#">
+          <li className="nav-item">
+            <Link to="/favorite" className="nav-link">
               Favorites
             </Link>
           </li>
 
-          <li class="nav-item">
-            <Link to="/signin" class="nav-link">
+          <li className="nav-item">
+            <a href="/signin" className="nav-link">
               Sign in
-            </Link>
+            </a>
+          </li>
+          <li className="nav-item">
+            <a href="/test" className="nav-link">
+              Test
+            </a>
           </li>
         </ul>
       </div>
