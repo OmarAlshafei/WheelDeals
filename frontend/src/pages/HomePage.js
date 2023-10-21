@@ -7,7 +7,7 @@ const HomePage = () => {
   return (
     <div className="HomePage">
       <Navbar />
-      {/* <Slideshow /> */}
+      <Slideshow />
       <Table />
     </div>
   );
