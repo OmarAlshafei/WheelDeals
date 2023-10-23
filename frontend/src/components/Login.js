@@ -16,7 +16,7 @@ const Login = (props) => {
 
   const doLogin = async (event) => {
     event.preventDefault();
-    var obj = { login: loginName.value, password: loginPassword.value };
+    var obj = { userName: loginName.value, password: loginPassword.value };
     try {
       const response = await fetch(buildPath("api/login"), {
         method: "POST",
