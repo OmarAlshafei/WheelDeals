@@ -95,11 +95,11 @@ app.post('/api/login', async (req, res, next) => {
     var ln = '';
     var em = '';
     if (results.length > 0) {
-        id = results[0].id;
+        id = results[0]._id;
         fn = results[0].firstName;
         ln = results[0].lastName;
         em = results[0].email;
     }
-    var ret = { id: id, firstName: fn, lastName: ln, email: em, error: '' };
+    var ret = { _id: id, firstName: fn, lastName: ln, email: em, error: '' };
     res.status(200).json(ret);
 });
