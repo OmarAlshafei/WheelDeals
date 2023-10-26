@@ -33,7 +33,7 @@ const Navbar = () => {
           </li>
 
           <li className="nav-item">
-            <a href="/favorite" className="nav-link">
+            <a href="/favorites" className="nav-link">
               Favorites
             </a>
           </li>
