@@ -2,17 +2,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('node:path'); 
-
+const axios = require('axios');
 const PORT = process.env.PORT || 9000;
-
 const app = express();
-
 app.set('port', (process.env.PORT || 9000))
 const MongoClient = require('mongodb').MongoClient;
 const passwordValidator = require('password-validator');
 require('dotenv').config();
 const url = process.env.MONGODB_URL;
 const client = new MongoClient(url);
+const API_KEY = process.env.REACT_APP_API_KEY;
 client.connect()
 app.use(cors());
 app.use(bodyParser.json());
@@ -103,3 +102,79 @@ app.post('/api/login', async (req, res, next) => {
     var ret = { _id: id, firstName: fn, lastName: ln, email: em, error: '' };
     res.status(200).json(ret);
 });
+
+
+app.post('/api/pricedata', async (req, res, next) => {
+    // // incoming: make, model
+    // // outgoing: sales histogram, average price
+    const { modelName, brandName } = req.body;
+    
+    const axios = require('axios');
+
+    const options = {
+      method: 'GET',
+      url: 'https://cis-automotive.p.rapidapi.com/salePriceHistogram',
+      params: {
+        modelName: modelName,
+        brandName: brandName
+      },
+      headers: {
+        'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
+        'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
+      }
+    };
+    
+    try {
+        const response = await axios.request(options);
+        console.log(response.data);
+        res.status(200).json({data: response.data});
+    } catch (error) {
+        console.error(error);
+    }
+
+    
+});
+
+
+
+app.post('/api/table', async (req, res, next) => {
+    // // incoming: region
+    // // Processing: Calls topModels for top 10 cars, then gets the price for each using getPrice.
+    // // outgoing: make, model, year (latest), current price
+    const { region } = req.body;
+    var error = '';
+    var year = 2024;
+    var cars = [];
+
+    // incoming: region
+    // outgoing: brand, model, condition (new)
+    const options = {
+        method: 'GET',
+        url: 'https://cis-automotive.p.rapidapi.com/topModels',
+        params: {
+            regionName: region,
+        },
+        headers: {
+            'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
+            'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
+        }
+        };
+        
+        try {
+            const response = await axios.request(options);
+            // console.log(response.data)
+            cars, error =  response.data, null
+            var newCars = cars.map(function(car) {
+                // create a new object with the new parameter and value
+                var car = {...car, price: 1}
+                // return the new object to the new array
+                return car;
+              });
+            
+            res.status(200).json({data: response.data});
+        } catch (error) {
+            console.error(error)
+            cars, error =  null, error
+        }
+
+})
