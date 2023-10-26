@@ -1,5 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/routes/routes.dart';
+import 'package:mobile/utils/getAPI.dart';
+import 'package:mobile/utils/Colors.dart';
+import 'package:mobile/utils/header.dart';
+import 'dart:convert';
+
+class GlobalData
+{
+  static int userId = 0;
+  static String firstName = '';
+  static String lastName = '';
+  static String loginName = '';
+  static String password = '';
+}
 
 
 class LoginScreen extends StatefulWidget {
@@ -16,20 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, Routes.HOMESCREEN);
-          },
-          child: Image.asset(
-              'images/wheel.png',
-              width:70
-          ),
-        ),
-
-        backgroundColor: Colors.black54,
-        title: Text("Wheel Deals"),
-      ),
+      appBar: Header(),
       endDrawer: Drawer(
           child: Column(
             children: [
@@ -103,9 +103,18 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
+  String message = "This is a message", newMessageText = '';
+  String loginName = '', password = '';
+
   @override
   void initState() {
     super.initState();
+  }
+
+  changeText() {
+    setState(() {
+      message = newMessageText;
+    });
   }
 
   @override
@@ -131,6 +140,9 @@ class _MainPageState extends State<MainPage> {
                           labelText: 'Login Name',
                           hintText: 'Enter Your Login Name'
                       ),
+                      onChanged: (text) {
+                        loginName = text;
+                      },
                     ),
                   ),
                 ]
@@ -150,6 +162,9 @@ class _MainPageState extends State<MainPage> {
                           labelText: 'Password',
                           hintText: 'Enter Your Password'
                       ),
+                      onChanged: (text) {
+                        password = text;
+                      },
                     ),
                   ),
                 ]
@@ -162,14 +177,56 @@ class _MainPageState extends State<MainPage> {
                   ElevatedButton(
                       child: Text('Login',style: TextStyle(fontSize: 14 ,color:Colors.black)),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.amber,
+                        backgroundColor: appColors.gold,
                       ),
-                      onPressed: ()
+                      onPressed: () async
                       {
-                        Navigator.pushNamed(context, Routes.HOMESCREEN);
+                        newMessageText = "";
+                        changeText();
+
+                        String payload = '{"userName":"' + loginName.trim() + '","password":"' + password.trim() + '"}';
+                        //String payload = '{"login":"' + loginName.trim() + '","password":"' + password.trim() + '"}';
+                        var userId = -1;
+                        var fname ='-';
+                        var jsonObject;
+
+                        try
+                        {
+                          String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/login';
+                          String ret = await CardsData.getJson(url, payload);
+                          jsonObject = json.decode(ret);
+                          //userId = jsonObject["id"];
+                          fname = jsonObject["firstName"];
+                        }
+                        catch(e)
+                        {
+                          newMessageText = e.toString();
+                          changeText();
+                          return;
+                        }
+                        //if( userId <= 0 )
+                        if (fname == '-')
+                        {
+                          newMessageText = "Incorrect Login/Password";
+                          changeText();
+                        }
+                        else
+                        {
+                          GlobalData.userId = userId;
+                          GlobalData.firstName = jsonObject["firstName"];
+                          GlobalData.lastName = jsonObject["lastName"];
+                          GlobalData.loginName = loginName;
+                          GlobalData.password = password;
+                          Navigator.pushNamed(context, '/cards');
+                        }
                       },
-                    ),
+                  ),
                 ),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+              Text('$message',style: TextStyle(fontSize: 14 ,color:Colors.black)),
               ],
             )
           ],

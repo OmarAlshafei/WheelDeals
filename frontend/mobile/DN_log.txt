@@ -52,3 +52,28 @@
           - The leading search icon isn't showing up
       - Looks promising for working with JSON objects
           - https://stackoverflow.com/questions/58938531/card-list-view-in-flutter-from-object
+
+      - Scroll works as intended
+          - AppBar stays as is (logo, search, hamburger)
+          - Slideshow goes away
+
+      - TODO
+          - Car table
+              - add type icons
+              - format nicely: increase text size, spacing, etc
+              - "Learn More" --> "More Info"
+          - Screens
+              - register
+              - favorites
+              - account
+              - car info
+          - Logout button
+              - stay in hamburger or button in Account screen??
+          - Functionality
+              - have favoriting do something
+              - clickable cards
+              - check if user is logged in before favorite & more info
+
+10/24
+      - Working on connecting login to backend
+          - Getting incorrect login/password for valid combo

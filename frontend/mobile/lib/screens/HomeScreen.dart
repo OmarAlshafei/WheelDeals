@@ -1,57 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mobile/routes/routes.dart';
+import 'package:mobile/utils/Colors.dart';
+import 'package:mobile/utils/header.dart';
+import 'package:mobile/utils/Cars.dart';
 
 final List<String> imgList = [
   'https://www.lensrentals.com/blog/media/2015/11/Automotive-Photography-Guide-1.jpg',
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwVLDj3Q7Pmq_x5CNlPHlY4OR3RraFbZZm1Q&usqp=CAU'
 ];
-
-class Cars {
-  Map fetchedData = {
-    "data": [
-      {"id": 1, "make": "Ford", "model":"F150", "year":2020, "price":"\$13,000","type":"truck"},
-      {"id": 2, "make": "Ford", "model":"Explorer", "year":2018, "price":"\$12,000","type":"SUV"},
-      {"id": 3, "make": "Mazda", "model":"Mazda3", "year":2016, "price":"\$11,000","type":"sedan"},
-      {"id": 4, "make": "Toyota", "model":"Camry", "year":2021, "price":"\$12,000","type":"sedan"},
-    ]
-  };
-  List? _data;
-
-  Cars() {
-    _data = fetchedData["data"];
-  }
-
-  int getId(int index) {
-    return _data![index]["id"];
-  }
-
-  String getMake(int index) {
-    return _data![index]["make"];
-  }
-
-  String getModel(int index) {
-    if (_data == null) return "";
-    return _data![index]["model"];
-  }
-
-  int getYear(int index) {
-    if (_data == null) return -1;
-    return _data![index]["year"];
-  }
-
-  String getPrice(int index) {
-    return _data![index]["price"];
-  }
-
-  String getType(int index) {
-    return _data![index]["type"];
-  }
-
-  int getLength() {
-    return _data!.length;
-  }
-}
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -68,50 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, Routes.HOMESCREEN);
-          },
-          child: Image.asset(
-              'images/wheel.png',
-              width:70
-          ),
-        ),
-        backgroundColor: Colors.black54,
-        title: Container(
-          height: 35,
-          child: SearchAnchor(
-            builder: (BuildContext context, SearchController controller) {
-              return SearchBar(
-                controller: controller,
-                // padding: const MaterialStatePropertyAll<EdgeInsets>(
-                //     EdgeInsets.symmetric(horizontal: 16.0)),
-                onTap: () {
-                  controller.openView();
-                },
-                onChanged: (_) {
-                  controller.openView();
-                },
-                leading: const Icon(Icons.search),
-              );
-            },
-            suggestionsBuilder: (BuildContext context, SearchController controller) {
-                return List<ListTile>.generate(5, (int index) {
-                  final String item = 'item $index';
-                  return ListTile(
-                    title: Text(item),
-                    onTap: () {
-                      setState(() {
-                        controller.closeView(item);
-                      });
-                    },
-                  );
-                });
-            },
-          )
-        ),
-      ),
+      appBar: Header(),
       endDrawer: Drawer(
         child: Column(
           children: [
@@ -119,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 110, // To change the height of DrawerHeader
               width: double.infinity, // To Change the width of DrawerHeader
               child: DrawerHeader(
-                decoration: BoxDecoration(color: Colors.amber),
+                decoration: BoxDecoration(color: appColors.gold),
                 child: Text('Menu',
                   style: TextStyle(color: Colors.black),
                 ),
@@ -189,7 +103,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
-  Cars _data = Cars();
+  appCars _data = appCars();
   List<bool> fav = <bool>[];
 
   @override
@@ -203,41 +117,7 @@ class _MainPageState extends State<MainPage> {
     "2017\tFord\tExplorer\n\$12,000"
   };
 
-  // Card buildCard(String car, String price) {
-  //   return Card(
-  //       elevation: 4.0,
-  //       color: Colors.grey,
-  //       child: Column(
-  //         children: [
-  //           ListTile(
-  //             title: Text(car),
-  //             subtitle: Text(price),
-  //             trailing: Theme (
-  //               data: ThemeData(useMaterial3: true),
-  //               child: IconButton(
-  //                 isSelected: favorited,
-  //                 onPressed: () {
-  //                   setState(() {
-  //                     favorited = !favorited;
-  //                   });
-  //                 },
-  //                 icon: const Icon(Icons.favorite_outline),
-  //                 selectedIcon: const Icon(Icons.favorite),
-  //               )
-  //             ),
-  //           ),
-  //           ButtonBar(
-  //             children: [
-  //               TextButton(
-  //                 child: const Text('LEARN MORE',
-  //                 style:TextStyle(color:Colors.indigo)),
-  //                 onPressed: () {/* ... */},
-  //               )
-  //             ],
-  //           )
-  //         ],
-  //       ));
-  // }
+
 
   Widget tableRow(String str) {
     return Container(
@@ -265,7 +145,7 @@ class _MainPageState extends State<MainPage> {
     return GestureDetector(
       child: Card(
           elevation: 4.0,
-          color: Colors.grey,
+          color: appColors.gray,
           child: Column(
             children: [
               ListTile(
@@ -275,6 +155,7 @@ class _MainPageState extends State<MainPage> {
                     data: ThemeData(useMaterial3: true),
                     child: IconButton(
                       isSelected: fav[index],
+                      color: appColors.red,
                       onPressed: () {
                         // if (fav[index])
                         //   favMessage="Unfavorited";
@@ -293,8 +174,8 @@ class _MainPageState extends State<MainPage> {
               ButtonBar(
                 children: [
                   TextButton(
-                    child: const Text('LEARN MORE',
-                        style:TextStyle(color:Colors.indigo)),
+                    child: const Text('MORE INFO',
+                        style:TextStyle(color:appColors.navy)),
                     onPressed: () {/* ... */},
                   )
                 ],
@@ -312,7 +193,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    Cars data = Cars();
+    appCars _data = appCars();
 
     // initialize favorites list to all false
     for (int i=0; i < _data.getLength(); i++) {
@@ -339,7 +220,7 @@ class _MainPageState extends State<MainPage> {
                     height: 2000,
                     child: ListView.builder(
                       padding: const EdgeInsets.all(5.5),
-                      itemCount: data.getLength(),
+                      itemCount: _data.getLength(),
                       itemBuilder: _itemBuilder,
                     ),
                   ),
