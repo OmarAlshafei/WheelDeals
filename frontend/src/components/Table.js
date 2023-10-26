@@ -1,5 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHeart } from '@fortawesome/free-regular-svg-icons'
 
 const Table = () => {
   return (
@@ -38,9 +40,7 @@ const Table = () => {
             <p class="fw-normal mb-1">$ </p>
           </td>
           <td>
-            <button type="button" class="btn btn-link btn-sm btn-rounded">
-              Favorite
-            </button>
+          <FontAwesomeIcon icon={faHeart} style={{color: "#ff0000",}} />
           </td>
         </tr>
         <tr>
@@ -66,9 +66,7 @@ const Table = () => {
             <p class="fw-normal mb-1">$ </p>
           </td>
           <td>
-          <button type="button" class="btn btn-link btn-sm btn-rounded">
-              Favorite
-            </button>
+          <FontAwesomeIcon icon={faHeart} style={{color: "#ff0000",}} />
           </td>
         </tr>
         <tr>
@@ -94,9 +92,7 @@ const Table = () => {
             <p class="fw-normal mb-1">$ </p>
           </td>
           <td>
-          <button type="button" class="btn btn-link btn-sm btn-rounded">
-              Favorite
-            </button>
+          <FontAwesomeIcon icon={faHeart} style={{color: "#ff0000",}} />
           </td>
         </tr>
       </tbody>
