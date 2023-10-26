@@ -181,10 +181,7 @@ app.post('/api/table', async (req, res, next) => {
 
 })
 
-app.post('/api/carprice', async (req, res, next) => {
-    // // incoming: make, model
-    // // outgoing: sales histogram, average price
-    const { brandName, region } = req.body;
+const carPrice = async(brandName, region) => {
     const axios = require('axios');
 
     const options = {
@@ -202,11 +199,19 @@ app.post('/api/carprice', async (req, res, next) => {
     
     try {
         const response = await axios.request(options);
-        console.log(response.data);
-        res.status(200).json({data: response.data});
+        // console.log(response.data);
+        return response
     } catch (error) {
         console.error(error);
     }
+}
 
-    
+app.post('/api/carprice', async (req, res, next) => {
+
+    // // incoming: make, model
+    // // outgoing: sales histogram, average price
+    const { brandName, region } = req.body;
+    response = await carPrice(brandName, region)
+    res.status(200).json({data: response.data});
+
 });
