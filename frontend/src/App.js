@@ -7,13 +7,14 @@ import TestPage from "./pages/TestPage";
 import Navbar from "./components/Navbar";
 import AccountPage from "./pages/AccountPage";
 import FavoritesPage from "./pages/FavoritesPage";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
     <Router>
       <Navbar />
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <Route exact path="/" component={LandingPage} />
         <Route path="/home" component={HomePage} />
         <Route path="/signin" component={SigninPage} />
         <Route path="/test" component={TestPage} />
