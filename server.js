@@ -200,6 +200,8 @@ const carPrices = async (brands) => {
             db.collection(brand).insertMany(carData);
             
         }
+        else
+            db.collection(brand).drop();
         await delay(1010)
     }
 
