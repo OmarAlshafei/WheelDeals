@@ -145,8 +145,9 @@ app.post('/api/table', async (req, res, next) => {
     var error = '';
     var cars = [];
     var brands = [];
-    var brandPrices = {};
-    // wipeDatabase();
+    var brandPrices = null;
+    wipeDatabase();
+    await delay(1010);
 
     // incoming: region
     // outgoing: brand, model, condition (new)
@@ -166,9 +167,10 @@ app.post('/api/table', async (req, res, next) => {
         // const response = await axios.request(options);
         // cars = response.data.data
         brands = await getBrands()
-        console.log(brands)
         insertBrands(brands)
-        // brandPrices = carPrices(['Acura', 'Bentley'])
+        await delay(1010)
+        carPrices(brands);
+
         var newCars = cars.map(function (car) {
             // create a new object with the new parameter and value
             var newCar = { ...car, price: 1 }//findPrice(cars.modelName, cars.brandName) }
@@ -185,14 +187,28 @@ app.post('/api/table', async (req, res, next) => {
 })
 
 const carPrices = async (brands) => {
-    var prices = []
+    // var prices = []
+    var carData = null;
+    const db = client.db('carTypes');    
+    
     for (brand of brands) {
-        prices.push(await carPrice(brand, region))
-        // console.log("1")
-        await delay(2000)
+        carData = await carPrice(brand, region);
+        carData = carData.map((car) => ({model: car["name"], price: car["median"]}))
+        // prices.push(carData)
+        if (carData && carData.length > 0){
+            console.log("Inserting " + brand)
+            db.collection(brand).insertMany(carData);
+            
+        }
+        await delay(1010)
     }
+
+    // return prices
     // console.log(prices)
 }
+
+
+
 
 // Define a function that returns a promise that resolves after a given time
 function delay(time) {
@@ -219,11 +235,21 @@ const carPrice = async (brandName, region) => {
 
     try {
         const response = await axios.request(options);
-        return response;
+        return response.data.data;
     } catch (error) {
         console.error(error);
     }
 }
+
+app.post('/api/carprice', async (req, res, next) => {
+
+    // // incoming: make, model
+    // // outgoing: sales histogram, average price
+    const { brandName, region } = req.body;
+    response = await carPrice(brandName, region)
+    res.status(200).json({ data: response.data });
+
+});
 
 const getBrands = async () => {
     const axios = require('axios');
@@ -258,22 +284,21 @@ const insertBrands = (brands) => {
     }
 }
 
-const insertModels = () => { }
-
-// const formatPrice = (cars, modelName) => {
-//     for (car of cars) {
-//         if (car['name'] === modelName) {
-//             return car['median']
-//         }
+// const insertCarData = (brand, carData) => {
+    
+//     const db = client.db('carTypes');
+//     // console.log(carData[brand])
+//     if (carData != null) {
+        
 //     }
+//     // console.log(prices)
+//     // return prices
 // }
 
-app.post('/api/carprice', async (req, res, next) => {
-
-    // // incoming: make, model
-    // // outgoing: sales histogram, average price
-    const { brandName, region } = req.body;
-    response = await carPrice(brandName, region)
-    res.status(200).json({ data: response.data });
-
-});
+const formatPrice = (cars, modelName) => {
+    for (car of cars) {
+        if (car['name'] === modelName) {
+            return car['median']
+        }
+    }
+}
