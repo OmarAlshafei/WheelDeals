@@ -1,18 +1,18 @@
-.login-form {
+.register-form {
   position: absolute;
-  top: 40%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 70%;
 }
 
-.login-title {
+.register-title {
   display: block;
   text-align: center;
   font-weight: bold;
 }
 
-.login-remind {
+.register-remind {
   display: block;
   font-size: small;
   text-align: center;
@@ -46,7 +46,22 @@ input[type="submit"] {
   cursor: pointer;
 }
 
-.register-link {
+.register-button {
+  font-size: small;
+  text-align: center;
+  width: 45%;
+  margin-top: 20px;
+  margin-left: 28%;
+  margin-bottom: 20px;
+  padding: 6px;
+  border: 2px solid white;
+  border-radius: 3px;
+  background: #14213d;
+  color: #fff;
+  cursor: pointer;
+}
+
+.login-link {
   color: white;
   border: none;
   border-radius: 3px;

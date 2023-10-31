@@ -3,10 +3,10 @@ import "./LandingPage.css";
 import videoBg from "../assets/car.mp4";
 import Modal from "react-modal";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import "../components/Navbar.css";
-import logo from "../components/main-logo.png";
-import Login from "../components/Login";
+import logo from "../assets/logo-transparent.png";
 import SigninPage from "./SigninPage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 
 const LandingPage = () => {
   const [visible, setVisible] = useState(false);
@@ -46,9 +46,18 @@ const LandingPage = () => {
           </button>
         </div>
 
-        <Modal isOpen={visible} onRequestClose={() => setVisible(false)} className="modal-section">
+        <Modal
+          isOpen={visible}
+          onRequestClose={() => setVisible(false)}
+          className="modal-section"
+        >
           <SigninPage></SigninPage>
-          <button onClick={() => setVisible(false)}>Close modal</button>
+          {/* <button onClick={() => setVisible(false)}>Close modal</button> */}
+          <FontAwesomeIcon
+            icon={faX}
+            onClick={() => setVisible(false)}
+            className="close-button"
+          />
         </Modal>
       </div>
     </div>

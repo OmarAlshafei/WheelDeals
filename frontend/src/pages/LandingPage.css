@@ -29,11 +29,12 @@ video {
   top: 0%;
   /* left: 90%;L */
   color: white;
-}
-
-.navbar {
   background-color: transparent;
 }
+
+/* .landingnavbar {
+  background-color: transparent;
+} */
 
 .intro-section {
   position: absolute;
@@ -72,8 +73,12 @@ video {
   padding: 20px;
   width: 30%;
   top: 15%;
-  bottom: 10%;
+  /* bottom: 10%; */
   left: 35%;
   background-color: #14213d;
   color: white;
+}
+
+.close-button {
+  cursor: pointer;
 }

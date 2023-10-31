@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Register.css";
 
 const Register = (props) => {
   const [email, setEmail] = useState("");
@@ -42,14 +43,17 @@ const Register = (props) => {
 
   return (
     <div>
-      <h1>Register</h1>
-      <form onSubmit={doRegister}>
+      <form onSubmit={doRegister} className="register-form">
+        <span id="inner-title" className="register-title">
+          REGISTER
+        </span>
         <label>First Name</label>
         <br></br>
         <input
           type="text"
           name="firstName"
           value={firstName}
+          placeholder="First Name"
           onChange={(e) => setFirstName(e.target.value)}
         />
         <br></br>
@@ -59,6 +63,7 @@ const Register = (props) => {
         <input
           type="text"
           name="lastName"
+          placeholder="Last Name"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
         />
@@ -69,6 +74,7 @@ const Register = (props) => {
         <input
           type="text"
           name="email"
+          placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
         />
         <br></br>
@@ -78,6 +84,7 @@ const Register = (props) => {
         <input
           type="text"
           name="userName"
+          placeholder="Username"
           onChange={(e) => setUsername(e.target.value)}
         />
         <br></br>
@@ -87,15 +94,21 @@ const Register = (props) => {
         <input
           type="password"
           name="password"
+          placeholder="Password"
           onChange={(e) => setPassword(e.target.value)}
         />
         <br></br>
 
-        <button type="submit">Register</button>
+        <button type="submit" className="register-button">
+          REGISTER
+        </button>
+        <button
+          onClick={() => props.onFormSwitch("Login")}
+          className="login-link"
+        >
+          Already have an account? Login here
+        </button>
       </form>
-      <button onClick={() => props.onFormSwitch("Login")}>
-        Already have an account? Login here
-      </button>
     </div>
   );
 };

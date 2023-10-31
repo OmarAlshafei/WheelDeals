@@ -44,8 +44,8 @@ const Login = (props) => {
   };
 
   return (
-    <div id="loginDiv" className="login-form">
-      <form onSubmit={doLogin}>
+    <div id="loginDiv">
+      <form onSubmit={doLogin} className="login-form">
         <span id="inner-title" className="login-title">
           LOGIN
         </span>
@@ -78,13 +78,13 @@ const Login = (props) => {
           value="LOGIN"
         />
         <br />
+        <button
+          onClick={() => props.onFormSwitch("Register")}
+          className="register-link"
+        >
+          Don't have an account? Register here
+        </button>
       </form>
-      <button
-        onClick={() => props.onFormSwitch("Register")}
-        className="register-button"
-      >
-        Don't have an account? Register here
-      </button>
       <span id="loginResult">{message}</span>
     </div>
   );
