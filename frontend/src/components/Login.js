@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Login.css";
 
 const Login = (props) => {
   const app_name = "wheeldeals-d3e9615ad014";
@@ -43,9 +44,16 @@ const Login = (props) => {
   };
 
   return (
-    <div id="loginDiv">
+    <div id="loginDiv" className="login-form">
       <form onSubmit={doLogin}>
-        <span id="inner-title">PLEASE LOG IN</span>
+        <span id="inner-title" className="login-title">
+          LOGIN
+        </span>
+        <div className="login-remind">
+          Please enter your login and password!
+        </div>
+        <br />
+        <label className="login-label">Username</label>
         <br />
         <input
           type="text"
@@ -53,20 +61,28 @@ const Login = (props) => {
           placeholder="Username"
           ref={(c) => (loginName = c)}
         />
+        <br />
+        <label className="login-label">Password</label>
+
         <input
           type="password"
           id="loginPassword"
           placeholder="Password"
           ref={(c) => (loginPassword = c)}
         />
+        <br />
         <input
           type="submit"
           id="loginButton"
           className="buttons"
-          value="Do It"
+          value="LOGIN"
         />
+        <br />
       </form>
-      <button onClick={() => props.onFormSwitch("Register")}>
+      <button
+        onClick={() => props.onFormSwitch("Register")}
+        className="register-button"
+      >
         Don't have an account? Register here
       </button>
       <span id="loginResult">{message}</span>

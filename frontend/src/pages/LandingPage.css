@@ -24,6 +24,17 @@ video {
   object-fit: cover;
 }
 
+.signin-section {
+  position: absolute;
+  top: 0%;
+  /* left: 90%;L */
+  color: white;
+}
+
+.navbar {
+  background-color: transparent;
+}
+
 .intro-section {
   position: absolute;
   top: 50%;
@@ -48,4 +59,21 @@ video {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+}
+
+.modal-section {
+  position: absolute;
+  inset: 40px;
+  border: 1px solid rgb(204, 204, 204);
+  background: rgb(255, 255, 255);
+  overflow: auto;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+  width: 30%;
+  top: 15%;
+  bottom: 10%;
+  left: 35%;
+  background-color: #14213d;
+  color: white;
 }

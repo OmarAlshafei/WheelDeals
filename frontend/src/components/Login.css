@@ -1,0 +1,52 @@
+.login-form {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+}
+
+.login-title {
+  display: block;
+  text-align: center;
+  font-weight: bold;
+}
+
+.login-remind {
+  display: block;
+  font-size: small;
+  text-align: center;
+  font-weight: bold;
+  color: grey;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  margin-bottom: 20px;
+  border: 2px solid white;
+  border-radius: 3px;
+}
+
+input[type="submit"] {
+  font-size: small;
+  text-align: center;
+  width: 45%;
+  margin-top: 20px;
+  margin-left: 28%;
+  margin-bottom: 20px;
+  padding: 6px;
+  border: 2px solid white;
+  border-radius: 3px;
+  background: #14213d;
+  color: #fff;
+  cursor: pointer;
+}
+
+.register-button {
+  color: white;
+  border: none;
+  border-radius: 3px;
+  background: #14213d;
+  margin-left: 15%;
+}
