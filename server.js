@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const path = require('node:path'); 
+const path = require('node:path');
 const axios = require('axios');
 const PORT = process.env.PORT || 9000;
 const app = express();
@@ -12,6 +12,7 @@ require('dotenv').config();
 const url = process.env.MONGODB_URL;
 const client = new MongoClient(url);
 const API_KEY = process.env.REACT_APP_API_KEY;
+const region = "REGION_STATE_FL";
 client.connect()
 app.use(cors());
 app.use(bodyParser.json());
@@ -32,7 +33,7 @@ app.listen(PORT, () => {
 // Checks if password meets requirements
 function isComplex(password) {
     var schema = new passwordValidator();
-    
+
     schema.is().min(8)
     if (!schema.validate(password)) {
         return "Password is too short. 8 or more characters."
@@ -58,27 +59,27 @@ app.post('/api/register', async (req, res, next) => {
     var error = '';
     const { firstName, lastName, userName, email, password } = req.body;
     var validation = isComplex(password);
-    
+
     if (validation != "Valid Password") {
-        ret = { message: '', error: validation}
+        ret = { message: '', error: validation }
         res.status(200).json(ret);
     }
     else {
         const db = client.db('cop4331');
         const results = await
-        db.collection('Users').insertOne(
-            {
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                userName: userName,
-                password: password,
-            }
+            db.collection('Users').insertOne(
+                {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    userName: userName,
+                    password: password,
+                }
             );
-            // console.log(results)
-            
-            var ret = { message: 'User Added Successfully', error: '' };
-            res.status(200).json(ret);
+        // console.log(results)
+
+        var ret = { message: 'User Added Successfully', error: '' };
+        res.status(200).json(ret);
     }
 });
 
@@ -108,31 +109,31 @@ app.post('/api/pricechart', async (req, res, next) => {
     // // incoming: make, model
     // // outgoing: sales histogram, average price
     const { modelName, brandName } = req.body;
-    
+
     const axios = require('axios');
 
     const options = {
-      method: 'GET',
-      url: 'https://cis-automotive.p.rapidapi.com/salePriceHistogram',
-      params: {
-        modelName: modelName,
-        brandName: brandName
-      },
-      headers: {
-        'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
-        'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
-      }
+        method: 'GET',
+        url: 'https://cis-automotive.p.rapidapi.com/salePriceHistogram',
+        params: {
+            modelName: modelName,
+            brandName: brandName
+        },
+        headers: {
+            'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
+            'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
+        }
     };
-    
+
     try {
         const response = await axios.request(options);
         console.log(response.data);
-        res.status(200).json({data: response.data});
+        res.status(200).json({ data: response.data });
     } catch (error) {
         console.error(error);
     }
 
-    
+
 });
 
 
@@ -140,11 +141,12 @@ app.post('/api/pricechart', async (req, res, next) => {
 app.post('/api/table', async (req, res, next) => {
     // // incoming: region
     // // Processing: Calls topModels for top 10 cars, then gets the price for each using getPrice.
-    // // outgoing: make, model, year (latest), current price
-    const { region } = req.body;
+    // // outgoing: make, model, current price, popularity
     var error = '';
-    var year = 2024;
     var cars = [];
+    var brands = [];
+    var brandPrices = {};
+    // wipeDatabase();
 
     // incoming: region
     // outgoing: brand, model, condition (new)
@@ -158,53 +160,113 @@ app.post('/api/table', async (req, res, next) => {
             'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
             'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
         }
-        };
-        
-        try {
-            const response = await axios.request(options);
-            // console.log(response.data)
-            cars = response.data.data
-            // console.log(typeof cars)
-            // console.log(response.data)
-            var newCars = cars.map(function(car) {
-                // create a new object with the new parameter and value
-                var newCar = {...car, price: 1}
-                // return the new object to the new array
-                return newCar;
-              });
-            
-            res.status(200).json({data: newCars});
-        } catch (error) {
-            console.error(error)
-            cars, error =  null, error
-        }
+    };
+
+    try {
+        // const response = await axios.request(options);
+        // cars = response.data.data
+        brands = await getBrands()
+        console.log(brands)
+        insertBrands(brands)
+        // brandPrices = carPrices(['Acura', 'Bentley'])
+        var newCars = cars.map(function (car) {
+            // create a new object with the new parameter and value
+            var newCar = { ...car, price: 1 }//findPrice(cars.modelName, cars.brandName) }
+            // return the new object to the new array
+            return newCar;
+        });
+
+        res.status(200).json({ data: newCars });
+    } catch (error) {
+        console.error(error)
+        cars, error = null, error
+    }
 
 })
 
-const carPrice = async(brandName, region) => {
+const carPrices = async (brands) => {
+    var prices = []
+    for (brand of brands) {
+        prices.push(await carPrice(brand, region))
+        // console.log("1")
+        await delay(2000)
+    }
+    // console.log(prices)
+}
+
+// Define a function that returns a promise that resolves after a given time
+function delay(time) {
+    return new Promise(resolve => {
+        setTimeout(resolve, time);
+    });
+}
+
+const carPrice = async (brandName, region) => {
     const axios = require('axios');
 
     const options = {
-      method: 'GET',
-      url: 'https://cis-automotive.p.rapidapi.com/salePrice',
-      params: {
-        brandName: brandName,
-        regionName: region
-      },
-      headers: {
-        'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
-        'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
-      }
+        method: 'GET',
+        url: 'https://cis-automotive.p.rapidapi.com/salePrice',
+        params: {
+            brandName: brandName,
+            regionName: region
+        },
+        headers: {
+            'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
+            'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
+        }
     };
-    
+
     try {
         const response = await axios.request(options);
-        // console.log(response.data);
-        return response
+        return response;
     } catch (error) {
         console.error(error);
     }
 }
+
+const getBrands = async () => {
+    const axios = require('axios');
+
+    const options = {
+        method: 'GET',
+        url: 'https://cis-automotive.p.rapidapi.com/getBrands',
+        headers: {
+            'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
+            'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
+        }
+    };
+
+    try {
+        const response = await axios.request(options);
+        return response.data.data
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const wipeDatabase = () => {
+    const db = client.db('carTypes');
+    db.dropDatabase();
+}
+
+
+const insertBrands = (brands) => {
+    const db = client.db('carTypes');
+    for (brand of brands) {
+        db.createCollection(brand)
+    }
+}
+
+const insertModels = () => { }
+
+// const formatPrice = (cars, modelName) => {
+//     for (car of cars) {
+//         if (car['name'] === modelName) {
+//             return car['median']
+//         }
+//     }
+// }
 
 app.post('/api/carprice', async (req, res, next) => {
 
@@ -212,6 +274,6 @@ app.post('/api/carprice', async (req, res, next) => {
     // // outgoing: sales histogram, average price
     const { brandName, region } = req.body;
     response = await carPrice(brandName, region)
-    res.status(200).json({data: response.data});
+    res.status(200).json({ data: response.data });
 
 });
