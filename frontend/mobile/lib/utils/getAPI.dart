@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class CardsData {
+class CarsData {
 
   static Future<String> getJson(String url, String outgoing) async
   {

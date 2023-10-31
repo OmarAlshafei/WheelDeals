@@ -72,8 +72,47 @@
           - Functionality
               - have favoriting do something
               - clickable cards
-              - check if user is logged in before favorite & more info
 
 10/24
       - Working on connecting login to backend
           - Getting incorrect login/password for valid combo
+
+
+10/25
+      - Problem with login
+          - id isn't returned from API call in SwaggerHub but it is on Nefawl's site
+          - can access firstName, lastName, and email so the connection works!
+      - Changing fonts
+          - https://docs.flutter.dev/cookbook/design/fonts
+          - Roboto
+      - Confirmed color layout
+      - Red favorite button
+      - See discord for car type icons
+      - ***Important change***
+            - Enforce login/register before seeing anything on home page
+            - Ask for home state during register
+            - In account page, offer "Change State" button/edit field
+
+10/26
+      - TODO
+          - Car table
+              - add type icons
+              - format nicely: increase text size, spacing, etc
+          - Screens
+              - register
+              - favorites
+              - account
+              - car info
+          - Functionality
+              - have favoriting do something
+              - clickable cards
+      - Changed red color of favorite button to match website
+      - Changed text of more info button
+      - Made skeleton CarScreen & linked More Info button to it
+      - Problems
+            - Need to pass car Id to both the card and the favorite button
+
+10/30
+      - Questions
+            - Is domain bought yet?
+            - What does "partial credit for localhost" mean?
