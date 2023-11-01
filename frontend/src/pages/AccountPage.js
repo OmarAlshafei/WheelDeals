@@ -18,22 +18,22 @@ const AccountPage = () => {
                   <h3 class="mb-4 text-uppercase">Account Information</h3>
 
                   <div class="row">
-                    <div class="col-md-6 mb-4">
-                      <div class="form-outline">
-                        <input type="text" id="form3Example1m" class="form-control form-control-lg" />
-                        <label class="form-label" for="form3Example1m">First name</label>
-                      </div>
+                    <div class="col-md-6 mb-4" >
+                    <div class="form-outline">
+                    <input type="fname" class="form-control" id="exampleFormControlInput1" placeholder=""/>
+                    <label class="form-label" for="form3Example1m">First name</label>
+                  </div>
                     </div>
                     <div class="col-md-6 mb-4">
                       <div class="form-outline">
-                        <input type="text" id="form3Example1n" class="form-control form-control-lg" />
+                      <input type="lname" class="form-control" id="exampleFormControlInput1" placeholder=""/>
                         <label class="form-label" for="form3Example1n">Last name</label>
                       </div>
                     </div>
                   </div>
 
                   <div class="form-outline mb-4">
-                    <input type="text" id="form3Example8" class="form-control form-control-lg" />
+                    <input type="email" id="form3Example8" class="form-control form-control-lg" />
                     <label class="form-label" for="form3Example8">Email</label>
                   </div>
 
