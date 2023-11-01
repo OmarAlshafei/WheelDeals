@@ -302,37 +302,37 @@ class _MainPageState extends State<MainPage> {
 
     return Container(
         child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-            child:
-              Column(
-                  children: <Widget>[
-                    // CarouselSlider(
-                    //   options: CarouselOptions(),
-                    //   items: imgList
-                    //       .map((item) => Container(
-                    //     child: Center(
-                    //         child:
-                    //         Image.network(item, fit: BoxFit.cover, width: 1000)),
-                    //   ))
-                    //       .toList(),
-                    // ),
-                    SizedBox(
-                      height: 2000,
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(5.5),
-                        itemCount: _data.getLength(),
-                        itemBuilder: _itemBuilder,
-                      ),
+          //scrollDirection: Axis.vertical,
+          child:
+            Column(
+                children: <Widget>[
+                  // CarouselSlider(
+                  //   options: CarouselOptions(),
+                  //   items: imgList
+                  //       .map((item) => Container(
+                  //     child: Center(
+                  //         child:
+                  //         Image.network(item, fit: BoxFit.cover, width: 1000)),
+                  //   ))
+                  //       .toList(),
+                  // ),
+                  SizedBox(
+                    height: 2000,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(5.5),
+                      itemCount: _data.getLength(),
+                      itemBuilder: _itemBuilder,
                     ),
+                  ),
 
 
-                    // buildCard("2016 Ford F150","\$15,000"),
-                    // buildCard("2021 Toyota Camry","\$12,000"),
-                    // buildCard("2018 Ford Explorer","\$14,000"),
-                    // buildCard("2016 Mazda Mazda3","\$10,000"),
+                  // buildCard("2016 Ford F150","\$15,000"),
+                  // buildCard("2021 Toyota Camry","\$12,000"),
+                  // buildCard("2018 Ford Explorer","\$14,000"),
+                  // buildCard("2016 Mazda Mazda3","\$10,000"),
 
-                  ]
-              )
+                ]
+            )
         )
 
     );
