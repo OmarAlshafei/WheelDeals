@@ -4,6 +4,10 @@ import 'package:mobile/utils/getAPI.dart';
 import 'package:mobile/utils/Colors.dart';
 import 'package:mobile/utils/header.dart';
 import 'dart:convert';
+import 'package:mobile/utils/currentUser.dart' as currentUser;
+import 'package:mobile/utils/Cars.dart';
+
+
 
 class CarsScreen extends StatefulWidget {
   @override
@@ -34,19 +38,6 @@ class _CarsScreenState extends State<CarsScreen> {
                 ),
               ),
               ListTile(
-                title: const Text('Login/Signup'),
-                onTap: () {
-
-                  Navigator.pushNamed(context, Routes.LOGINSCREEN);
-                  // showDialog(
-                  //   context: context,
-                  //   builder: (context) => AlertDialog(
-                  //     title: Text('Login/Signup'),
-                  //   ),//AlertDialog
-                  // );
-                },
-              ),
-              ListTile(
                 title: const Text('Favorites'),
                 onTap: () {
                   showDialog(
@@ -60,23 +51,14 @@ class _CarsScreenState extends State<CarsScreen> {
               ListTile(
                 title: const Text('Account'),
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Account'),
-                    ),//AlertDialog
-                  );
+                  Navigator.pushNamed(context, Routes.ACCOUNTSCREEN);
                 },
               ),
               ListTile(
                 title: const Text('Logout'),
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Logout'),
-                    ),//AlertDialog
-                  );
+                  currentUser.clear();
+                  Navigator.pushNamed(context, Routes.LOGINSCREEN);
                 },
               ),
             ],
@@ -95,58 +77,89 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
-  int carId = -1;
+  String carId = "";
+  appCars _data = appCars();
+  int carIndex = appCars.getCarIndex();
 
   @override
   void initState() {
     super.initState();
   }
 
-  void getCarId(int id) {
-    carId =id;
-  }
-
   @override
   Widget build(BuildContext context) {
+    String make = appCars.getMake(carIndex);
+    String model = appCars.getModel(carIndex);
+    int year = appCars.getYear(carIndex);
+    String price = appCars.getPrice(carIndex);
+
     return Container(
         width: 400,
-        margin: EdgeInsets.only(left:60.0),
-        child:
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center, //Center Column contents vertically,
-          crossAxisAlignment: CrossAxisAlignment.center, //Center Column contents horizontal
-          children: <Widget>[
-            Row(
-                children: <Widget>[
-                  Container(
-                    width: 200,
-                    child:
-                    Text ("More car info page"),
-                  ),
-
-                ]
-            ),
-            Row(
+        margin: EdgeInsets.only(left:10.0, top:20),
+        child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center, //Center Column contents vertically,
+              crossAxisAlignment: CrossAxisAlignment.center, //Center Column contents horizontal
               children: <Widget>[
-                ElevatedButton(
-                    child: Text('Logout',style: TextStyle(fontSize: 14 ,color:Colors.black)),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.amber,
+                Row(
+                  children: [
+                    Container(
+                      margin:const EdgeInsets.only(bottom: 40.0),
+                      child:
+                      const Text(
+                        "Car Information",
+                        style: TextStyle(fontSize: 24),
+                      ),
                     ),
-                    onPressed: ()
-                    {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Logout'),
-                        ),//AlertDialog
-                      );
-                    },
+                  ],
+                ),// title
 
+                Row(
+                  children: <Widget>[
+                    Container(
+                      //margin: const EdgeInsets.only(bottom: 10.0),
+                      child: Text(
+                        "$year $make $model",
+                        style: const TextStyle(fontSize: 24),
+                      ),
+                    ),
+                    const Spacer(),
+                    Container(
+                      margin: const EdgeInsets.only(right: 10.0),
+                      child: Text(
+                        price,
+                        style: const TextStyle(fontSize: 18),
+                      )
+                    )
+
+                  ],
+                ),// name
+
+                Row(
+                  children: <Widget>[
+                    Container(
+                      margin: const EdgeInsets.only(left: 30.0),
+                      alignment: Alignment.center,
+                      child: Image.asset("images/wheel.png"),
+                    )
+                  ],
+                ),
+
+                Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(left:50, top:30),
+                      alignment: Alignment.center,
+                      child: const Text(
+                        "Stay tuned for more info!",
+                        style: TextStyle(fontSize: 24),
+                      )
+                    )
+                  ],
                 )
               ],
             )
-          ],
+
         )
     );
   }

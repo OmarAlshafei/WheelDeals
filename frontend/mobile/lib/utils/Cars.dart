@@ -7,35 +7,45 @@ class appCars {
       {"id": 4, "make": "Toyota", "model":"Camry", "year":2021, "price":"\$12,000","type":"sedan"},
     ]
   };
-  List? _data;
+  static List? _data;
+  static int currentCarIndex = -1;
 
   appCars() {
     _data = fetchedData["data"];
   }
 
-  int getId(int index) {
+  static void setCarIndex(int index) {
+    currentCarIndex = index;
+  }
+
+  static int getCarIndex() {
+    return currentCarIndex;
+  }
+
+
+  static int getId(int index) {
     return _data![index]["id"];
   }
 
-  String getMake(int index) {
+  static String getMake(int index) {
     return _data![index]["make"];
   }
 
-  String getModel(int index) {
+  static String getModel(int index) {
     if (_data == null) return "";
     return _data![index]["model"];
   }
 
-  int getYear(int index) {
+  static int getYear(int index) {
     if (_data == null) return -1;
     return _data![index]["year"];
   }
 
-  String getPrice(int index) {
+  static String getPrice(int index) {
     return _data![index]["price"];
   }
 
-  String getType(int index) {
+  static String getType(int index) {
     return _data![index]["type"];
   }
 

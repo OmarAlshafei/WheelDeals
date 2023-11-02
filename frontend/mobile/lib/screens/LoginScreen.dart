@@ -32,66 +32,66 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Header(),
-      endDrawer: Drawer(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 110, // To change the height of DrawerHeader
-                width: double.infinity, // To Change the width of DrawerHeader
-                child: DrawerHeader(
-                  decoration: BoxDecoration(color: Colors.amber),
-                  child: Text('Menu',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ),
-              ListTile(
-                title: const Text('Login/Signup'),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Login/Signup'),
-                    ),//AlertDialog
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Favorites'),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Favorites'),
-                    ),//AlertDialog
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Account'),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Account'),
-                    ),//AlertDialog
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Logout'),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Logout'),
-                    ),//AlertDialog
-                  );
-                },
-              ),
-            ],
-          )
-      ),
+      // endDrawer: Drawer(
+      //     child: Column(
+      //       children: [
+      //         const SizedBox(
+      //           height: 110, // To change the height of DrawerHeader
+      //           width: double.infinity, // To Change the width of DrawerHeader
+      //           child: DrawerHeader(
+      //             decoration: BoxDecoration(color: Colors.amber),
+      //             child: Text('Menu',
+      //               style: TextStyle(color: Colors.black),
+      //             ),
+      //           ),
+      //         ),
+      //         ListTile(
+      //           title: const Text('Login/Signup'),
+      //           onTap: () {
+      //             showDialog(
+      //               context: context,
+      //               builder: (context) => AlertDialog(
+      //                 title: Text('Login/Signup'),
+      //               ),//AlertDialog
+      //             );
+      //           },
+      //         ),
+      //         ListTile(
+      //           title: const Text('Favorites'),
+      //           onTap: () {
+      //             showDialog(
+      //               context: context,
+      //               builder: (context) => AlertDialog(
+      //                 title: Text('Favorites'),
+      //               ),//AlertDialog
+      //             );
+      //           },
+      //         ),
+      //         ListTile(
+      //           title: const Text('Account'),
+      //           onTap: () {
+      //             showDialog(
+      //               context: context,
+      //               builder: (context) => AlertDialog(
+      //                 title: Text('Account'),
+      //               ),//AlertDialog
+      //             );
+      //           },
+      //         ),
+      //         ListTile(
+      //           title: const Text('Logout'),
+      //           onTap: () {
+      //             showDialog(
+      //               context: context,
+      //               builder: (context) => AlertDialog(
+      //                 title: Text('Logout'),
+      //               ),//AlertDialog
+      //             );
+      //           },
+      //         ),
+      //       ],
+      //     )
+      // ),
       backgroundColor: Colors.white,
       body: MainPage(),
     );
@@ -106,8 +106,9 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
 
   String message = "or", newMessageText = '';
-  String loginName = '', password = '';
+  String loginName = currentUser.userName, password = currentUser.password;
   Color messageColor = appColors.black;
+  bool obscurePassword = true;
 
   @override
   void initState() {
@@ -141,7 +142,7 @@ class _MainPageState extends State<MainPage> {
                         height: 250,
                         fit:BoxFit.fill
                     ),
-                  ),
+                  ),// image
                   Row(
                     children: [
                       Container(
@@ -153,7 +154,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
                     ],
-                  ),
+                  ),// title
 
                   Row(
                       children: <Widget>[
@@ -162,6 +163,7 @@ class _MainPageState extends State<MainPage> {
                           margin:const EdgeInsets.only(left: 95.0, top:20),
                           child:
                           TextField (
+                            controller: TextEditingController(text: loginName),
                             decoration: InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
@@ -175,7 +177,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ),
                       ]
-                  ),
+                  ),// username
                   Row(
                       children: <Widget>[
                         Container(
@@ -183,13 +185,25 @@ class _MainPageState extends State<MainPage> {
                           margin:const EdgeInsets.only(top: 10.0, left:95.0),
                           child:
                           TextField (
-                            obscureText: true,
+                            obscureText: obscurePassword,
+                            controller: TextEditingController(text: password),
                             decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(),
-                                labelText: 'Password',
-                                hintText: 'Enter Your Password'
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(),
+                              labelText: 'Password',
+                              hintText: 'Enter Your Password',
+                              suffixIcon: IconButton(
+                                icon: Icon(obscurePassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
+                                onPressed: () {
+                                  setState(() {
+                                    obscurePassword = !obscurePassword;
+                                    },
+                                  );
+                                },
+                              ),
                             ),
                             onChanged: (text) {
                               password = text;
@@ -219,21 +233,14 @@ class _MainPageState extends State<MainPage> {
                             var jsonObject;
                             String ret = 'ah';
 
-                            if (loginName=='') {
-                              newMessageText = "Please enter Username";
-                              messageColor = appColors.errRed;
-                              changeText();
-
-                            }
-
                             try
                             {
                               String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/login';
                               ret = await CarsData.getJson(url, payload);
                               jsonObject = json.decode(ret);
                               fname = jsonObject["firstName"];
-                              newMessageText = jsonObject["lastName"];
-                              changeText();
+                              // newMessageText = jsonObject["email"];
+                              // changeText();
                             }
                             catch(e)
                             {
@@ -261,11 +268,14 @@ class _MainPageState extends State<MainPage> {
                             else
                             {
                               currentUser.userId = jsonObject["_id"];
-                              currentUser.fName = jsonObject["firstName"];
-                              currentUser.lName = jsonObject["lastName"];
-                              // currentUser.email = jsonObject["email"];
+                              currentUser.firstName = jsonObject["firstName"];
+                              currentUser.lastName = jsonObject["lastName"];
+                              if (jsonObject["email"] != null) {
+                                currentUser.email = jsonObject["email"];
+                              }
                               currentUser.userName = loginName;
                               currentUser.password = password;
+                              currentUser.loggedIn = true;
                               Navigator.pushNamed(context, Routes.HOMESCREEN);
                             }
                           },
@@ -273,18 +283,7 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ],
                   ),
-                  // Row(
-                  //   children: <Widget>[
-                  //     Container(
-                  //       margin: const EdgeInsets.only(left: 105.0),
-                  //       child: Text(
-                  //           message,
-                  //           style: const TextStyle(fontSize: 14 ,color:appColors.errRed),
-                  //           textAlign: TextAlign.center
-                  //       ),
-                  //     )
-                  //   ],
-                  // ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -297,7 +296,7 @@ class _MainPageState extends State<MainPage> {
                           )
                       ),
                     ],
-                  ),
+                  ),// message
                   Row(
                     children: [
                       Container(
@@ -315,7 +314,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
                     ],
-                  ),
+                  ),// register button
                 ],
               )
             )

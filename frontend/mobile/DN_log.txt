@@ -116,3 +116,23 @@
       - Questions
             - Is domain bought yet?
             - What does "partial credit for localhost" mean?
+
+11/2
+      - Login/Register functionality
+            - Register
+                  - Password is not obscured
+                  - If password isn't complex, message pops up with instructions
+                  - Register button takes you to login page with filled-in fields
+            - Login
+                  - Icon to change visibility of password
+      - Added logout Functionality
+            - clears the user (see currentUser.dart)
+            - navigates to login page
+      - Account page
+            - Has full name, username, password, email, button to view favorites
+            - No edit functionality yet until supported by API
+      - Home screen
+            - Removed login/signup option from menu
+            - Logo is only clickable if user is logged in (see currentUser.dart)
+            - Fixed cards so they scroll now (not sure exactly what fixed it)
+            - Passing card index of selected car to Cars.dart & accessing from CarsScreen.dart

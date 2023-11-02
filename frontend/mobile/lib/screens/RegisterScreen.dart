@@ -271,7 +271,7 @@ class _MainPageState extends State<MainPage> {
                     margin:const EdgeInsets.only(top: 10.0, left:95.0),
                     child:
                     TextField (
-                      obscureText: true,
+                      obscureText: false,
                       decoration: InputDecoration(
                           filled: true,
                           fillColor: Colors.white,
@@ -371,8 +371,8 @@ class _MainPageState extends State<MainPage> {
                         String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/register';
                         ret = await CarsData.getJson(url, payload);
                         jsonObject = json.decode(ret);
-                        newMessageText = ret;
-                        changeText();
+                        // newMessageText = jsonObject["error"];
+                        // changeText();
                         //fname = jsonObject["firstName"];
                       }
                       catch(e)
@@ -381,51 +381,60 @@ class _MainPageState extends State<MainPage> {
                         changeText();
                         return;
                       }
-                      if (fname == '')
-                      {
+                      if (jsonObject["message"] != "User Added Successfully") {
+                        String err1 = " - At least 8 characters\n";
+                        String err2 = " - No more than 100 characters\n";
+                        String err3 = " - At least 1 uppercase character\n";
+                        String err4 = " - At least 1 lowercase character\n";
 
-                        if (firstName == '' ) {
-                          newMessageText = "Please enter first name";
-                        }
-                        else if (lastName == '') {
-                          newMessageText = "Please enter last name";
-                        }
-                        else if (loginName == '') {
-                          newMessageText = "Please enter Username";
-                        }
-                        else if (password == '') {
-                          newMessageText = "Please enter Password";
-                        }
-
-                        /*
-                        if (loginName == '' && password == '') {
-                          newMessageText = "Please enter Username and Password";
-                        }
-                        else if (loginName == '') {
-                          newMessageText = "Please enter Username";
-                        }
-                        else if (password == '') {
-                          newMessageText = "Please enter Password";
-                        }
-                        else {
-                          newMessageText = "Incorrect Login/Password";
-                        }
-                        */
-
+                        newMessageText = "Error: Password requires\n$err1$err3$err4$err2";
                         messageColor = appColors.errRed;
                         changeText();
                       }
+                      // if (fname == '')
+                      // {
+                      //
+                      //   if (firstName == '' ) {
+                      //     newMessageText = "Please enter first name";
+                      //   }
+                      //   else if (lastName == '') {
+                      //     newMessageText = "Please enter last name";
+                      //   }
+                      //   else if (loginName == '') {
+                      //     newMessageText = "Please enter Username";
+                      //   }
+                      //   else if (password == '') {
+                      //     newMessageText = "Please enter Password";
+                      //   }
+                      //
+                      //   /*
+                      //   if (loginName == '' && password == '') {
+                      //     newMessageText = "Please enter Username and Password";
+                      //   }
+                      //   else if (loginName == '') {
+                      //     newMessageText = "Please enter Username";
+                      //   }
+                      //   else if (password == '') {
+                      //     newMessageText = "Please enter Password";
+                      //   }
+                      //   else {
+                      //     newMessageText = "Incorrect Login/Password";
+                      //   }
+                      //   */
+                      //
+                      //   messageColor = appColors.errRed;
+                      //   changeText();
+                      // }
                       else
                       {
                         //currentUser.userId = jsonObject["_id"];
-                        // currentUser.fName = jsonObject["firstName"];
-                        // currentUser.lName = jsonObject["lastName"];
-                        // currentUser.email = jsonObject["email"];
-                        currentUser.userName = loginName;
-                        currentUser.password = password;
-                        //currentUser.state = state;
-                        //currentUser.email = email;
-                        Navigator.pushNamed(context, Routes.HOMESCREEN);
+                        currentUser.firstName = firstName.trim();
+                        currentUser.lastName = lastName.trim();
+                        currentUser.email = email.trim();
+                        currentUser.userName = loginName.trim();
+                        currentUser.password = password.trim();
+                        currentUser.loggedIn = true;
+                        Navigator.pushNamed(context, Routes.LOGINSCREEN);
                       }
                     },
                   ),

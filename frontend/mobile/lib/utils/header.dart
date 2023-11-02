@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/routes/routes.dart';
 import 'package:mobile/utils/Colors.dart';
+import 'package:mobile/utils/currentUser.dart' as currentUser;
 
 
 class Header extends StatefulWidget implements PreferredSizeWidget{
@@ -22,13 +23,20 @@ class _HeaderState extends State<Header> {
     return AppBar(
       leading: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, Routes.HOMESCREEN);
+          if (currentUser.loggedIn) {
+            Navigator.pushNamed(context, Routes.HOMESCREEN);
+          }
         },
         child: Image.asset(
             'images/logo.png',
-            width:70,
-            height:50,
+            width:150,
+            height:100,
+            fit:BoxFit.fill
         ),
+      ),
+      title: Text(
+        "Wheel Deals",
+        style: TextStyle(color: appColors.white, fontSize: 24),
       ),
       backgroundColor: appColors.navy,
 

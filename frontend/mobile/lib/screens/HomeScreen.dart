@@ -8,6 +8,7 @@ import 'package:mobile/utils/header.dart';
 import 'package:mobile/utils/Cars.dart';
 import 'package:mobile/screens/CarsScreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobile/utils/currentUser.dart' as currentUser;
 
 final List<String> imgList = [
   'https://www.lensrentals.com/blog/media/2015/11/Automotive-Photography-Guide-1.jpg',
@@ -44,19 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             ListTile(
-              title: const Text('Login/Signup'),
-              onTap: () {
-
-                Navigator.pushNamed(context, Routes.LOGINSCREEN);
-                // showDialog(
-                //   context: context,
-                //   builder: (context) => AlertDialog(
-                //     title: Text('Login/Signup'),
-                //   ),//AlertDialog
-                // );
-              },
-            ),
-            ListTile(
               title: const Text('Favorites'),
               onTap: () {
                 showDialog(
@@ -70,23 +58,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               title: const Text('Account'),
               onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text('Account'),
-                  ),//AlertDialog
-                );
+                Navigator.pushNamed(context, Routes.ACCOUNTSCREEN);
               },
             ),
             ListTile(
               title: const Text('Logout'),
               onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text('Logout'),
-                  ),//AlertDialog
-                );
+                currentUser.clear();
+                Navigator.pushNamed(context, Routes.LOGINSCREEN);
               },
             ),
           ],
@@ -107,41 +86,16 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
-  appCars _data = appCars();
+  final appCars _data = appCars();
   List<bool> fav = <bool>[];
 
   @override
   void initState() {
     super.initState();
-  }
-
-  Set<String> carList = {
-    "2016\tFord\tF150\n\$10,000",
-    "2018\tToyota\tCamry\n\$11,000",
-    "2017\tFord\tExplorer\n\$12,000"
-  };
-
-
-
-  Widget tableRow(String str) {
-    return Container(
-      child: GestureDetector(
-
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Gesture Detected!')));
-        },
-        child: Container(
-          height: 75,
-          width: 380,
-          child: Card(
-            elevation: 5,
-            child: Text(str),
-            color: Colors.grey,
-          ),
-        ),
-      ),
-    );
+    // initialize favorites list to all false
+    for (int i=0; i < _data.getLength(); i++) {
+      fav.add(false);
+    }
   }
 
   void favorite(int id, int index) {
@@ -154,9 +108,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
-    String favMessage="";
     IconData type;
-    switch (_data.getType(index)) {
+    switch (appCars.getType(index)) {
       case "truck":
         type = FontAwesomeIcons.truckPickup;
         break;
@@ -172,169 +125,172 @@ class _MainPageState extends State<MainPage> {
     if (index == 0) {
       return Column (
         children: [
-          CarouselSlider(
-            options: CarouselOptions(),
-            items: imgList
-                .map((item) => Container(
-              child: Center(
-                  child:
-                  Image.network(item, fit: BoxFit.cover, width: 1000)),
-            ))
-                .toList(),
-          ),
-          GestureDetector(
-            child: Card(
-              elevation: 4.0,
-              color: appColors.gray,
-              child: Column(
-              children: [
-                ListTile(
-                  title: Text("${_data.getYear(index)} ${_data.getMake(index)} ${_data.getModel(index)}"),
-                  subtitle: Text(_data.getPrice(index)),
-                  trailing: Theme (
-                    data: ThemeData(useMaterial3: true),
-                    child: IconButton(
-                      isSelected: fav[index],
-                      color: appColors.red,
-                      onPressed: () {
-                      favorite(_data.getId(index), index);
-                      },
-                      icon: const Icon(Icons.favorite_outline),
-                      selectedIcon: const Icon(Icons.favorite),
-                    )
-                  ),
-                ),
-                Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 20.0),
-                      child: FaIcon(type,color: appColors.navy),
-                    ),
-                    Spacer(),
-                    ButtonBar(
-                      children: [
-                        TextButton(
-                          child: const Text('MORE INFO',
-                          style:TextStyle(color:appColors.navy)),
-                          onPressed: () {
-                            //getCarId(_data.getId(index));
-                            Navigator.pushNamed(context, Routes.CARSSCREEN);
-                          },
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                ],
-              )
+          Container(
+            //margin:const EdgeInsets.only(bottom: 10.0),
+            child: CarouselSlider(
+              options: CarouselOptions(),
+              items: imgList
+                  .map((item) => Container(
+                child: Center(
+                    child:
+                    Image.network(item, fit: BoxFit.cover, width: 1000)),
+              ))
+                  .toList(),
             ),
-            onTap: () => {
-              const AlertDialog(
-                content: Text("See more info"),
-              )
-            }
           ),
+          Container(
+            height: 150,
+            child: Card(
+                elevation: 4.0,
+                color: appColors.gray,
+                child: Column(
+                    children: [
+                      ListTile(
+                        title: Text("${appCars.getYear(index)} ${appCars.getMake(index)} ${appCars.getModel(index)}"),
+                        subtitle: Text(appCars.getPrice(index)),
+                        trailing: Theme (
+                            data: ThemeData(useMaterial3: true),
+                            child: IconButton(
+                              isSelected: fav[index],
+                              color: appColors.red,
+                              onPressed: () {
+                                favorite(appCars.getId(index), index);
+                              },
+                              icon: const Icon(Icons.favorite_outline),
+                              selectedIcon: const Icon(Icons.favorite),
+                            )
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(left: 20.0),
+                            child: FaIcon(type,color: appColors.navy),
+                          ),
+                          const Spacer(),
+                          ButtonBar(
+                            children: [
+                              TextButton(
+                                child: const Text('MORE INFO',
+                                    style:TextStyle(color:appColors.navy)),
+                                onPressed: () {
+                                  //getCarId(_data.getId(index));
+                                  appCars.setCarIndex(index);
+                                  Navigator.pushNamed(context, Routes.CARSSCREEN);
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      )
+                    ]
+                )
+            ),
+          )
         ],
       );
-    }
-    return GestureDetector(
+    } // Make slideshow before first card
+    return Container(
+      height: 150,
       child: Card(
-          elevation: 4.0,
-          color: appColors.gray,
-          child: Column(
-            children: [
-              ListTile(
-                title: Text("${_data.getYear(index)} ${_data.getMake(index)} ${_data.getModel(index)}"),
-                subtitle: Text(_data.getPrice(index)),
-                trailing: Theme (
-                    data: ThemeData(useMaterial3: true),
-                    child: IconButton(
-                      isSelected: fav[index],
-                      color: appColors.red,
-                      onPressed: () {
-                        favorite(_data.getId(index), index);
-                      },
-                      icon: const Icon(Icons.favorite_outline),
-                      selectedIcon: const Icon(Icons.favorite),
-                    )
-                ),
-              ),
-              Row(
+            elevation: 4.0,
+            color: appColors.gray,
+            child: Column(
                 children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 20.0),
-                    child: FaIcon(type,color: appColors.navy),
+                  ListTile(
+                    title: Text("${appCars.getYear(index)} ${appCars.getMake(index)} ${appCars.getModel(index)}"),
+                    subtitle: Text(appCars.getPrice(index)),
+                    trailing: Theme (
+                        data: ThemeData(useMaterial3: true),
+                        child: IconButton(
+                          isSelected: fav[index],
+                          color: appColors.red,
+                          onPressed: () {
+                            favorite(appCars.getId(index), index);
+                          },
+                          icon: const Icon(Icons.favorite_outline),
+                          selectedIcon: const Icon(Icons.favorite),
+                        )
+                    ),
                   ),
-                  Spacer(),
-                  ButtonBar(
+                  Row(
                     children: [
-                      TextButton(
-                        child: const Text('MORE INFO',
-                            style:TextStyle(color:appColors.navy)),
-                        onPressed: () {
-                          //getCarId(_data.getId(index));
-                          Navigator.pushNamed(context, Routes.CARSSCREEN);
-                        },
+                      Container(
+                        margin: const EdgeInsets.only(left: 20.0),
+                        child: FaIcon(type,color: appColors.navy),
+                      ),
+                      const Spacer(),
+                      ButtonBar(
+                        children: [
+                          TextButton(
+                            child: const Text('MORE INFO',
+                                style:TextStyle(color:appColors.navy)),
+                            onPressed: () {
+                              appCars.setCarIndex(index);
+                              Navigator.pushNamed(context, Routes.CARSSCREEN);
+                            },
+                          )
+                        ],
                       )
                     ],
                   )
-                ],
-              ),
-            ],
-          )
-      ),
-      onTap: () => {
-        const AlertDialog(
-          content: Text("See more info"),
-        )
-      }
+                ]
+            )
+          // child: Column(
+          //   children: [
+          //     ListTile(
+          //       title: Text("${_data.getYear(index)} ${_data.getMake(index)} ${_data.getModel(index)}"),
+          //       subtitle: Text(_data.getPrice(index)),
+          //       trailing: Theme (
+          //           data: ThemeData(useMaterial3: true),
+          //           child: IconButton(
+          //             isSelected: fav[index],
+          //             color: appColors.red,
+          //             onPressed: () {
+          //               favorite(_data.getId(index), index);
+          //             },
+          //             icon: const Icon(Icons.favorite_outline),
+          //             selectedIcon: const Icon(Icons.favorite),
+          //           )
+          //       ),
+          //     ),
+          //     Row(
+          //       children: [
+          //         Container(
+          //           margin: const EdgeInsets.only(left: 20.0),
+          //           child: FaIcon(type,color: appColors.navy),
+          //         ),
+          //         Spacer(),
+          //         ButtonBar(
+          //           children: [
+          //             TextButton(
+          //               child: const Text('MORE INFO',
+          //                   style:TextStyle(color:appColors.navy)),
+          //               onPressed: () {
+          //                 //getCarId(_data.getId(index));
+          //                 Navigator.pushNamed(context, Routes.CARSSCREEN);
+          //               },
+          //             )
+          //           ],
+          //         )
+          //       ],
+          //     ),
+          //   ],
+          // )
+        ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    appCars _data = appCars();
-
-    // initialize favorites list to all false
-    for (int i=0; i < _data.getLength(); i++) {
-      fav.add(false);
-    }
+    //appCars _data = appCars();
 
     return Container(
-        child: SingleChildScrollView(
-          //scrollDirection: Axis.vertical,
-          child:
-            Column(
-                children: <Widget>[
-                  // CarouselSlider(
-                  //   options: CarouselOptions(),
-                  //   items: imgList
-                  //       .map((item) => Container(
-                  //     child: Center(
-                  //         child:
-                  //         Image.network(item, fit: BoxFit.cover, width: 1000)),
-                  //   ))
-                  //       .toList(),
-                  // ),
-                  SizedBox(
-                    height: 2000,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(5.5),
-                      itemCount: _data.getLength(),
-                      itemBuilder: _itemBuilder,
-                    ),
-                  ),
-
-
-                  // buildCard("2016 Ford F150","\$15,000"),
-                  // buildCard("2021 Toyota Camry","\$12,000"),
-                  // buildCard("2018 Ford Explorer","\$14,000"),
-                  // buildCard("2016 Mazda Mazda3","\$10,000"),
-
-                ]
-            )
-        )
-
+      child: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemCount: _data.getLength(),
+        itemBuilder: _itemBuilder,
+      ),
     );
   }
 }

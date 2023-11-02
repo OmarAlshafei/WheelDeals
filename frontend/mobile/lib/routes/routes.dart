@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/AccountScreen.dart';
 import 'package:mobile/screens/LoginScreen.dart';
 import 'package:mobile/screens/CarsScreen.dart';
 import 'package:mobile/screens/HomeScreen.dart';
@@ -10,6 +11,7 @@ class Routes {
   static const String CARSSCREEN = '/cars';
   static const String HOMESCREEN = '/home';
   static const String REGISTERSCREEN = '/register';
+  static const String ACCOUNTSCREEN = '/account';
 
   // routes of pages in the app
   static Map<String, Widget Function(BuildContext)> get getroutes => {
@@ -18,5 +20,6 @@ class Routes {
     CARSSCREEN: (context) => CarsScreen(),
     HOMESCREEN: (context) => HomeScreen(),
     REGISTERSCREEN: (context) => RegisterScreen(),
+    ACCOUNTSCREEN: (context) => AccountScreen(),
   };
 }
