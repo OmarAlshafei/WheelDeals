@@ -232,6 +232,8 @@ class _MainPageState extends State<MainPage> {
                               ret = await CarsData.getJson(url, payload);
                               jsonObject = json.decode(ret);
                               fname = jsonObject["firstName"];
+                              newMessageText = jsonObject["lastName"];
+                              changeText();
                             }
                             catch(e)
                             {

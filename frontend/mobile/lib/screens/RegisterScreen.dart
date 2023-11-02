@@ -328,7 +328,7 @@ class _MainPageState extends State<MainPage> {
                       changeText();
 
                      // String payload = '{"userName":"' + loginName.trim() + '","password":"' + password.trim() + '"}';
-                      String payload = '{"firstName":"' + firstName.trim() + '","userName":"' + loginName.trim() + '","password":"' + password.trim() + '","state":"' + state.trim() + '","email":"' + email.trim() + '"}';
+                      String payload = '{"firstName":"' + firstName.trim() + '","lastName":"' + lastName.trim() + '", "userName":"' + loginName.trim() + '","password":"' + password.trim() + '","email":"' + email.trim() + '"}';
                       var userId = '';
                       var fname ='-';
                       var jsonObject;
@@ -371,8 +371,8 @@ class _MainPageState extends State<MainPage> {
                         String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/register';
                         ret = await CarsData.getJson(url, payload);
                         jsonObject = json.decode(ret);
-                        // newMessageText = jsonObject["message"];
-                        // changeText();
+                        newMessageText = ret;
+                        changeText();
                         //fname = jsonObject["firstName"];
                       }
                       catch(e)
