@@ -37,20 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, Routes.REGISTERSCREEN);
-          },
-          child: Image.asset(
-              'images/wheel.png',
-              width:70
-          ),
-        ),
-
-        backgroundColor: Colors.black54,
-        title: Text("Wheel Deals"),
-      ),
+      appBar:Header(),
       endDrawer: Drawer(
           child: Column(
             children: [
@@ -154,8 +141,6 @@ class _MainPageState extends State<MainPage> {
   String firstName = '', lastName = '';
   String state = '', email = '';
 
-
-
   Color messageColor = appColors.black;
 
   @override
@@ -189,7 +174,7 @@ class _MainPageState extends State<MainPage> {
     return Container(
 
         width: 600,
-        margin:const EdgeInsets.only(bottom: 56.0),
+        margin:const EdgeInsets.only(top: 20.0),
 
         child: SingleChildScrollView(
 
@@ -198,16 +183,6 @@ class _MainPageState extends State<MainPage> {
           //crossAxisAlignment: CrossAxisAlignment.center, //Center Column contents horizontal
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            // Container(
-            //   margin: const EdgeInsets.only(bottom:16),
-            //
-            //   child: Image.asset(
-            //       'images/chevy_camero.jpg',
-            //       //width: 70000,
-            //       height: 250,
-            //       fit:BoxFit.fill
-            //   ),
-            // ),
             Row(
               children: [
                 Container(
@@ -219,7 +194,7 @@ class _MainPageState extends State<MainPage> {
                   ),
                 ),
               ],
-            ),
+            ), //title
 
 
             Row(
@@ -242,7 +217,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                 ]
-            ),
+            ), // first name
 
             Row(
                 children: <Widget>[
@@ -264,9 +239,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                 ]
-            ),
-
-
+            ), // last name
 
             Row(
                 children: <Widget>[
@@ -288,7 +261,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                 ]
-            ),
+            ), // username
 
 
             Row(
@@ -312,30 +285,8 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                 ]
-            ),
+            ), // password
 
-
-            Row(
-                children: <Widget>[
-                  Container(
-                    width: 200,
-                    margin:const EdgeInsets.only(left: 95.0, top:20),
-                    child:
-                    TextField (
-                      decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
-                          labelText: 'State',
-                          hintText: 'Enter Your state'
-                      ),
-                      onChanged: (text) {
-                        state = text;
-                      },
-                    ),
-                  ),
-                ]
-            ),
 
 
             Row(
@@ -358,9 +309,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),
                 ]
-            ),
-
-
+            ), // email
 
 
             Row(
@@ -410,12 +359,6 @@ class _MainPageState extends State<MainPage> {
 
                       }
 
-                      if (state=='') {
-                        newMessageText = "Please enter state";
-                        messageColor = appColors.errRed;
-                        changeText();
-
-                      }
                       if (email=='') {
                         newMessageText = "Please enter email";
                         messageColor = appColors.errRed;
@@ -425,10 +368,12 @@ class _MainPageState extends State<MainPage> {
 
                       try
                       {
-                        String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/login';
+                        String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/register';
                         ret = await CarsData.getJson(url, payload);
                         jsonObject = json.decode(ret);
-                        fname = jsonObject["firstName"];
+                        // newMessageText = jsonObject["message"];
+                        // changeText();
+                        //fname = jsonObject["firstName"];
                       }
                       catch(e)
                       {
@@ -472,11 +417,10 @@ class _MainPageState extends State<MainPage> {
                       }
                       else
                       {
-                        currentUser.userId = jsonObject["_id"];
-                        currentUser.fName = jsonObject["firstName"];
-                        currentUser.lName = jsonObject["lastName"];
-                        currentUser.email = jsonObject["email"];
-                        currentUser.state = jsonObject["state"];
+                        //currentUser.userId = jsonObject["_id"];
+                        // currentUser.fName = jsonObject["firstName"];
+                        // currentUser.lName = jsonObject["lastName"];
+                        // currentUser.email = jsonObject["email"];
                         currentUser.userName = loginName;
                         currentUser.password = password;
                         //currentUser.state = state;

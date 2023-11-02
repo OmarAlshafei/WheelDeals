@@ -308,7 +308,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                           onPressed: () async
                           {
-                            Navigator.pushNamed(context, Routes.CARSSCREEN);
+                            Navigator.pushNamed(context, Routes.REGISTERSCREEN);
                           },
                         ),
                       ),

@@ -9,11 +9,11 @@ class Routes {
   static const String LOGINSCREEN = '/login';
   static const String CARSSCREEN = '/cars';
   static const String HOMESCREEN = '/home';
-  static const String REGISTERSCREEN = '/home';
+  static const String REGISTERSCREEN = '/register';
 
   // routes of pages in the app
   static Map<String, Widget Function(BuildContext)> get getroutes => {
-    '/': (context) => RegisterScreen(),
+    '/': (context) => LoginScreen(),
     LOGINSCREEN: (context) => LoginScreen(),
     CARSSCREEN: (context) => CarsScreen(),
     HOMESCREEN: (context) => HomeScreen(),
