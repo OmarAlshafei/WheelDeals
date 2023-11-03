@@ -386,6 +386,19 @@ app.post('/api/homepage', async (req, res, next) => {
 
 })
 
+app.post('/api/makes', async (req, res, next) => {
+    // incoming: N/A
+    // outgoing: json of all the makes
+    var error = '';
+    const db = client.db('carTypes');
+
+    const makeArr = await db.listCollections().toArray();
+    makeArr.sort();
+    const collectionNames = makeArr.map((col) => col.name);
+
+    res.status(200).json(collectionNames);
+});
+
 // comment
 
 // Archive
