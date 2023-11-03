@@ -392,11 +392,11 @@ app.post('/api/makes', async (req, res, next) => {
     var error = '';
     const db = client.db('carTypes');
 
-    const makeArr = await db.listCollections().toArray();
+    const collections = await db.listCollections().toArray();
+    const makeArr = collections.map((col) => col.name);
     makeArr.sort();
-    const collectionNames = makeArr.map((col) => col.name);
 
-    res.status(200).json(collectionNames);
+    res.status(200).json(makeArr);
 });
 
 // comment
