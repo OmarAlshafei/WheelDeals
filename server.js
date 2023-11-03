@@ -30,6 +30,120 @@ app.listen(PORT, () => {
     console.log('Server listening on port ' + PORT);
 });
 
+async function getBrandLogo(make) {
+    const options = {
+        method: 'GET',
+        url: 'https://autocomplete.clearbit.com/v1/companies/suggest',
+        params: {
+            query: make
+        }
+    };
+
+    try {
+        const response = await axios.request(options);
+        // console.log(response.data[0].logo);
+        return response.data[0].logo;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getCarType(make, model) {
+    const options = {
+    method: 'GET',
+    url: 'https://car-data1.p.rapidapi.com/cars',
+    params: {
+        limit: '1',
+        page: '0',
+        make: make,
+        model: model
+    },
+    headers: {
+        'X-RapidAPI-Key': API_KEY,
+        'X-RapidAPI-Host': 'car-data1.p.rapidapi.com'
+    }
+    };
+
+    try {
+        const response = await axios.request(options);
+        
+        return response.data[0].type;
+    } catch (error) {
+        console.error(error);
+    }
+}
+    
+async function getHistogramData(make, model) {
+    const options = {
+        method: 'GET',
+        url: 'https://cis-automotive.p.rapidapi.com/salePriceHistogram',
+        params: {
+          modelName: model,
+          brandName: make
+        },
+        headers: {
+          'X-RapidAPI-Key': API_KEY,
+          'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
+        }
+      };
+      
+      try {
+          const response = await axios.request(options);
+          return response.data.data;
+      } catch (error) {
+          console.error(error);
+      }
+}
+
+// async function getType(make, model) {
+//     const options = {
+//         method: 'GET',
+//         url: 'https://autocomplete.clearbit.com/v1/companies/suggest',
+//         params: {
+//             query: make
+//         }
+//     };
+
+//     try {
+//         const response = await axios.request(options);
+//         // console.log(response.data[0].logo);
+//         return response.data[0].logo;
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
+
+app.post('/api/search', async (req, res, next) => {
+    // incoming: make, model
+    // outgoing: histogram data, image, type, logo, price
+
+    var error = '';
+    const { make, model } = req.body;
+    const logo = await getBrandLogo(make);
+    const histogramData = await getHistogramData(make, model);
+
+    var db = client.db('carTypes');
+    const typesEntry = await db.collection(make).find({ model: model }).toArray();
+
+    db = client.db('carPics');
+    const pictureEntry = await db.collection(make).find({ model: model }).toArray();
+
+    var price = -1;
+    var picture = '';
+    var type = '';
+    if (typesEntry.length > 0) {
+        price = typesEntry[0].price;
+        type = typesEntry[0].type;
+    }
+
+    if (pictureEntry.length > 0) {
+        picture = pictureEntry[0].picture;
+    }
+
+    var ret = { image: picture, price: price, brandLogo: logo, type: type, histogramData: histogramData };
+    res.status(200).json(ret);
+});
+
 // Checks if password meets requirements
 function isComplex(password) {
     var schema = new passwordValidator();
@@ -105,40 +219,40 @@ app.post('/api/login', async (req, res, next) => {
 });
 
 
-app.post('/api/pricechart', async (req, res, next) => {
-    // // incoming: make, model
-    // // outgoing: sales histogram, average price
-    const { modelName, brandName } = req.body;
+// app.post('/api/pricechart', async (req, res, next) => {
+//     // // incoming: make, model
+//     // // outgoing: sales histogram, average price
+//     const { modelName, brandName } = req.body;
 
-    const axios = require('axios');
+    
 
-    const options = {
-        method: 'GET',
-        url: 'https://cis-automotive.p.rapidapi.com/salePriceHistogram',
-        params: {
-            modelName: modelName,
-            brandName: brandName
-        },
-        headers: {
-            'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
-            'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
-        }
-    };
+//     const options = {
+//         method: 'GET',
+//         url: 'https://cis-automotive.p.rapidapi.com/salePriceHistogram',
+//         params: {
+//             modelName: modelName,
+//             brandName: brandName
+//         },
+//         headers: {
+//             'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
+//             'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
+//         }
+//     };
 
-    try {
-        const response = await axios.request(options);
-        console.log(response.data);
-        res.status(200).json({ data: response.data });
-    } catch (error) {
-        console.error(error);
-    }
-
-
-});
+//     try {
+//         const response = await axios.request(options);
+//         console.log(response.data);
+//         res.status(200).json({ data: response.data });
+//     } catch (error) {
+//         console.error(error);
+//     }
 
 
+// });
 
-app.post('/api/table', async (req, res, next) => {
+
+
+app.post('/api/homepage', async (req, res, next) => {
     // // incoming: region
     // // Processing: Calls topModels for top 10 cars, then gets the price for each using getPrice.
     // // outgoing: make, model, current price, popularity
@@ -186,23 +300,55 @@ app.post('/api/table', async (req, res, next) => {
 
 })
 
+// async function databaseRefresh
+
 const carPrices = async (brands) => {
     // var prices = []
-    var carData = null;
-    const db = client.db('carTypes');    
+    const db = client.db('carTypes');
+    const trucks = new Set(["Pickup"])
+    const suvs = new Set(["SUV", "Van/Minivan", "Wagon"])
+    const sedans = new Set([null, "Coupe", "Hatchback", "Sedan", "Convertible"])
+    var cars = [];
+    var type = '';
+    var carData = [];
     
     for (brand of brands) {
-        carData = await carPrice(brand, region);
-        carData = carData.map((car) => ({model: car["name"], price: car["median"]}))
+        cars = await carPrice(brand, region);
+        carData = []
+
+        for (car of cars) {
+            await delay(1500);
+            type = await getCarType(brand, car["name"]);
+
+            if (type != null) {
+                type = type.split(",")[0];
+
+                if (trucks.has(type)) {
+                    type = "Truck"
+                }
+                else if (suvs.has(type)) {
+                    type = "SUV"
+                }
+                else {
+                    console.log(type)
+                    type = 'Sedan'
+                }
+            }
+            else {
+                type = 'Sedan'
+            }
+
+            carData.push(({model: car["name"], price: car["median"], type: type}));
+        };
+          
         // prices.push(carData)
         if (carData && carData.length > 0){
             console.log("Inserting " + brand)
             db.collection(brand).insertMany(carData);
-            
         }
         else
             db.collection(brand).drop();
-        await delay(1010)
+        await delay(1500)
     }
 
     // return prices
@@ -220,7 +366,7 @@ function delay(time) {
 }
 
 const carPrice = async (brandName, region) => {
-    const axios = require('axios');
+    
 
     const options = {
         method: 'GET',
@@ -254,7 +400,7 @@ app.post('/api/carprice', async (req, res, next) => {
 });
 
 const getBrands = async () => {
-    const axios = require('axios');
+    
 
     const options = {
         method: 'GET',
