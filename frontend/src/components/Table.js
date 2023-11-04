@@ -60,7 +60,8 @@ const Table = () => {
     >
       <thead className="bg-light">
         <tr>
-          <th>Icon</th>
+          <th>Rank</th>
+          <th>Type</th>
           <th>Make</th>
           <th>Model</th>
           <th>Year</th>
@@ -70,8 +71,9 @@ const Table = () => {
       </thead>
       <tbody>
         {/* Template for table values */}
-        {newCars.map((car) => (
+        {newCars.map((car, index) => (
           <tr key={car.id}>
+            <td>{index+1}</td>
             <td>{car.Type}</td>
             <td>{car.Make}</td>
             <td>{car.Model}</td>
