@@ -351,7 +351,6 @@ app.post('/api/login', async (req, res, next) => {
 app.post('/api/homepage', async (req, res, next) => {
 
     var error = '';
-    const db = client.db('CarTypes');
     const region = req.body.region;
     
     // incoming: region
@@ -368,25 +367,30 @@ app.post('/api/homepage', async (req, res, next) => {
                 'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
             }
         };
-    
+        const db = client.db('carTypes');
+
         const response = await axios.request(options);
-        const cars = Object.values(response.data.data);
+        const cars = response.data.data;
         console.log(response.data.data);
 
         const collections = await db.listCollections().toArray();
         const matchedCars = [];
-
+        var i = 1;
         for (const car of cars) {
             for (const collection of collections) {
+                if(i > 10)
+                    break;
                 if (collection.name === car.brandName) {
                     const carData = await db.collection(collection.name).findOne({ model: car.modelName });
-                    console.log(carData);
-                    if(carData != null){
-                    car.brand = collection.name;
-                    car.model = carData.model;
-                    car.type = carData.type; 
-                    car.price = carData.price;
-                    matchedCars.push(car);
+                    if (carData) {
+                        const matchedCar = {
+                            brand: car.brandName,
+                            model: car.modelName,
+                            type: carData.type, 
+                            price: carData.price,
+                            rank: i++
+                        };
+                        matchedCars.push(matchedCar);
                     }
                 }
             }
