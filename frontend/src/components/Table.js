@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const Table = () => {
   return (
-      <table class="table table-hover align-middle mb-0 bg-white">
+      <table class="table table-hover align-middle mb-0 bg-white" style={{ marginTop: '30px'}}>
       <thead class="bg-light">
         <tr>
           <th>Icon</th>

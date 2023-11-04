@@ -1,3 +1,4 @@
+
 // Node.js Dependencies
 const express           = require('express');
 const bodyParser        = require('body-parser');
@@ -369,6 +370,7 @@ app.post('/api/homepage', async (req, res, next) => {
             'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
             'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
         }
+
     };
 
     try {
@@ -480,3 +482,60 @@ app.post('/api/makes', async (req, res, next) => {
 
 
 // });
+        };
+        
+        try {
+            const response = await axios.request(options);
+            // console.log(response.data)
+            cars = response.data.data
+            // console.log(typeof cars)
+            // console.log(response.data)
+            var newCars = cars.map(function(car) {
+                // create a new object with the new parameter and value
+                var newCar = {...car, price: 1}
+                // return the new object to the new array
+                return newCar;
+              });
+            
+            res.status(200).json({data: newCars});
+        } catch (error) {
+            console.error(error)
+            cars, error =  null, error
+        }
+
+})
+
+const carPrice = async(brandName, region) => {
+    const axios = require('axios');
+
+    const options = {
+      method: 'GET',
+      url: 'https://cis-automotive.p.rapidapi.com/salePrice',
+      params: {
+        brandName: brandName,
+        regionName: region
+      },
+      headers: {
+        'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
+        'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
+      }
+    };
+    
+    try {
+        const response = await axios.request(options);
+        // console.log(response.data);
+        return response
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+app.post('/api/carprice', async (req, res, next) => {
+
+    // // incoming: make, model
+    // // outgoing: sales histogram, average price
+    const { brandName, region } = req.body;
+    response = await carPrice(brandName, region)
+    res.status(200).json({data: response.data});
+
+});
