@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import MakeFilter from "./MakeFilter";
 
 const Table = () => {
   // Fetch table data here(fetch not working Nov 4)
@@ -54,39 +55,42 @@ const Table = () => {
   ]);
 
   return (
-    <table
-      className="table table-hover align-middle mb-0 bg-white"
-      style={{ marginTop: "30px" }}
-    >
-      <thead className="bg-light">
-        <tr>
-          <th>Icon</th>
-          <th>Make</th>
-          <th>Model</th>
-          <th>Year</th>
-          <th>Price</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {/* Template for table values */}
-        {newCars.map((car) => (
-          <tr key={car.id}>
-            <td>{car.Type}</td>
-            <td>{car.Make}</td>
-            <td>{car.Model}</td>
-            <td>{car.Year}</td>
-            <td>{car.Price}</td>
-            <td>
-              <FontAwesomeIcon
-                icon={faHeart}
-                style={{ color: "#ff0000", paddingLeft: "20px" }}
-              />
-            </td>
+    <>
+      <MakeFilter />
+      <table
+        className="table table-hover align-middle mb-0 bg-white"
+        style={{ marginTop: "30px" }}
+      >
+        <thead className="bg-light">
+          <tr>
+            <th>Icon</th>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Price</th>
+            <th>Actions</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {/* Template for table values */}
+          {newCars.map((car) => (
+            <tr key={car.id}>
+              <td>{car.Type}</td>
+              <td>{car.Make}</td>
+              <td>{car.Model}</td>
+              <td>{car.Year}</td>
+              <td>{car.Price}</td>
+              <td>
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  style={{ color: "#ff0000", paddingLeft: "20px" }}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 };
 
