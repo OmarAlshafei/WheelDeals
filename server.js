@@ -349,39 +349,54 @@ app.post('/api/login', async (req, res, next) => {
 });
 
 app.post('/api/homepage', async (req, res, next) => {
-    // // incoming: region
-    // // Processing: Calls topModels for top 10 cars, then gets the price for each using getPrice.
-    // // outgoing: make, model, current price, popularity
+
     var error = '';
-    var cars = [];
-    var brands = [];
-    var brandPrices = null;
-
+    const db = client.db('CarTypes');
+    const region = req.body.region;
+    
     // incoming: region
-    // outgoing: brand, model, condition (new)
-    const options = {
-        method: 'GET',
-        url: 'https://cis-automotive.p.rapidapi.com/topModels',
-        params: {
-            regionName: region,
-        },
-        headers: {
-            'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
-            'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
-        }
-    };
-
+    // outgoing: brand, model, type
     try {
+        const options = {
+            method: 'GET',
+            url: 'https://cis-automotive.p.rapidapi.com/topModels',
+            params: {
+                regionName: region,
+            },
+            headers: {
+                'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
+                'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
+            }
+        };
+    
+        const response = await axios.request(options);
+        const cars = Object.values(response.data.data);
+        console.log(response.data.data);
 
-        var newCars = cars.map(function (car) {
-            var newCar = { ...car, price: 1 }
-            return newCar;
-        });
+        const collections = await db.listCollections().toArray();
+        const matchedCars = [];
 
-        res.status(200).json({ data: newCars });
+        for (const car of cars) {
+            for (const collection of collections) {
+                if (collection.name === car.brandName) {
+                    const carData = await db.collection(collection.name).findOne({ model: car.modelName });
+                    console.log(carData);
+                    if(carData != null){
+                    car.brand = collection.name;
+                    car.model = carData.model;
+                    car.type = carData.type; 
+                    car.price = carData.price;
+                    matchedCars.push(car);
+                    }
+                }
+            }
+        }
+        
+        res.status(200).json({matchedCars});
+        
     } catch (error) {
-        console.error(error)
-        cars, error = null, error
+        console.error(error);
+        res.status(500).json({ error: 'Error' });
     }
 
 })
@@ -397,6 +412,21 @@ app.post('/api/makes', async (req, res, next) => {
     makeArr.sort();
 
     res.status(200).json(makeArr);
+});
+
+app.post('/api/models', async (req, res, next) => {
+    // incoming: make, model
+    // outgoing: histogram data, image, type, logo, price
+
+    var error = '';
+    const { make } = req.body;
+
+    var db = client.db('carTypes');
+    var models = await db.collection(make).find({}).toArray();
+    console.log(models);
+    models = models.map((model) => model["model"]);
+
+    res.status(200).json(models);
 });
 
 // comment
