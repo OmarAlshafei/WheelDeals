@@ -1,36 +1,36 @@
 import React, { useState, useEffect } from "react";
-//import Table from "./Table";
+import Table from "./Table";
 
 const MakeFilter = () => {
   // options array
-  const options = [
-    { Makes: "Make", value: "" },
-    { Makes: "Toyota" },
-    { Makes: "Lexus" },
-    { Makes: "BMW" },
-  ];
+  const [options, setOptions] = useState([]);
 
-  // Fetch makes API when they land the page
-  //   const app_name = "wheeldeals-d3e9615ad014";
-  //   function buildPath(route) {
-  //     if (process.env.NODE_ENV === "production") {
-  //       return "https://" + app_name + ".herokuapp.com/" + route;
-  //     } else {
-  //       return "http://localhost:9000/" + route;
-  //     }
-  //   }
-  //   const fetchData = async () => {
-  //     let res = await fetch(buildPath("api/makes"));
-  //     let data = await res.json();
-  //     console.log(data);
-  //   };
+  // Fetch makes API when they land the page, API returns an array of strings
+  const app_name = "wheeldeals-d3e9615ad014";
+  function buildPath(route) {
+    if (process.env.NODE_ENV === "production") {
+      return "https://" + app_name + ".herokuapp.com/" + route;
+    } else {
+      return "http://localhost:9000/" + route;
+    }
+  }
+  const fetchData = async () => {
+    let res = await fetch(buildPath("api/makes"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+    setOptions(await res.json());
+    // options.push(data);
+    // console.log(options);
+    console.log(options);
+  };
 
-  //   useEffect(() => {
-  //     fetchData();
-  //   }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   //   Set value for each make and change the table display based on the value
-  const [make, setMake] = useState("");
+  const [currentMake, setMake] = useState("");
 
   const handleChange = (event) => {
     setMake(event.target.value);
@@ -38,9 +38,9 @@ const MakeFilter = () => {
 
   return (
     <div>
-      <select value={make} onChange={handleChange}>
-        {options.map((option) => (
-          <option value={option.Makes}>{option.Makes}</option>
+      <select value={currentMake} onChange={handleChange}>
+        {options.map((option, index) => (
+          <option>{option}</option>
         ))}
       </select>
       {/* <Table make={make} /> */}

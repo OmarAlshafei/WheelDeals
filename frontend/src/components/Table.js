@@ -7,7 +7,7 @@ import ModelFilter from "./ModelFilter";
 import "./Table.css";
 
 const Table = () => {
-  // Fetch table data here(fetch not working Nov 4)
+  // // Fetch table data here(fetch not working Nov 4)
   // const app_name = "wheeldeals-d3e9615ad014";
   // function buildPath(route) {
   //   if (process.env.NODE_ENV === "production") {
@@ -58,13 +58,13 @@ const Table = () => {
 
   return (
     <>
-     <div className='filterRow'>
-      <MakeFilter/>
-      <ModelFilter style={{marginLeft: '20px'}}/>
-      {/* {make !== '' && (
+      <div className="filterRow">
+        <MakeFilter />
+        <ModelFilter />
+        {/* {make !== '' && (
         <ModelFilter style={{marginLeft: '20px'}}/>
       )} */}
-     </div>
+      </div>
       <table
         className="table table-hover align-middle mb-0 bg-white"
         style={{ marginTop: "30px" }}
