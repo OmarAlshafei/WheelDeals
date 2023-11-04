@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-//import Table from "./Table";
 
-const MakeFilter = () => {
+const ModelFilter = () => {
   // options array
   const options = [
-    { Makes: "Make", value: "" },
-    { Makes: "Toyota" },
-    { Makes: "Lexus" },
-    { Makes: "BMW" },
+    { Model: "Model", value: "" },
+    { Model: "A" },
+    { Model: "B" },
+    { Model: "C" },
   ];
 
   // Fetch makes API when they land the page
@@ -30,22 +29,21 @@ const MakeFilter = () => {
   //   }, []);
 
   //   Set value for each make and change the table display based on the value
-  const [make, setMake] = useState("");
+  const [model, setModel] = useState("");
 
   const handleChange = (event) => {
-    setMake(event.target.value);
+    setModel(event.target.value);
   };
 
   return (
     <div>
-      <select value={make} onChange={handleChange}>
+      <select value={model} onChange={handleChange}>
         {options.map((option) => (
-          <option value={option.Makes}>{option.Makes}</option>
+          <option value={option.Model}>{option.Model}</option>
         ))}
       </select>
-      {/* <Table make={make} /> */}
     </div>
   );
 };
 
-export default MakeFilter;
+export default ModelFilter;

@@ -3,6 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import MakeFilter from "./MakeFilter";
+import ModelFilter from "./ModelFilter";
+import "./Table.css";
 
 const Table = () => {
   // Fetch table data here(fetch not working Nov 4)
@@ -56,7 +58,13 @@ const Table = () => {
 
   return (
     <>
-      <MakeFilter />
+     <div className='filterRow'>
+      <MakeFilter/>
+      <ModelFilter style={{marginLeft: '20px'}}/>
+      {/* {make !== '' && (
+        <ModelFilter style={{marginLeft: '20px'}}/>
+      )} */}
+     </div>
       <table
         className="table table-hover align-middle mb-0 bg-white"
         style={{ marginTop: "30px" }}
