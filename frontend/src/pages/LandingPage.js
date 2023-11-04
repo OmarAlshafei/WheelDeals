@@ -42,7 +42,7 @@ const LandingPage = () => {
             onClick={() => setVisible(true)}
             className="intro-section-button"
           >
-            Join in
+            Sign in
           </button>
         </div>
 

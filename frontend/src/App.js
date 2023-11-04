@@ -20,7 +20,6 @@ function App() {
           <Navbar />
           <Route path="/home" component={HomePage} />
           <Route path="/signin" component={SigninPage} />
-          <Route path="/test" component={TestPage} />
           <Route path="/cards" component={TestPage} />
           <Route path="/account" component={AccountPage} />
           <Route path="/favorites" component={FavoritesPage} />
