@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
@@ -7,60 +7,47 @@ import ModelFilter from "./ModelFilter";
 import "./Table.css";
 
 const Table = () => {
-  // // Fetch table data here(fetch not working Nov 4)
-  // const app_name = "wheeldeals-d3e9615ad014";
-  // function buildPath(route) {
-  //   if (process.env.NODE_ENV === "production") {
-  //     return "https://" + app_name + ".herokuapp.com/" + route;
-  //   } else {
-  //     return "http://localhost:9000/" + route;
-  //   }
-  // }
-
-  // var make;
-  // var model;
-  // var year;
-  // var price;
-
-  // const fetchData = async () => {
-  //   let res = await fetch(buildPath("api/homepage"), {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //   });
-  //   setNewCars(await res.json());
-  //   console.log(newCars);
-  // };
-
-  // useEffect(() => {
-  // }, []);
-
   //Temporary template
-  const [newCars, setNewCars] = useState([
-    {
-      Type: "Truck",
-      Make: "Ford",
-      Model: "F-150",
-      Year: "2021",
-      Price: "50,000",
-      id: 1,
-    },
-    {
-      Type: "SUV",
-      Make: "Toyota",
-      Model: "CS350",
-      Year: "2023",
-      Price: "20,000",
-      id: 2,
-    },
-    {
-      Type: "Sedan",
-      Make: "Lexus",
-      Model: "F-150",
-      Year: "2021",
-      Price: "50,000",
-      id: 3,
-    },
-  ]);
+  //newCars is an arry of object
+  //setNewCars used to change the array value
+  const [newCars, setNewCars] = useState([]);
+
+  // Fetch table data here(fetch not working Nov 4)
+  const app_name = "wheeldeals-d3e9615ad014";
+  function buildPath(route) {
+    if (process.env.NODE_ENV === "production") {
+      return "https://" + app_name + ".herokuapp.com/" + route;
+    } else {
+      return "http://localhost:9000/" + route;
+    }
+  }
+
+  const fetchData = async () => {
+    try {
+      let res = await fetch(buildPath("api/homepage"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!res.ok) {
+        throw new Error(`Request failed with status: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (data.matchedCars) {
+        setNewCars(data.matchedCars);
+        console.log(data.matchedCars);
+      } else {
+        console.log("No 'matchedCars' found");
+      }
+    } catch (error) {
+      console.error("Error: " + error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -77,23 +64,22 @@ const Table = () => {
       >
         <thead className="bg-light">
           <tr>
-            <th>Icon</th>
-            <th>Make</th>
+            <th>Rank</th>
+            <th>Type</th>
+            <th>Brand</th>
             <th>Model</th>
-            <th>Year</th>
             <th>Price</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {/* Template for table values */}
           {newCars.map((car) => (
-            <tr key={car.id}>
-              <td>{car.Type}</td>
-              <td>{car.Make}</td>
-              <td>{car.Model}</td>
-              <td>{car.Year}</td>
-              <td>{car.Price}</td>
+            <tr>
+              <td>{car.rank}</td>
+              <td>{car.type}</td>
+              <td>{car.brand}</td>
+              <td>{car.model}</td>
+              <td>{car.price}</td>
               <td>
                 <FontAwesomeIcon
                   icon={faHeart}

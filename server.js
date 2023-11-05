@@ -1,35 +1,35 @@
 // Node.js Dependencies
-const express           = require('express');
-const bodyParser        = require('body-parser');
-const cors              = require('cors');
-const path              = require('node:path');
-const axios             = require('axios');
-const PORT              = process.env.PORT || 9000;
-const app               = express();
-const MongoClient       = require('mongodb').MongoClient;
-const passwordValidator = require('password-validator');
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const path = require("node:path");
+const axios = require("axios");
+const PORT = process.env.PORT || 9000;
+const app = express();
+const MongoClient = require("mongodb").MongoClient;
+const passwordValidator = require("password-validator");
 
 // Environment Variables
-require('dotenv').config();
+require("dotenv").config();
 const url = process.env.MONGODB_URL;
 const client = new MongoClient(url);
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 // Port Configurations
-client.connect()
-app.set('port', (process.env.PORT || 9000))
+client.connect();
+app.set("port", process.env.PORT || 9000);
 app.use(cors());
 app.use(bodyParser.json());
 
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('frontend/build'));
-    app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'));
-    });
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("frontend/build"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+  });
 }
 
 app.listen(PORT, () => {
-    console.log('Server listening on port ' + PORT);
+  console.log("Server listening on port " + PORT);
 });
 
 // Global Constants
@@ -41,73 +41,73 @@ const region = "REGION_STATE_FL";
 // outgoing: link to logo image (string)
 // used in: search API
 async function getBrandLogo(make) {
-    const options = {
-        method: 'GET',
-        url: 'https://autocomplete.clearbit.com/v1/companies/suggest',
-        params: {
-            query: make
-        }
-    };
+  const options = {
+    method: "GET",
+    url: "https://autocomplete.clearbit.com/v1/companies/suggest",
+    params: {
+      query: make,
+    },
+  };
 
-    try {
-        const response = await axios.request(options);
-        return response.data[0].logo;
-    } catch (error) {
-        console.error(error);
-    }
+  try {
+    const response = await axios.request(options);
+    return response.data[0].logo;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // incoming: make, model
 // outgoing: car type (string)
 // used in: databaseRefresh Function
 async function getCarType(make, model) {
-    const options = {
-    method: 'GET',
-    url: 'https://car-data1.p.rapidapi.com/cars',
+  const options = {
+    method: "GET",
+    url: "https://car-data1.p.rapidapi.com/cars",
     params: {
-        limit: '1',
-        page: '0',
-        make: make,
-        model: model
+      limit: "1",
+      page: "0",
+      make: make,
+      model: model,
     },
     headers: {
-        'X-RapidAPI-Key': API_KEY,
-        'X-RapidAPI-Host': 'car-data1.p.rapidapi.com'
-    }
-    };
+      "X-RapidAPI-Key": API_KEY,
+      "X-RapidAPI-Host": "car-data1.p.rapidapi.com",
+    },
+  };
 
-    try {
-        const response = await axios.request(options);
-        
-        return response.data[0].type;
-    } catch (error) {
-        console.error(error);
-    }
+  try {
+    const response = await axios.request(options);
+
+    return response.data[0].type;
+  } catch (error) {
+    console.error(error);
+  }
 }
-    
+
 // incoming: make, model
 // outgoing: histogramData (array of ints)
 // used in: search API
 async function getHistogramData(make, model) {
-    const options = {
-        method: 'GET',
-        url: 'https://cis-automotive.p.rapidapi.com/salePriceHistogram',
-        params: {
-          modelName: model,
-          brandName: make
-        },
-        headers: {
-          'X-RapidAPI-Key': API_KEY,
-          'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
-        }
-      };
-      
-      try {
-          const response = await axios.request(options);
-          return response.data.data;
-      } catch (error) {
-          console.error(error);
-      }
+  const options = {
+    method: "GET",
+    url: "https://cis-automotive.p.rapidapi.com/salePriceHistogram",
+    params: {
+      modelName: model,
+      brandName: make,
+    },
+    headers: {
+      "X-RapidAPI-Key": API_KEY,
+      "X-RapidAPI-Host": "cis-automotive.p.rapidapi.com",
+    },
+  };
+
+  try {
+    const response = await axios.request(options);
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 /* 
@@ -120,232 +120,210 @@ async function getHistogramData(make, model) {
         - One lowercase character
 */
 function isComplex(password) {
-    var schema = new passwordValidator();
+  var schema = new passwordValidator();
 
-    schema.is().min(8)
-    if (!schema.validate(password)) {
-        return "Password is too short. 8 or more characters."
-    }
-    schema.is().max(100)
-    if (!schema.validate(password)) {
-        return "Password is too long. 100 or less characters."
-    }
-    schema.has().uppercase()
-    if (!schema.validate(password)) {
-        return "Password requires at least one uppercase character."
-    }
-    schema.has().lowercase()
-    if (!schema.validate(password)) {
-        return "Password requires at least one lower case character."
-    }
-    return "Valid Password"
+  schema.is().min(8);
+  if (!schema.validate(password)) {
+    return "Password is too short. 8 or more characters.";
+  }
+  schema.is().max(100);
+  if (!schema.validate(password)) {
+    return "Password is too long. 100 or less characters.";
+  }
+  schema.has().uppercase();
+  if (!schema.validate(password)) {
+    return "Password requires at least one uppercase character.";
+  }
+  schema.has().lowercase();
+  if (!schema.validate(password)) {
+    return "Password requires at least one lower case character.";
+  }
+  return "Valid Password";
 }
 
 // Refreshes cars database
 async function databaseRefresh() {
-    wipeDatabase();
-    await delay(1010);
-    const brands = await getBrands()
-    insertBrands(brands)
-    await delay(1010)
-    carPrices(brands);
+  wipeDatabase();
+  await delay(1010);
+  const brands = await getBrands();
+  insertBrands(brands);
+  await delay(1010);
+  carPrices(brands);
 }
 
 // TODO: rename this
 // Takes in a list of brands and fills database
 const carPrices = async (brands) => {
-    const db = client.db('carTypes');
-    const trucks = new Set(["Pickup"])
-    const suvs = new Set(["SUV", "Van/Minivan", "Wagon"])
-    const sedans = new Set([null, "Coupe", "Hatchback", "Sedan", "Convertible"])
-    var cars = [];
-    var type = '';
-    var carData = [];
-    
-    for (brand of brands) {
-        cars = await carPrice(brand, region);
-        carData = []
+  const db = client.db("carTypes");
+  const trucks = new Set(["Pickup"]);
+  const suvs = new Set(["SUV", "Van/Minivan", "Wagon"]);
+  const sedans = new Set([null, "Coupe", "Hatchback", "Sedan", "Convertible"]);
+  var cars = [];
+  var type = "";
+  var carData = [];
 
-        for (car of cars) {
-            await delay(1500);
-            type = await getCarType(brand, car["name"]);
+  for (brand of brands) {
+    cars = await carPrice(brand, region);
+    carData = [];
 
-            if (type != null) {
-                type = type.split(",")[0];
+    for (car of cars) {
+      await delay(1500);
+      type = await getCarType(brand, car["name"]);
 
-                if (trucks.has(type)) {
-                    type = "Truck"
-                }
-                else if (suvs.has(type)) {
-                    type = "SUV"
-                }
-                else {
-                    console.log(type)
-                    type = 'Sedan'
-                }
-            }
-            else {
-                type = 'Sedan'
-            }
+      if (type != null) {
+        type = type.split(",")[0];
 
-            carData.push(({model: car["name"], price: car["median"], type: type}));
-        };
-          
-        // prices.push(carData)
-        if (carData && carData.length > 0){
-            console.log("Inserting " + brand)
-            db.collection(brand).insertMany(carData);
+        if (trucks.has(type)) {
+          type = "Truck";
+        } else if (suvs.has(type)) {
+          type = "SUV";
+        } else {
+          console.log(type);
+          type = "Sedan";
         }
-        else
-            db.collection(brand).drop();
-        await delay(1500)
+      } else {
+        type = "Sedan";
+      }
+
+      carData.push({ model: car["name"], price: car["median"], type: type });
     }
 
-    // return prices
-    // console.log(prices)
-}
+    // prices.push(carData)
+    if (carData && carData.length > 0) {
+      console.log("Inserting " + brand);
+      db.collection(brand).insertMany(carData);
+    } else db.collection(brand).drop();
+    await delay(1500);
+  }
+
+  // return prices
+  // console.log(prices)
+};
 
 // returns a promise that resolves after a given time
 function delay(time) {
-    return new Promise(resolve => {
-        setTimeout(resolve, time);
-    });
+  return new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
 }
 
 const carPrice = async (brandName, region) => {
-    const options = {
-        method: 'GET',
-        url: 'https://cis-automotive.p.rapidapi.com/salePrice',
-        params: {
-            brandName: brandName,
-            regionName: region
-        },
-        headers: {
-            'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
-            'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
-        }
-    };
+  const options = {
+    method: "GET",
+    url: "https://cis-automotive.p.rapidapi.com/salePrice",
+    params: {
+      brandName: brandName,
+      regionName: region,
+    },
+    headers: {
+      "X-RapidAPI-Key": process.env.REACT_APP_API_KEY,
+      "X-RapidAPI-Host": "cis-automotive.p.rapidapi.com",
+    },
+  };
 
-    try {
-        const response = await axios.request(options);
-        return response.data.data;
-    } catch (error) {
-        console.error(error);
-    }
-}
+  try {
+    const response = await axios.request(options);
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const getBrands = async () => {
-    const options = {
-        method: 'GET',
-        url: 'https://cis-automotive.p.rapidapi.com/getBrands',
-        headers: {
-            'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
-            'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
-        }
-    };
+  const options = {
+    method: "GET",
+    url: "https://cis-automotive.p.rapidapi.com/getBrands",
+    headers: {
+      "X-RapidAPI-Key": process.env.REACT_APP_API_KEY,
+      "X-RapidAPI-Host": "cis-automotive.p.rapidapi.com",
+    },
+  };
 
-    try {
-        const response = await axios.request(options);
-        return response.data.data
-    } catch (error) {
-        console.error(error);
-    }
-}
+  try {
+    const response = await axios.request(options);
+    return response.data.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const wipeDatabase = () => {
-    const db = client.db('carTypes');
-    db.dropDatabase();
-}
-
+  const db = client.db("carTypes");
+  db.dropDatabase();
+};
 
 const insertBrands = (brands) => {
-    const db = client.db('carTypes');
-    for (brand of brands) {
-        db.createCollection(brand)
-    }
-}
+  const db = client.db("carTypes");
+  for (brand of brands) {
+    db.createCollection(brand);
+  }
+};
 
 // APIs
-app.post('/api/search', async (req, res, next) => {
-    // incoming: make, model
-    // outgoing: histogram data, image, type, logo, price
+app.post("/api/search", async (req, res, next) => {
+  // incoming: make, model
+  // outgoing: histogram data, image, type, logo, price
 
-    var error = '';
-    const { make, model } = req.body;
-    const logo = await getBrandLogo(make);
-    const histogramData = await getHistogramData(make, model);
+  var error = "";
+  const { make, model } = req.body;
+  const logo = await getBrandLogo(make);
+  const histogramData = await getHistogramData(make, model);
 
-    var db = client.db('carTypes');
-    const typesEntry = await db.collection(make).find({ model: model }).toArray();
+  var db = client.db("carTypes");
+  const typesEntry = await db.collection(make).find({ model: model }).toArray();
 
-    db = client.db('carPics');
-    const pictureEntry = await db.collection(make).find({ model: model }).toArray();
+  db = client.db("carPics");
+  const pictureEntry = await db
+    .collection(make)
+    .find({ model: model })
+    .toArray();
 
-    var price = -1;
-    var picture = '';
-    var type = '';
-    if (typesEntry.length > 0) {
-        price = typesEntry[0].price;
-        type = typesEntry[0].type;
-    }
+  var price = -1;
+  var picture = "";
+  var type = "";
+  if (typesEntry.length > 0) {
+    price = typesEntry[0].price;
+    type = typesEntry[0].type;
+  }
 
-    if (pictureEntry.length > 0) {
-        picture = pictureEntry[0].picture;
-    }
+  if (pictureEntry.length > 0) {
+    picture = pictureEntry[0].picture;
+  }
 
-    var ret = { image: picture, price: price, brandLogo: logo, type: type, histogramData: histogramData };
-    res.status(200).json(ret);
+  var ret = {
+    image: picture,
+    price: price,
+    brandLogo: logo,
+    type: type,
+    histogramData: histogramData,
+  };
+  res.status(200).json(ret);
 });
 
-app.post('/api/register', async (req, res, next) => {
-    // incoming: firstName, lastName, userName, email, password
-    // outgoing: message, error
-    var error = '';
-    const { firstName, lastName, userName, email, password } = req.body;
-    var validation = isComplex(password);
+app.post("/api/register", async (req, res, next) => {
+  // incoming: firstName, lastName, userName, email, password
+  // outgoing: message, error
+  var error = "";
+  const { firstName, lastName, userName, email, password } = req.body;
+  var validation = isComplex(password);
 
-    if (validation != "Valid Password") {
-        ret = { message: '', error: validation }
-        res.status(200).json(ret);
-    }
-    else {
-        const db = client.db('cop4331');
-        const results = await
-            db.collection('Users').insertOne(
-                {
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    userName: userName,
-                    password: password,
-                }
-            );
-        // console.log(results)
-
-        var ret = { message: 'User Added Successfully', error: '' };
-        res.status(200).json(ret);
-    }
-});
-
-app.post('/api/login', async (req, res, next) => {
-    // incoming: login, password
-    // outgoing: id, firstName, lastName, error
-    var error = '';
-    const { userName, password } = req.body;
-    const db = client.db('cop4331');
-    const results = await db.collection('Users').find({ userName: userName, password: password }).toArray();
-    var id = -1;
-    var fn = '';
-    var ln = '';
-    var em = '';
-    if (results.length > 0) {
-        id = results[0]._id;
-        fn = results[0].firstName;
-        ln = results[0].lastName;
-        em = results[0].email;
-    }
-    var ret = { _id: id, firstName: fn, lastName: ln, email: em, error: '' };
+  if (validation != "Valid Password") {
+    ret = { message: "", error: validation };
     res.status(200).json(ret);
+  } else {
+    const db = client.db("cop4331");
+    const results = await db.collection("Users").insertOne({
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      userName: userName,
+      password: password,
+    });
+    // console.log(results)
+
+    var ret = { message: "User Added Successfully", error: "" };
+    res.status(200).json(ret);
+  }
 });
 
 app.post('/api/homepage', async (req, res, next) => {
@@ -403,19 +381,18 @@ app.post('/api/homepage', async (req, res, next) => {
         res.status(500).json({ error: 'Error' });
     }
 
-})
+app.post("/api/makes", async (req, res, next) => {
+  // incoming: N/A
+  // outgoing: json of all the makes
+  var error = "";
+  const db = client.db("carTypes");
+  console.log("test");
 
-app.post('/api/makes', async (req, res, next) => {
-    // incoming: N/A
-    // outgoing: json of all the makes
-    var error = '';
-    const db = client.db('carTypes');
+  const collections = await db.listCollections().toArray();
+  const makeArr = collections.map((col) => col.name);
+  makeArr.sort();
 
-    const collections = await db.listCollections().toArray();
-    const makeArr = collections.map((col) => col.name);
-    makeArr.sort();
-
-    res.status(200).json(makeArr);
+  res.status(200).json(makeArr);
 });
 
 app.post('/api/models', async (req, res, next) => {
@@ -466,11 +443,11 @@ app.post('/api/models', async (req, res, next) => {
 // });
 
 // const insertCarData = (brand, carData) => {
-    
+
 //     const db = client.db('carTypes');
 //     // console.log(carData[brand])
 //     if (carData != null) {
-        
+
 //     }
 //     // console.log(prices)
 //     // return prices
@@ -488,8 +465,6 @@ app.post('/api/models', async (req, res, next) => {
 //     // // incoming: make, model
 //     // // outgoing: sales histogram, average price
 //     const { modelName, brandName } = req.body;
-
-    
 
 //     const options = {
 //         method: 'GET',
@@ -511,6 +486,5 @@ app.post('/api/models', async (req, res, next) => {
 //     } catch (error) {
 //         console.error(error);
 //     }
-
 
 // });
