@@ -22,10 +22,16 @@ const Table = () => {
   // var year;
   // var price;
 
+  // const fetchData = async () => {
+  //   let res = await fetch(buildPath("api/homepage"), {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //   });
+  //   setNewCars(await res.json());
+  //   console.log(newCars);
+  // };
+
   // useEffect(() => {
-  //   fetch(buildPath("api/homepage"))
-  //     .then((response) => response.json())
-  //     .then((data) => console.log(data));
   // }, []);
 
   //Temporary template

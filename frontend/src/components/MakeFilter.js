@@ -15,6 +15,7 @@ const MakeFilter = () => {
     }
   }
   const fetchData = async () => {
+    try{
     let res = await fetch(buildPath("api/makes"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -22,7 +23,11 @@ const MakeFilter = () => {
     setOptions(await res.json());
     // options.push(data);
     // console.log(options);
-    console.log(options);
+    //console.log(options);
+    } catch (error) {
+      console.log("error");
+      return;
+    }
   };
 
   useEffect(() => {
