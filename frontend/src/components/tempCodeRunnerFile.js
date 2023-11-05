@@ -1,25 +1,30 @@
 import React, { useState, useEffect } from "react";
-import Table from "./Table";
-import ModelFilter from "./ModelFilter";
 
-const MakeFilter = () => {
+const ModelFilter = (props) => {
+  const currentMake = props.currentMake;
+  console.log(currentMake);
+
+  // options array
   let [options, setOptions] = useState([]);
 
+  // Fetch makes API when they land the page, API returns an array of strings
   const app_name = "wheeldeals-d3e9615ad014";
   function buildPath(route) {
     if (process.env.NODE_ENV === "production") {
       return "https://" + app_name + ".herokuapp.com/" + route;
     } else {
-      return "http://localhost:9000/" + route;
+      return "http://localhost:5000/" + route;
     }
   }
   const fetchData = async () => {
     try {
-      let res = await fetch(buildPath("api/makes"), {
+      let res = await fetch(buildPath("api/models"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ make: currentMake }),
       });
       setOptions(await res.json());
+      //console.log(options);
     } catch (error) {
       console.log("error");
       return;
@@ -28,24 +33,24 @@ const MakeFilter = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [currentMake]);
 
-  const [currentMake, setMake] = useState("");
+  //   Set value for each make and change the table display based on the value
+  const [model, setModel] = useState("");
 
   const handleChange = (event) => {
-    setMake(event.target.value);
+    setModel(event.target.value);
   };
 
   return (
     <div>
-      <select value={currentMake} onChange={handleChange}>
-        {options.map((option, index) => (
+      <select value={model} onChange={handleChange}>
+        {options.map((option) => (
           <option>{option}</option>
         ))}
       </select>
-      <ModelFilter currentMake={currentMake} />
     </div>
   );
 };
 
-export default MakeFilter;
+export default ModelFilter;

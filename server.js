@@ -329,7 +329,8 @@ app.post("/api/register", async (req, res, next) => {
 app.post('/api/homepage', async (req, res, next) => {
 
     var error = '';
-    const region = req.body.region;
+    // const region = req.body.region;
+    const region = 'REGION_STATE_FL';
     
     // incoming: region
     // outgoing: brand, model, type
@@ -345,7 +346,7 @@ app.post('/api/homepage', async (req, res, next) => {
                 'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
             }
         };
-        const db = client.db('carTypes');
+        const db = client.db("carTypes");
 
         const response = await axios.request(options);
         const cars = response.data.data;
@@ -356,8 +357,8 @@ app.post('/api/homepage', async (req, res, next) => {
         var i = 1;
         for (const car of cars) {
             for (const collection of collections) {
-                if(i > 10)
-                    break;
+                // if(i > 10)
+                //     break;
                 if (collection.name === car.brandName) {
                     const carData = await db.collection(collection.name).findOne({ model: car.modelName });
                     if (carData) {
@@ -380,7 +381,7 @@ app.post('/api/homepage', async (req, res, next) => {
         console.error(error);
         res.status(500).json({ error: 'Error' });
     }
-
+  });
 app.post("/api/makes", async (req, res, next) => {
   // incoming: N/A
   // outgoing: json of all the makes
@@ -410,81 +411,3 @@ app.post('/api/models', async (req, res, next) => {
     res.status(200).json(models);
 });
 
-// comment
-
-// Archive
-
-// async function getType(make, model) {
-//     const options = {
-//         method: 'GET',
-//         url: 'https://autocomplete.clearbit.com/v1/companies/suggest',
-//         params: {
-//             query: make
-//         }
-//     };
-
-//     try {
-//         const response = await axios.request(options);
-//         // console.log(response.data[0].logo);
-//         return response.data[0].logo;
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
-
-// app.post('/api/carprice', async (req, res, next) => {
-
-//     // // incoming: make, model
-//     // // outgoing: sales histogram, average price
-//     const { brandName, region } = req.body;
-//     response = await carPrice(brandName, region)
-//     res.status(200).json({ data: response.data });
-
-// });
-
-// const insertCarData = (brand, carData) => {
-
-//     const db = client.db('carTypes');
-//     // console.log(carData[brand])
-//     if (carData != null) {
-
-//     }
-//     // console.log(prices)
-//     // return prices
-// }
-
-// const formatPrice = (cars, modelName) => {
-//     for (car of cars) {
-//         if (car['name'] === modelName) {
-//             return car['median']
-//         }
-//     }
-// }
-
-// app.post('/api/pricechart', async (req, res, next) => {
-//     // // incoming: make, model
-//     // // outgoing: sales histogram, average price
-//     const { modelName, brandName } = req.body;
-
-//     const options = {
-//         method: 'GET',
-//         url: 'https://cis-automotive.p.rapidapi.com/salePriceHistogram',
-//         params: {
-//             modelName: modelName,
-//             brandName: brandName
-//         },
-//         headers: {
-//             'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
-//             'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
-//         }
-//     };
-
-//     try {
-//         const response = await axios.request(options);
-//         console.log(response.data);
-//         res.status(200).json({ data: response.data });
-//     } catch (error) {
-//         console.error(error);
-//     }
-
-// });
