@@ -8,7 +8,7 @@ import Navbar from "./components/Navbar";
 import AccountPage from "./pages/AccountPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import LandingPage from "./pages/LandingPage";
-import Modal from "./components/Modal";
+import CarDetail from "./pages/CarDetail";
 
 function App() {
   return (
@@ -20,6 +20,7 @@ function App() {
           <Navbar />
           <Route path="/home" component={HomePage} />
           <Route path="/signin" component={SigninPage} />
+          <Route path="/cardetail" component={CarDetail} />
           <Route path="/cards" component={TestPage} />
           <Route path="/account" component={AccountPage} />
           <Route path="/favorites" component={FavoritesPage} />

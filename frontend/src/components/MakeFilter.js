@@ -40,6 +40,7 @@ const MakeFilter = () => {
   return (
     <div className="filtersContainer">
       <select value={currentMake} onChange={handleChange}>
+        <option value="">Select a make</option>
         {options.map((option, index) => (
           <option>{option}</option>
         ))}
