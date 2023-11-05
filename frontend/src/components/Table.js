@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import MakeFilter from "./MakeFilter";
-import ModelFilter from "./ModelFilter";
 import "./Table.css";
 
 const Table = () => {
@@ -44,9 +43,7 @@ const Table = () => {
 
   return (
     <>
-      <div className="filterRow">
-        <MakeFilter />
-      </div>
+    <h1 className="tableTitle">Top popular cars</h1>
       <table className="table table-hover align-middle mb-0 bg-white" style={{ marginTop: "30px" }}>
         <thead className="bg-light">
           <tr>

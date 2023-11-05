@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Table from "./Table";
 import ModelFilter from "./ModelFilter";
+import "./Filter.css";
 
 const MakeFilter = () => {
   let [options, setOptions] = useState([]);
@@ -37,7 +38,7 @@ const MakeFilter = () => {
   };
 
   return (
-    <div>
+    <div className="filtersContainer">
       <select value={currentMake} onChange={handleChange}>
         {options.map((option, index) => (
           <option>{option}</option>

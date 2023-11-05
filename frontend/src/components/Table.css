@@ -1,7 +1,4 @@
-.filterRow
-{
-    display:flex;
-    flex-direction:row;
-    
+.tableTitle{
+    text-align: center;
+    margin-top: 20px;
 }
-
