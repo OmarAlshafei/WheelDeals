@@ -1,32 +1,39 @@
 import React, { useState, useEffect } from "react";
 
-const ModelFilter = () => {
+const ModelFilter = (props) => {
+  const currentMake = props.currentMake;
+  console.log(currentMake);
+
   // options array
-  const options = [
-    { Model: "Model", value: "" },
-    { Model: "A" },
-    { Model: "B" },
-    { Model: "C" },
-  ];
+  let [options, setOptions] = useState([]);
 
-  // Fetch makes API when they land the page
-  //   const app_name = "wheeldeals-d3e9615ad014";
-  //   function buildPath(route) {
-  //     if (process.env.NODE_ENV === "production") {
-  //       return "https://" + app_name + ".herokuapp.com/" + route;
-  //     } else {
-  //       return "http://localhost:9000/" + route;
-  //     }
-  //   }
-  //   const fetchData = async () => {
-  //     let res = await fetch(buildPath("api/makes"));
-  //     let data = await res.json();
-  //     console.log(data);
-  //   };
+  // Fetch makes API when they land the page, API returns an array of strings
+  const app_name = "wheeldeals-d3e9615ad014";
+  function buildPath(route) {
+    if (process.env.NODE_ENV === "production") {
+      return "https://" + app_name + ".herokuapp.com/" + route;
+    } else {
+      return "http://localhost:9000/" + route;
+    }
+  }
+  const fetchData = async () => {
+    try {
+      let res = await fetch(buildPath("api/models"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ make: currentMake }),
+      });
+      setOptions(await res.json());
+      //console.log(options);
+    } catch (error) {
+      console.log("error");
+      return;
+    }
+  };
 
-  //   useEffect(() => {
-  //     fetchData();
-  //   }, []);
+  useEffect(() => {
+    fetchData();
+  }, [currentMake]);
 
   //   Set value for each make and change the table display based on the value
   const [model, setModel] = useState("");
@@ -39,7 +46,7 @@ const ModelFilter = () => {
     <div>
       <select value={model} onChange={handleChange}>
         {options.map((option) => (
-          <option value={option.Model}>{option.Model}</option>
+          <option>{option}</option>
         ))}
       </select>
     </div>

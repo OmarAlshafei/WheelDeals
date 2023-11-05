@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Table from "./Table";
+import ModelFilter from "./ModelFilter";
 
 const MakeFilter = () => {
   // options array
-  const [options, setOptions] = useState([]);
+  let [options, setOptions] = useState([]);
 
   // Fetch makes API when they land the page, API returns an array of strings
   const app_name = "wheeldeals-d3e9615ad014";
@@ -21,8 +22,6 @@ const MakeFilter = () => {
         headers: { "Content-Type": "application/json" },
       });
       setOptions(await res.json());
-      // options.push(data);
-      // console.log(options);
       //console.log(options);
     } catch (error) {
       console.log("error");
@@ -48,7 +47,7 @@ const MakeFilter = () => {
           <option>{option}</option>
         ))}
       </select>
-      {/* <Table make={make} /> */}
+      <ModelFilter currentMake={currentMake} />
     </div>
   );
 };

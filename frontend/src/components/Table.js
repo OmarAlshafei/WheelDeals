@@ -53,7 +53,7 @@ const Table = () => {
     <>
       <div className="filterRow">
         <MakeFilter />
-        <ModelFilter />
+        {/* <ModelFilter /> */}
         {/* {make !== '' && (
         <ModelFilter style={{marginLeft: '20px'}}/>
       )} */}
