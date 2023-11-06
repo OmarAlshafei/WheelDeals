@@ -474,6 +474,25 @@ app.post('/api/addfavorite', async (req, res, next) => {
     res.status(200).json(ret);
 })
 
+app.post('/api/removefavorite', async (req, res, next) => {
+    // incoming: userId, make, model
+    // processing: removes make and model from user's carArr field
+    // outgoing: message, error
+    var error = '';
+    const { id, make, model } = req.body;
+
+    const db = client.db('cop4331');
+    var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
+    carList = Object.values(results["carsArr"])
+    carList = carList.filter((car) => (car["make"] != make || car["model"] != model))
+    console.log(carList)
+
+    await db.collection("Users").updateOne({ _id : new ObjectId(id)}, {$set: {carsArr: carList}});
+
+    var ret = { message: "Favorite removed successfully", error: '' };
+    res.status(200).json(ret);
+})
+
 // comment
 
 // Archive
