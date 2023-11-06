@@ -8,6 +8,7 @@ const PORT              = process.env.PORT || 9000;
 const app               = express();
 const MongoClient       = require('mongodb').MongoClient;
 const passwordValidator = require('password-validator');
+const ObjectId = require("mongodb").ObjectId;
 
 // Environment Variables
 require('dotenv').config();
@@ -432,6 +433,46 @@ app.post('/api/models', async (req, res, next) => {
 
     res.status(200).json(models);
 });
+
+app.post('/api/getfavorites', async (req, res, next) => {
+    // incoming: userId
+    // outgoing: favorites
+    var error = '';
+    const { id } = req.body;
+    var carData = [];
+
+    const db = client.db('cop4331');
+    var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
+    results = Object.values(results["carsArr"])
+
+    const carPromises = results.map(async(car) => (
+        await client.db('carTypes').collection(car["make"]).findOne({ model : car["model"]})
+    ))
+
+    const carDetails = await Promise.all(carPromises);
+    carData = carDetails;
+
+    var ret = { favorites: carData, error: '' };
+    res.status(200).json(ret);
+})
+
+app.post('/api/addfavorite', async (req, res, next) => {
+    // incoming: userId, make, model
+    // processing: adding make and model to user's carArr field
+    // outgoing: message, error
+    var error = '';
+    const { id, make, model } = req.body;
+
+    const db = client.db('cop4331');
+    var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
+    carList = Object.values(results["carsArr"])
+    carList.push({make: make, model: model})
+
+    await db.collection("Users").updateOne({ _id : new ObjectId(id)}, {$set: {carsArr: carList}});
+
+    var ret = { message: "Favorite added successfully", error: '' };
+    res.status(200).json(ret);
+})
 
 // comment
 
