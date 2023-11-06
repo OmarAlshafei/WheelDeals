@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
-import MakeFilter from "./MakeFilter";
+import HeartIcon from "./HeartIcon";
 import "./Table.css";
 
 const Table = () => {
@@ -52,7 +52,7 @@ const Table = () => {
             <th>Brand</th>
             <th>Model</th>
             <th>Price</th>
-            <th>Actions</th>
+            <th>Favorite</th>
           </tr>
         </thead>
         <tbody>
@@ -64,7 +64,7 @@ const Table = () => {
               <td>{car.model}</td>
               <td>{car.price}</td>
               <td>
-                <FontAwesomeIcon icon={faHeart} style={{ color: "#ff0000", paddingLeft: "20px" }} />
+                <HeartIcon />
               </td>
             </tr>
           ))}
