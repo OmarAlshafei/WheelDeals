@@ -327,6 +327,44 @@ app.post("/api/register", async (req, res, next) => {
   }
 });
 
+app.post('/api/login', async (req, res, next) => {
+  // incoming: login, password
+  // outgoing: id, firstName, lastName, error
+  var error = '';
+  const { userName, password, jwtToken } = req.body;
+  console.log(userName, password)
+  
+  const db = client.db('cop4331');
+  const results = await db.collection('Users').find({ userName: userName, password: password }).toArray();
+  var id = -1;
+  var fn = '';
+  var ln = '';
+  var em = '';
+  if (results.length > 0) {
+      id = results[0]._id;
+      fn = results[0].firstName;
+      ln = results[0].lastName;
+      em = results[0].email;
+
+      try
+        {
+          const token = require("./createJWT.js");
+          ret = token.createToken( fn, ln, id, em );
+          // console.log(ret)
+        }
+        catch(e)
+        {
+          ret = {error:e.message};
+        }
+  }
+  else
+  {
+  ret = {error:"Login/Password incorrect"};
+  console.log("Password incorrect")
+  }
+
+  res.status(200).json(ret);
+});
 app.post('/api/homepage', async (req, res, next) => {
 
     var error = '';
@@ -383,6 +421,7 @@ app.post('/api/homepage', async (req, res, next) => {
         res.status(500).json({ error: 'Error' });
     }
   });
+
 app.post("/api/makes", async (req, res, next) => {
   // incoming: N/A
   // outgoing: json of all the makes

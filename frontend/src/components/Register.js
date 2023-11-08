@@ -8,21 +8,15 @@ const Register = (props) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
-  const app_name = "wheeldeals-d3e9615ad014";
-  function buildPath(route) {
-    if (process.env.NODE_ENV === "production") {
-      return "https://" + app_name + ".herokuapp.com/" + route;
-    } else {
-      return "http://localhost:9000/" + route;
-    }
-  }
+
 
   const doRegister = async (event) => {
+    var bp = require('./Path.js');
     event.preventDefault();
     var obj = { firstName, lastName, userName, email, password };
     console.log(obj);
     try {
-      let response = await fetch(buildPath("api/register"), {
+      let response = await fetch(bp.buildPath("api/register"), {
         method: "POST",
         body: JSON.stringify(obj),
         headers: { "Content-Type": "application/json" },
