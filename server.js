@@ -264,12 +264,39 @@ const insertBrands = (brands) => {
 app.post("/api/search", async (req, res, next) => {
   // incoming: make, model
   // outgoing: histogram data, image, type, logo, price
-
+  var token = require('./createJWT.js');
   var error = "";
-  const { make, model } = req.body;
+  const { make, model, jwtToken } = req.body;
+
+  try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+  
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
   const logo = await getBrandLogo(make);
   const histogramData = await getHistogramData(make, model);
-
   var db = client.db("carTypes");
   const typesEntry = await db.collection(make).find({ model: model }).toArray();
 
@@ -304,6 +331,7 @@ app.post("/api/search", async (req, res, next) => {
 app.post("/api/register", async (req, res, next) => {
   // incoming: firstName, lastName, userName, email, password
   // outgoing: message, error
+  // var token = require('./createJWT.js');
   var error = "";
   const { firstName, lastName, userName, email, password } = req.body;
   var validation = isComplex(password);
@@ -319,10 +347,11 @@ app.post("/api/register", async (req, res, next) => {
       email: email,
       userName: userName,
       password: password,
+      carsArr: []
     });
     // console.log(results)
 
-    var ret = { message: "User Added Successfully", error: "" };
+    var ret = {message: "User Added Successfully", error: "" };
     res.status(200).json(ret);
   }
 });
@@ -330,9 +359,10 @@ app.post("/api/register", async (req, res, next) => {
 app.post('/api/login', async (req, res, next) => {
   // incoming: login, password
   // outgoing: id, firstName, lastName, error
+  var token = require('./createJWT.js');
   var error = '';
   const { userName, password, jwtToken } = req.body;
-  console.log(userName, password)
+  // console.log(userName, password)
   
   const db = client.db('cop4331');
   const results = await db.collection('Users').find({ userName: userName, password: password }).toArray();
@@ -365,69 +395,126 @@ app.post('/api/login', async (req, res, next) => {
 
   res.status(200).json(ret);
 });
+
 app.post('/api/homepage', async (req, res, next) => {
+  var token = require('./createJWT.js');
+  var error = '';
+  // const region = req.body.region;
+  const region = 'REGION_STATE_FL';
+  const {jwtToken } = req.body;
 
-    var error = '';
-    // const region = req.body.region;
-    const region = 'REGION_STATE_FL';
-    
-    // incoming: region
-    // outgoing: brand, model, type
-    try {
-        const options = {
-            method: 'GET',
-            url: 'https://cis-automotive.p.rapidapi.com/topModels',
-            params: {
-                regionName: region,
-            },
-            headers: {
-                'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
-                'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
-            }
-        };
-        const db = client.db("carTypes");
-
-        const response = await axios.request(options);
-        const cars = response.data.data;
-        console.log(response.data.data);
-
-        const collections = await db.listCollections().toArray();
-        const matchedCars = [];
-        var i = 1;
-        for (const car of cars) {
-            for (const collection of collections) {
-                // if(i > 10)
-                //     break;
-                if (collection.name === car.brandName) {
-                    const carData = await db.collection(collection.name).findOne({ model: car.modelName });
-                    if (carData) {
-                        const matchedCar = {
-                            brand: car.brandName,
-                            model: car.modelName,
-                            type: carData.type, 
-                            price: carData.price,
-                            rank: i++
-                        };
-                        matchedCars.push(matchedCar);
-                    }
-                }
-            }
+  try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
         }
-        
-        res.status(200).json({matchedCars});
-        
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error' });
-    }
-  });
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+  
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+  
+  // incoming: region
+  // outgoing: brand, model, type
+  try {
+      const options = {
+          method: 'GET',
+          url: 'https://cis-automotive.p.rapidapi.com/topModels',
+          params: {
+              regionName: region,
+          },
+          headers: {
+              'X-RapidAPI-Key': process.env.REACT_APP_API_KEY,
+              'X-RapidAPI-Host': 'cis-automotive.p.rapidapi.com'
+          }
+      };
+      const db = client.db("carTypes");
+
+      const response = await axios.request(options);
+      const cars = response.data.data;
+      console.log(response.data.data);
+
+      const collections = await db.listCollections().toArray();
+      const matchedCars = [];
+      var i = 1;
+      for (const car of cars) {
+          for (const collection of collections) {
+              // if(i > 10)
+              //     break;
+              if (collection.name === car.brandName) {
+                  const carData = await db.collection(collection.name).findOne({ model: car.modelName });
+                  if (carData) {
+                      const matchedCar = {
+                          brand: car.brandName,
+                          model: car.modelName,
+                          type: carData.type, 
+                          price: carData.price,
+                          rank: i++
+                      };
+                      matchedCars.push(matchedCar);
+                  }
+              }
+          }
+      }
+      
+      res.status(200).json({matchedCars});
+      
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error' });
+  }
+});
 
 app.post("/api/makes", async (req, res, next) => {
   // incoming: N/A
   // outgoing: json of all the makes
+  var token = require('./createJWT.js');
   var error = "";
   const db = client.db("carTypes");
   console.log("test");
+
+  try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+  
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
   const collections = await db.listCollections().toArray();
   const makeArr = collections.map((col) => col.name);
@@ -440,8 +527,35 @@ app.post('/api/models', async (req, res, next) => {
     // incoming: make, model
     // outgoing: histogram data, image, type, logo, price
 
+    try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+  
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
     var error = '';
-    const { make } = req.body;
+    const { make, jwtToken } = req.body;
 
     var db = client.db('carTypes');
     var models = await db.collection(make).find({}).toArray();
@@ -454,17 +568,47 @@ app.post('/api/models', async (req, res, next) => {
 app.post('/api/getfavorites', async (req, res, next) => {
     // incoming: userId
     // outgoing: favorites
+    var token = require('./createJWT.js');
     var error = '';
-    const { id } = req.body;
-    var carData = [];
+    const { id, jwtToken } = req.body;
 
+    try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+  
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
+
+    var carData = [];
+    var curCar;
     const db = client.db('cop4331');
     var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
     results = Object.values(results["carsArr"])
 
-    const carPromises = results.map(async(car) => (
-        await client.db('carTypes').collection(car["make"]).findOne({ model : car["model"]})
-    ))
+    const carPromises = results.map(async(car) => {
+        curCar = await client.db('carTypes').collection(car["make"]).findOne({ model : car["model"]})
+        return ({make: car["make"], model: curCar["model"], price: curCar["price"], type: curCar["type"]})
+    })
 
     const carDetails = await Promise.all(carPromises);
     carData = carDetails;
@@ -477,8 +621,36 @@ app.post('/api/addfavorite', async (req, res, next) => {
     // incoming: userId, make, model
     // processing: adding make and model to user's carArr field
     // outgoing: message, error
+    var token = require('./createJWT.js');
     var error = '';
-    const { id, make, model } = req.body;
+    const { id, make, model, jwtToken } = req.body;
+
+    try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+  
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
     const db = client.db('cop4331');
     var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
@@ -495,8 +667,36 @@ app.post('/api/removefavorite', async (req, res, next) => {
     // incoming: userId, make, model
     // processing: removes make and model from user's carArr field
     // outgoing: message, error
+    var token = require('./createJWT.js');
     var error = '';
-    const { id, make, model } = req.body;
+    const { id, make, model, jwtToken } = req.body;
+
+    try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+  
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch(e)
+  {
+    console.log(e.message);
+  }
 
     const db = client.db('cop4331');
     var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
