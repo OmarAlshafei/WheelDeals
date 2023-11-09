@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import HeartIcon from "../components/HeartIcon";
 
 const CarDetail = (props) => {
-  let { make, model } = props.location.state;
+  let { make, model } = props.location.state ;
   const [detail, setDetail] = useState([]);
 
   const fetchData = async () => {
@@ -39,6 +40,8 @@ const CarDetail = (props) => {
   return (
     <div>
       <h1>Car Detail</h1>
+      {/* <HeartIcon  /> */}
+      <HeartIcon favMake={make} favModel={model} />
       <div className="header-brand">
         <p>Brand: {make}</p>
         <img src={detail.brandLogo}></img>

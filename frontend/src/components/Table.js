@@ -67,7 +67,7 @@ const Table = () => {
             <th>Brand</th>
             <th>Model</th>
             <th>Price</th>
-            <th>Favorite</th>
+            {/* <th>Favorite</th> */}
           </tr>
         </thead>
         <tbody>
@@ -77,9 +77,9 @@ const Table = () => {
               <td>{car.type}</td>
               <td>{car.brand}</td>
               <td>{car.model}</td>
-              <td>{car.price}</td>
+              <td>${car.price}</td>
               <td>
-                <HeartIcon />
+                {/* <HeartIcon brand={car.brand} model={car.model}/> */}
               </td>
             </tr>
           ))}
