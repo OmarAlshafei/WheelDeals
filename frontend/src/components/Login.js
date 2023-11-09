@@ -27,7 +27,7 @@ const Login = (props) => {
 
         var res = JSON.parse(await response.text());
         const { accessToken } = res;
-        // console.log("Access token is " + res)
+        //alert("Access token is " + accessToken);
         const jwtDecoded = jwtDecode(accessToken,{complete:true});
 
         try
@@ -36,7 +36,7 @@ const Login = (props) => {
           var userId = ud.userId;
           var firstName = ud.firstName;
           var lastName = ud.lastName;
-          console.log(ud);
+          //alert(ud.accessToken);
 
             if( userId <= 0 )
             {
@@ -46,7 +46,9 @@ const Login = (props) => {
             {
               var user = {firstName:firstName,lastName:lastName,id:userId}
               localStorage.setItem('user_data', JSON.stringify(user));
-
+              localStorage.setItem('jwt', accessToken);
+              //alert(localStorage.getItem('jwt'))
+              
               setMessage('');
               window.location.href = '/home';
             }

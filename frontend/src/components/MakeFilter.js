@@ -19,6 +19,7 @@ const MakeFilter = () => {
       let res = await fetch(buildPath("api/makes"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jwtToken : localStorage.getItem("jwt") })
       });
       setOptions(await res.json());
     } catch (error) {

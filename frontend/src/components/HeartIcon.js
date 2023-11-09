@@ -12,6 +12,10 @@ const HeartIcon = (props) => {
     // };
   const [isFilled, setIsFilled] = useState(false);
   const userData = localStorage.getItem("user_data");
+  const jwt = localStorage.getItem("jwt");
+  // const userId = userData["userId"];
+  console.log(jwt)
+  // console.log(userId)
 
   const fetchData = async (favMake, favModel) => {
     try {
@@ -25,7 +29,7 @@ const HeartIcon = (props) => {
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({id: userData.id, favMake, favModel}),
+        body: JSON.stringify({favMake, favModel, jwt}),
       });
 
       if (!res.ok) {

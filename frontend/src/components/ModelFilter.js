@@ -17,7 +17,7 @@ const ModelFilter = (props) => {
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ make: currentMake }),
+        body: JSON.stringify({ make: currentMake,  jwtToken: localStorage.getItem("jwt") }),
       });
 
       if (!res.ok) {

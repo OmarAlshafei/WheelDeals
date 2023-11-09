@@ -361,7 +361,7 @@ app.post('/api/login', async (req, res, next) => {
   // outgoing: id, firstName, lastName, error
   var token = require('./createJWT.js');
   var error = '';
-  const { userName, password, jwtToken } = req.body;
+  const { userName, password } = req.body;
   // console.log(userName, password)
   
   const db = client.db('cop4331');
@@ -380,7 +380,7 @@ app.post('/api/login', async (req, res, next) => {
         {
           const token = require("./createJWT.js");
           ret = token.createToken( fn, ln, id, em );
-          // console.log(ret)
+          console.log(ret)
         }
         catch(e)
         {
@@ -396,13 +396,16 @@ app.post('/api/login', async (req, res, next) => {
   res.status(200).json(ret);
 });
 
+
 app.post('/api/homepage', async (req, res, next) => {
   var token = require('./createJWT.js');
   var error = '';
   // const region = req.body.region;
   const region = 'REGION_STATE_FL';
   const {jwtToken } = req.body;
-
+  console.log("req test:" + req);
+  console.log("req-body test:" + req.body);
+    console.log("token test:" + jwtToken);
   try
       {
         if( token.isExpired(jwtToken))
@@ -488,6 +491,7 @@ app.post("/api/makes", async (req, res, next) => {
   var error = "";
   const db = client.db("carTypes");
   console.log("test");
+  const {jwtToken } = req.body;
 
   try
       {
@@ -526,7 +530,7 @@ app.post("/api/makes", async (req, res, next) => {
 app.post('/api/models', async (req, res, next) => {
     // incoming: make, model
     // outgoing: histogram data, image, type, logo, price
-
+    const { make, jwtToken } = req.body;
     try
       {
         if( token.isExpired(jwtToken))
@@ -555,7 +559,6 @@ app.post('/api/models', async (req, res, next) => {
   }
 
     var error = '';
-    const { make, jwtToken } = req.body;
 
     var db = client.db('carTypes');
     var models = await db.collection(make).find({}).toArray();
