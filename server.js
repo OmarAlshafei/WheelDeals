@@ -484,37 +484,38 @@ app.post('/api/homepage', async (req, res, next) => {
 app.post("/api/makes", async (req, res, next) => {
   // incoming: N/A
   // outgoing: json of all the makes
-  var token = require('./createJWT.js');
+  //var token = require('./createJWT.js');
   var error = "";
   const db = client.db("carTypes");
-  console.log("test");
+  // const {jwtToken } = req.body;
+  // console.log("test");
 
-  try
-      {
-        if( token.isExpired(jwtToken))
-        {
-          var r = {error:'The JWT is no longer valid', jwtToken: ''};
-          res.status(200).json(r);
-          return;
-        }
-      }
-      catch(e)
-      {
-        console.log(e.message);
-        var r = {error:e.message, jwtToken: ''};
-        res.status(200).json(r);
-        return;
-      }
+  // try
+  //     {
+  //       if( token.isExpired(jwtToken))
+  //       {
+  //         var r = {error:'The JWT is no longer valid', jwtToken: ''};
+  //         res.status(200).json(r);
+  //         return;
+  //       }
+  //     }
+  //     catch(e)
+  //     {
+  //       console.log(e.message);
+  //       var r = {error:e.message, jwtToken: ''};
+  //       res.status(200).json(r);
+  //       return;
+  //     }
   
-  var refreshedToken = null;
-  try
-  {
-    refreshedToken = token.refresh(jwtToken);
-  }
-  catch(e)
-  {
-    console.log(e.message);
-  }
+  // var refreshedToken = null;
+  // try
+  // {
+  //   refreshedToken = token.refresh(jwtToken);
+  // }
+  // catch(e)
+  // {
+  //   console.log(e.message);
+  // }
 
   const collections = await db.listCollections().toArray();
   const makeArr = collections.map((col) => col.name);
@@ -526,6 +527,8 @@ app.post("/api/makes", async (req, res, next) => {
 app.post('/api/models', async (req, res, next) => {
     // incoming: make, model
     // outgoing: histogram data, image, type, logo, price
+
+    const { make, jwtToken } = req.body;
 
     try
       {
@@ -555,7 +558,6 @@ app.post('/api/models', async (req, res, next) => {
   }
 
     var error = '';
-    const { make, jwtToken } = req.body;
 
     var db = client.db('carTypes');
     var models = await db.collection(make).find({}).toArray();
