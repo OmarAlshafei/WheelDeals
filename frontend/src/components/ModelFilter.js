@@ -19,7 +19,7 @@ const ModelFilter = (props) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ make: currentMake,  jwtToken: localStorage.getItem("jwt") }),
       });
-
+      
       if (!res.ok) {
         throw new Error(`Request failed with status: ${res.status}`);
       }

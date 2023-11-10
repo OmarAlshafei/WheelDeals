@@ -3,21 +3,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faHeart as faHeartOutline } from "@fortawesome/free-solid-svg-icons";
 
 const HeartIcon = (props) => {
-    const favMake = props.favMake;
-    const favModel = props.favModel;
-    // const [isFilled, setIsFilled] = useState(false);
+    const make = props.favMake;
+    const model = props.favModel;
+  
+    const [isFilled, setIsFilled] = useState(
+      localStorage.getItem("isFilled") === "true"
+    );
 
-    // const toggleFilled = () => {
-    //     setIsFilled(!isFilled);
-    // };
-  const [isFilled, setIsFilled] = useState(false);
-  const userData = localStorage.getItem("user_data");
-  const jwt = localStorage.getItem("jwt");
-  // const userId = userData["userId"];
-  console.log(jwt)
-  // console.log(userId)
+    useEffect(() => {
+      localStorage.setItem("isFilled", isFilled);
+    }, [isFilled]);
+  
+  
+  const jwtToken = localStorage.getItem("jwt");
+  const userDataString = localStorage.getItem('user_data');
+  const userData = JSON.parse (userDataString);
+  const id = userData.id;
+  //console.log("jwt: " +jwtToken);
 
-  const fetchData = async (favMake, favModel) => {
+
+  const fetchData = async () => {
+    // console.log(id);
+    // console.log(make);
+    // console.log(model);
+    
+    
     try {
       const app_name = "wheeldeals-d3e9615ad014";
       const route = "api/addfavorite";
@@ -29,7 +39,9 @@ const HeartIcon = (props) => {
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({favMake, favModel, jwt}),
+        body: JSON.stringify({id, make, model, jwtToken}),
+        
+        
       });
 
       if (!res.ok) {
@@ -40,18 +52,21 @@ const HeartIcon = (props) => {
     }
   };
 
-  const toggleFilled = () => {
-    setIsFilled(!isFilled);
+  
 
+  const toggleFilled = () => {
     // Call API
-    if (!isFilled) {
-        fetchData();
+    if (isFilled == false) {
+      setIsFilled(true);
+      fetchData();
     }
+    
   };
 
   return (
-    <td onClick={toggleFilled} style={{ cursor: "pointer" }}>
+    <td  style={{ cursor: "pointer" }}>
       <FontAwesomeIcon
+        onClick={() => toggleFilled()}
         icon={isFilled ? faHeart : faHeartOutline}
         style={{
           color: isFilled ? "#ff0000" : "#ccc",

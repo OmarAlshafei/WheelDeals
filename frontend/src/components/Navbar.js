@@ -33,8 +33,8 @@ const Navbar = () => {
           </li>
 
           <li className="nav-item">
-            <a href="/signin" className="nav-link">
-              Sign in
+            <a href="/logout" className="nav-link">
+              Log out
             </a>
           </li>
         </ul>
