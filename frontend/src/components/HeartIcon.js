@@ -9,6 +9,10 @@ const HeartIcon = (props) => {
   const make = props.favMake;
   const model = props.favModel;
 
+  console.log(make);
+  console.log(model);
+
+
   const [isFilled, setIsFilled] = useState(false);
 
   useEffect(() => {
@@ -37,7 +41,7 @@ const HeartIcon = (props) => {
         }
 
         const result = await res.json();
-        
+
         result["favorites"].map((favorite) => {
           if(make === favorite["make"] && favorite["model"] === model){
             setIsFilled(true);
@@ -83,7 +87,36 @@ const HeartIcon = (props) => {
       } catch (error) {
         console.error("Error:", error);
       }
+    }else{
+      try {
+        const jwtToken = localStorage.getItem("jwt");
+        const userDataString = localStorage.getItem("user_data");
+        const userData = JSON.parse(userDataString);
+        const id = userData.id;
+
+        const app_name = "wheeldeals-d3e9615ad014";
+        const route = "api/removefavorite";
+        const apiUrl =
+          process.env.NODE_ENV === "production"
+            ? `https://${app_name}.herokuapp.com/${route}`
+            : `http://localhost:9000/${route}`;
+
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, make, model, jwtToken }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`Request failed with status: ${res.status}`);
+        }
+
+        setIsFilled(false);
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
+
   };
 
   return (

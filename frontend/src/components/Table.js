@@ -29,6 +29,7 @@ const Table = () => {
       }
 
       const data = await res.json();
+      console.log(data);
 
       if (data.matchedCars) {
         setNewCars(data.matchedCars);
@@ -79,9 +80,7 @@ const Table = () => {
               <td>{car.brand}</td>
               <td>{car.model}</td>
               <td>${car.price}</td>
-              <td>
-                {/* <HeartIcon brand={car.brand} model={car.model}/> */}
-              </td>
+              <td>{/* <HeartIcon brand={car.brand} model={car.model}/> */}</td>
             </tr>
           ))}
         </tbody>
