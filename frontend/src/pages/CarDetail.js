@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import HeartIcon from "../components/HeartIcon";
+import Histogram from "../components/Histogram";
 
 const CarDetail = (props) => {
-  let { make, model } = props.location.state ;
+  let { make, model } = props.location.state;
   const [detail, setDetail] = useState([]);
   const jwtToken = localStorage.getItem("jwt");
 
@@ -52,7 +53,10 @@ const CarDetail = (props) => {
         <p>Model: {model}</p>
         <p>Price: ${detail.price}</p>
         <img src={detail.image} className="carImage"></img>
+        <Histogram data={detail.histogramData} />
       </div>
+
+
     </div>
   );
 };
