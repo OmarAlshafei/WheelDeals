@@ -4,7 +4,7 @@ import HeartIcon from "../components/HeartIcon";
 const CarDetail = (props) => {
   let { make, model } = props.location.state ;
   const [detail, setDetail] = useState([]);
-  //const jwtToken = localStorage.getItem("jwt");
+  const jwtToken = localStorage.getItem("jwt");
 
   const fetchData = async () => {
     try {
@@ -18,7 +18,7 @@ const CarDetail = (props) => {
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ make: make, model: model }),
+        body: JSON.stringify({ make: make, model: model, jwtToken: jwtToken }),
       });
 
       if (!res.ok) {
