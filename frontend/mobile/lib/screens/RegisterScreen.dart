@@ -9,17 +9,17 @@ import 'package:mobile/utils/currentUser.dart' as currentUser;
 import 'dart:convert';
 import 'package:mobile/routes/routes.dart';
 
-class GlobalData
-{
-  static String userId = '';
-  static String firstName = '';
-  static String lastName = '';
-  static String loginName = '';
-  static String password = '';
-  static String state = '';
-  static String email = '';
-// state, email
-}
+// class GlobalData
+// {
+//   static String userId = '';
+//   static String firstName = '';
+//   static String lastName = '';
+//   static String loginName = '';
+//   static String password = '';
+//   static String state = '';
+//   static String email = '';
+// // state, email
+// }
 
 
 class RegisterScreen extends StatefulWidget {
@@ -140,6 +140,7 @@ class _MainPageState extends State<MainPage> {
   String loginName = '', password = '';
   String firstName = '', lastName = '';
   String state = '', email = '';
+  bool verificationSent = false;
 
   Color messageColor = appColors.black;
 
@@ -154,23 +155,121 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  /*
-  return new Container(
-  child: new SingleChildScrollView(
-    child: new Column(
-      children: <Widget>[
-        _showChild1(),
-        _showChild2(),
-        ...
-        _showChildN()
-      ]
-    )
-  )
-);
-   */
+  void register() async {
+    newMessageText = "";
+    changeText();
+
+    String payload = '{"firstName":"' + firstName.trim() + '","lastName":"' + lastName.trim() + '", "userName":"' + loginName.trim() + '","password":"' + password.trim() + '","email":"' + email.trim() + '"}';
+    var jsonObject;
+    String ret = 'ah';
+
+    if (firstName=='') {
+      newMessageText = "Please enter first name";
+      messageColor = appColors.errRed;
+      changeText();
+
+    }
+    if (lastName=='') {
+      newMessageText = "Please enter last name";
+      messageColor = appColors.errRed;
+      changeText();
+
+    }
+    if (loginName=='') {
+      newMessageText = "Please enter Username";
+      messageColor = appColors.errRed;
+      changeText();
+
+    }
+    if (password=='') {
+      newMessageText = "Please enter password";
+      messageColor = appColors.errRed;
+      changeText();
+
+    }
+    if (email=='') {
+      newMessageText = "Please enter email";
+      messageColor = appColors.errRed;
+      changeText();
+    }
+
+    try
+    {
+      String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/register';
+      ret = await CarsData.getJson(url, payload);
+      jsonObject = json.decode(ret);
+      // newMessageText = jsonObject["error"];
+      // changeText();
+      //fname = jsonObject["firstName"];
+    }
+    catch(e)
+    {
+      newMessageText = e.toString();
+      changeText();
+      return;
+    }
+    if (jsonObject["message"] != "User Added Successfully") {
+      String err1 = " - At least 8 characters\n";
+      String err2 = " - No more than 100 characters\n";
+      String err3 = " - At least 1 uppercase character\n";
+      String err4 = " - At least 1 lowercase character\n";
+
+      newMessageText = "Error: Password requires\n$err1$err3$err4$err2";
+      messageColor = appColors.errRed;
+      changeText();
+    }
+    else
+    {
+      bool success = verify() as bool;
+
+      if (success) {
+        //currentUser.userId = jsonObject["_id"];
+        currentUser.firstName = firstName.trim();
+        currentUser.lastName = lastName.trim();
+        currentUser.email = email.trim();
+        currentUser.userName = loginName.trim();
+        currentUser.password = password.trim();
+        currentUser.loggedIn = true;
+
+        Navigator.pushNamed(context, Routes.LOGINSCREEN);
+      }
+      else {
+        message = "Failed to verify. Please resend the link";
+        messageColor = appColors.black;
+        changeText();
+      }
+
+    }
+  }
+
+  Future<bool> verify() async {
+    verificationSent = true;
+    setState(() {
+      verificationSent = true;
+      message = "Please check your email for a verification link";
+      messageColor = appColors.black;
+    });
+
+    return true;
+  }
+
+  Future<bool> reVerify() async {
+    verificationSent = true;
+    setState(() {
+      verificationSent = true;
+      message = "Verification link was resent\nPlease check your email.";
+      messageColor = appColors.black;
+    });
+
+    return false;
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
+    String buttonText = (verificationSent) ? "Resend Verification Email" : "Register";
+
     return Container(
 
         width: 600,
@@ -178,295 +277,181 @@ class _MainPageState extends State<MainPage> {
 
         child: SingleChildScrollView(
 
-        child :Column(
-          mainAxisAlignment: MainAxisAlignment.center, //Center Column contents vertically,
-          //crossAxisAlignment: CrossAxisAlignment.center, //Center Column contents horizontal
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              children: [
-                Container(
-                  margin:const EdgeInsets.only(left: 55.0),
-                  child:
-                  Text(
-                    "Welcome to Wheel Deals!",
-                    style: TextStyle(fontSize: 24),
-                  ),
-                ),
-              ],
-            ), //title
-
-
-            Row(
-                children: <Widget>[
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center, //Center Column contents vertically,
+            //crossAxisAlignment: CrossAxisAlignment.center, //Center Column contents horizontal
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                children: [
                   Container(
-                    width: 200,
-                    margin:const EdgeInsets.only(left: 95.0, top:20),
+                    margin:const EdgeInsets.only(left: 55.0),
                     child:
-                    TextField (
-                      decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
-                          labelText: 'First name',
-                          hintText: 'Enter Your first name'
-                      ),
-                      onChanged: (text) {
-                        firstName = text;
-                      },
+                    Text(
+                      "Welcome to Wheel Deals!",
+                      style: TextStyle(fontSize: 24),
                     ),
                   ),
-                ]
-            ), // first name
+                ],
+              ), //title
 
-            Row(
-                children: <Widget>[
-                  Container(
-                    width: 200,
-                    margin:const EdgeInsets.only(left: 95.0, top:20),
-                    child:
-                    TextField (
-                      decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
-                          labelText: 'Last name',
-                          hintText: 'Enter Your last name'
+              Row(
+                  children: <Widget>[
+                    Container(
+                      width: 200,
+                      margin:const EdgeInsets.only(left: 95.0, top:20),
+                      child:
+                      TextField (
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                            labelText: 'First name',
+                            hintText: 'Enter Your first name'
+                        ),
+                        onChanged: (text) {
+                          firstName = text;
+                        },
                       ),
-                      onChanged: (text) {
-                        lastName = text;
-                      },
                     ),
-                  ),
-                ]
-            ), // last name
+                  ]
+              ), // first name
 
-            Row(
-                children: <Widget>[
-                  Container(
-                    width: 200,
-                    margin:const EdgeInsets.only(left: 95.0, top:20),
-                    child:
-                    TextField (
-                      decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
-                          labelText: 'Username',
-                          hintText: 'Enter Your Username'
+              Row(
+                  children: <Widget>[
+                    Container(
+                      width: 200,
+                      margin:const EdgeInsets.only(left: 95.0, top:20),
+                      child:
+                      TextField (
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                            labelText: 'Last name',
+                            hintText: 'Enter Your last name'
+                        ),
+                        onChanged: (text) {
+                          lastName = text;
+                        },
                       ),
-                      onChanged: (text) {
-                        loginName = text;
-                      },
                     ),
-                  ),
-                ]
-            ), // username
+                  ]
+              ), // last name
 
-
-            Row(
-                children: <Widget>[
-                  Container(
-                    width: 200,
-                    margin:const EdgeInsets.only(top: 10.0, left:95.0),
-                    child:
-                    TextField (
-                      obscureText: false,
-                      decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                          hintText: 'Enter Your Password'
+              Row(
+                  children: <Widget>[
+                    Container(
+                      width: 200,
+                      margin:const EdgeInsets.only(left: 95.0, top:20),
+                      child:
+                      TextField (
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                            labelText: 'Username',
+                            hintText: 'Enter Your Username'
+                        ),
+                        onChanged: (text) {
+                          loginName = text;
+                        },
                       ),
-                      onChanged: (text) {
-                        password = text;
-                      },
                     ),
-                  ),
-                ]
-            ), // password
+                  ]
+              ), // username
 
-
-
-            Row(
-                children: <Widget>[
-                  Container(
-                    width: 200,
-                    margin:const EdgeInsets.only(left: 95.0, top:20),
-                    child:
-                    TextField (
-                      decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(),
-                          labelText: 'Email',
-                          hintText: 'Enter Your email'
+              Row(
+                  children: <Widget>[
+                    Container(
+                      width: 200,
+                      margin:const EdgeInsets.only(top: 20.0, left:95.0),
+                      child:
+                      TextField (
+                        obscureText: false,
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                            labelText: 'Password',
+                            hintText: 'Enter Your Password'
+                        ),
+                        onChanged: (text) {
+                          password = text;
+                        },
                       ),
-                      onChanged: (text) {
-                        email = text;
-                      },
                     ),
-                  ),
-                ]
-            ), // email
+                  ]
+              ), // password
 
-
-            Row(
-              children: <Widget>[
-                Container(
-                  margin:const EdgeInsets.only(left: 160.0),
-                  child:
-                  ElevatedButton(
-                    child: Text('Register',style: TextStyle(fontSize: 14 ,color:Colors.black)),
+              Row(
+                  children: <Widget>[
+                    Container(
+                      width: 200,
+                      margin:const EdgeInsets.only(left: 95.0, top:20),
+                      child:
+                      TextField (
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                            labelText: 'Email',
+                            hintText: 'Enter Your email'
+                        ),
+                        onChanged: (text) {
+                          email = text;
+                        },
+                      ),
+                    ),
+                  ]
+              ), // email
+              Container(
+                margin:const EdgeInsets.only(top:20),
+                child: ElevatedButton(
+                    child: Text(buttonText,style: TextStyle(fontSize: 14 ,color:Colors.black)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: appColors.gold,
                     ),
                     onPressed: () async
                     {
-                      newMessageText = "";
-                      changeText();
-
-                     // String payload = '{"userName":"' + loginName.trim() + '","password":"' + password.trim() + '"}';
-                      String payload = '{"firstName":"' + firstName.trim() + '","lastName":"' + lastName.trim() + '", "userName":"' + loginName.trim() + '","password":"' + password.trim() + '","email":"' + email.trim() + '"}';
-                      var userId = '';
-                      var fname ='-';
-                      var jsonObject;
-                      String ret = 'ah';
-
-                      if (firstName=='') {
-                        newMessageText = "Please enter first name";
-                        messageColor = appColors.errRed;
-                        changeText();
-
+                      if (verificationSent) {
+                        reVerify(); // resend verification email
                       }
-                      if (lastName=='') {
-                        newMessageText = "Please enter last name";
-                        messageColor = appColors.errRed;
-                        changeText();
-
-                      }
-                      if (loginName=='') {
-                        newMessageText = "Please enter Username";
-                        messageColor = appColors.errRed;
-                        changeText();
-
-                      }
-                      if (password=='') {
-                        newMessageText = "Please enter password";
-                        messageColor = appColors.errRed;
-                        changeText();
-
+                      else {
+                        register();
                       }
 
-                      if (email=='') {
-                        newMessageText = "Please enter email";
-                        messageColor = appColors.errRed;
-                        changeText();
+                    }
+                ),
+              ),
 
-                      }
-
-                      try
-                      {
-                        String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/register';
-                        ret = await CarsData.getJson(url, payload);
-                        jsonObject = json.decode(ret);
-                        // newMessageText = jsonObject["error"];
-                        // changeText();
-                        //fname = jsonObject["firstName"];
-                      }
-                      catch(e)
-                      {
-                        newMessageText = e.toString();
-                        changeText();
-                        return;
-                      }
-                      if (jsonObject["message"] != "User Added Successfully") {
-                        String err1 = " - At least 8 characters\n";
-                        String err2 = " - No more than 100 characters\n";
-                        String err3 = " - At least 1 uppercase character\n";
-                        String err4 = " - At least 1 lowercase character\n";
-
-                        newMessageText = "Error: Password requires\n$err1$err3$err4$err2";
-                        messageColor = appColors.errRed;
-                        changeText();
-                      }
-                      // if (fname == '')
-                      // {
-                      //
-                      //   if (firstName == '' ) {
-                      //     newMessageText = "Please enter first name";
-                      //   }
-                      //   else if (lastName == '') {
-                      //     newMessageText = "Please enter last name";
-                      //   }
-                      //   else if (loginName == '') {
-                      //     newMessageText = "Please enter Username";
-                      //   }
-                      //   else if (password == '') {
-                      //     newMessageText = "Please enter Password";
-                      //   }
-                      //
-                      //   /*
-                      //   if (loginName == '' && password == '') {
-                      //     newMessageText = "Please enter Username and Password";
-                      //   }
-                      //   else if (loginName == '') {
-                      //     newMessageText = "Please enter Username";
-                      //   }
-                      //   else if (password == '') {
-                      //     newMessageText = "Please enter Password";
-                      //   }
-                      //   else {
-                      //     newMessageText = "Incorrect Login/Password";
-                      //   }
-                      //   */
-                      //
-                      //   messageColor = appColors.errRed;
-                      //   changeText();
-                      // }
-                      else
-                      {
-                        //currentUser.userId = jsonObject["_id"];
-                        currentUser.firstName = firstName.trim();
-                        currentUser.lastName = lastName.trim();
-                        currentUser.email = email.trim();
-                        currentUser.userName = loginName.trim();
-                        currentUser.password = password.trim();
-                        currentUser.loggedIn = true;
-                        Navigator.pushNamed(context, Routes.LOGINSCREEN);
-                      }
-                    },
+              // Row(
+              //   children: <Widget>[
+              //     Container(
+              //       margin: const EdgeInsets.only(left: 105.0),
+              //       child: Text(
+              //           message,
+              //           style: const TextStyle(fontSize: 14 ,color:appColors.errRed),
+              //           textAlign: TextAlign.center
+              //       ),
+              //     )
+              //   ],
+              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      margin:const EdgeInsets.only(top: 15.0),
+                      child:
+                      Text(
+                        message,
+                        style: TextStyle(fontSize: 18, color: messageColor),
+                      )
                   ),
-                ),
-              ],
-            ),
-            // Row(
-            //   children: <Widget>[
-            //     Container(
-            //       margin: const EdgeInsets.only(left: 105.0),
-            //       child: Text(
-            //           message,
-            //           style: const TextStyle(fontSize: 14 ,color:appColors.errRed),
-            //           textAlign: TextAlign.center
-            //       ),
-            //     )
-            //   ],
-            // ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                    margin:const EdgeInsets.only(top: 15.0),
-                    child:
-                    Text(
-                      message,
-                      style: TextStyle(fontSize: 18, color: messageColor),
-                    )
-                ),
-              ],
-            ),
-            /*
+                ],
+              ),
+              /*
             Row(
               children: [
                 Container(
@@ -487,7 +472,8 @@ class _MainPageState extends State<MainPage> {
             ),
 
             */
-          ],
+            ],
+          )
         )
       )
     );

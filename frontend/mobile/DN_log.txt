@@ -121,18 +121,26 @@
       - Login/Register functionality
             - Register
                   - Password is not obscured
-                  - If password isn't complex, message pops up with instructions
+                  - If password isn't sufficient, message pops up with instructions
                   - Register button takes you to login page with filled-in fields
             - Login
                   - Icon to change visibility of password
       - Added logout Functionality
-            - clears the user (see currentUser.dart)
-            - navigates to login page
+            - Clears the user (see currentUser.dart)
+            - Navigates to login page
       - Account page
-            - Has full name, username, password, email, button to view favorites
+            - Has full name, email, button to view favorites (just pop up message rn)
             - No edit functionality yet until supported by API
       - Home screen
-            - Removed login/signup option from menu
+            - Removed login/signup option from menu (unnecessary)
             - Logo is only clickable if user is logged in (see currentUser.dart)
             - Fixed cards so they scroll now (not sure exactly what fixed it)
             - Passing card index of selected car to Cars.dart & accessing from CarsScreen.dart
+      - Car info
+            - Working based on the card index!!
+            - Make, model, year, price, placeholder image
+      - Favorites
+            -Need new API endpoint to update array of favorite cars
+                  - FE handle manipulation (add/delete)
+                  - Logout button should make call to replace old array in database with new array
+            - Need login API to return the array of car IDs

@@ -86,12 +86,17 @@ class _MainPageState extends State<MainPage> {
     super.initState();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     String make = appCars.getMake(carIndex);
     String model = appCars.getModel(carIndex);
     int year = appCars.getYear(carIndex);
     String price = appCars.getPrice(carIndex);
+
+    print(make + model);
+
 
     return Container(
         width: 400,
@@ -138,9 +143,10 @@ class _MainPageState extends State<MainPage> {
                 Row(
                   children: <Widget>[
                     Container(
-                      margin: const EdgeInsets.only(left: 30.0),
+                      margin: const EdgeInsets.only(top: 10, left: 15.0),
                       alignment: Alignment.center,
-                      child: Image.asset("images/wheel.png"),
+                      child: appCars.carPic,
+                      //child: picture,
                     )
                   ],
                 ),

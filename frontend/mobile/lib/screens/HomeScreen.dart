@@ -1,14 +1,19 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile/routes/routes.dart';
 import 'package:mobile/utils/Colors.dart';
 import 'package:mobile/utils/header.dart';
 import 'package:mobile/utils/Cars.dart';
-import 'package:mobile/screens/CarsScreen.dart';
+import 'package:mobile/screens/LoginScreen.dart' as login;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/utils/currentUser.dart' as currentUser;
+
+import '../utils/currentUser.dart';
+import '../utils/getAPI.dart';
 
 final List<String> imgList = [
   'https://www.lensrentals.com/blog/media/2015/11/Automotive-Photography-Guide-1.jpg',
@@ -16,6 +21,9 @@ final List<String> imgList = [
 ];
 
 class HomeScreen extends StatefulWidget {
+  // final token;
+  // const HomeScreen({@required this.token,Key? key}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -79,15 +87,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
 //====================================================
 class MainPage extends StatefulWidget {
-
+  // final token;
+  // const MainPage({@required this.token,Key? key}) : super(key: key);
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
 
+  late String email;
   final appCars _data = appCars();
   List<bool> fav = <bool>[];
+
+  Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(currentUser.token);
+
+  //email = jwtDecodedToken["email"];
 
   @override
   void initState() {
@@ -96,9 +110,11 @@ class _MainPageState extends State<MainPage> {
     for (int i=0; i < _data.getLength(); i++) {
       fav.add(false);
     }
+    //print("Here1" + currentUser.token + "!");
+    print(jwtDecodedToken["email"]);
   }
 
-  void favorite(int id, int index) {
+  void favorite(String id, int index) {
 
     //AlertDialog(content:Text("something"));
     setState(() {
@@ -139,6 +155,15 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
           Container(
+            child: const Text(
+              "Popular Cars",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 28
+              ),
+            )
+          ),
+          Container(
             height: 150,
             child: Card(
                 elevation: 4.0,
@@ -175,6 +200,7 @@ class _MainPageState extends State<MainPage> {
                                     style:TextStyle(color:appColors.navy)),
                                 onPressed: () {
                                   //getCarId(_data.getId(index));
+                                  //getImage(make, model);
                                   appCars.setCarIndex(index);
                                   Navigator.pushNamed(context, Routes.CARSSCREEN);
                                 },
@@ -236,47 +262,7 @@ class _MainPageState extends State<MainPage> {
                   )
                 ]
             )
-          // child: Column(
-          //   children: [
-          //     ListTile(
-          //       title: Text("${_data.getYear(index)} ${_data.getMake(index)} ${_data.getModel(index)}"),
-          //       subtitle: Text(_data.getPrice(index)),
-          //       trailing: Theme (
-          //           data: ThemeData(useMaterial3: true),
-          //           child: IconButton(
-          //             isSelected: fav[index],
-          //             color: appColors.red,
-          //             onPressed: () {
-          //               favorite(_data.getId(index), index);
-          //             },
-          //             icon: const Icon(Icons.favorite_outline),
-          //             selectedIcon: const Icon(Icons.favorite),
-          //           )
-          //       ),
-          //     ),
-          //     Row(
-          //       children: [
-          //         Container(
-          //           margin: const EdgeInsets.only(left: 20.0),
-          //           child: FaIcon(type,color: appColors.navy),
-          //         ),
-          //         Spacer(),
-          //         ButtonBar(
-          //           children: [
-          //             TextButton(
-          //               child: const Text('MORE INFO',
-          //                   style:TextStyle(color:appColors.navy)),
-          //               onPressed: () {
-          //                 //getCarId(_data.getId(index));
-          //                 Navigator.pushNamed(context, Routes.CARSSCREEN);
-          //               },
-          //             )
-          //           ],
-          //         )
-          //       ],
-          //     ),
-          //   ],
-          // )
+
         ),
     );
   }
@@ -284,13 +270,74 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     //appCars _data = appCars();
+    String urlModels = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/models';
 
     return Container(
-      child: ListView.builder(
-        padding: EdgeInsets.zero,
-        itemCount: _data.getLength(),
-        itemBuilder: _itemBuilder,
-      ),
+      child: Column(
+        children: [
+
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.all(10),
+                child: const Text("Search:", style: TextStyle(fontSize: 18),)
+              ),
+              Container(
+                margin: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: appColors.gray,
+                  border: Border.all(color: appColors.black),
+                ),
+                child: DropdownButton(
+                  hint: Container(
+                      margin: const EdgeInsets.only(left: 5.0),
+                      child: const Text("Make")
+                  ),
+                  items: appCars.getMakeOptions(),
+                  dropdownColor: appColors.gray,
+                  onChanged: (String? newValue){
+                    setState(() {
+                      appCars.selectedMake = newValue!;
+                      //print(selectedMake);
+                      //appCars.makeApi();
+                    });
+                  },
+                ),
+              ),// MAKE
+              Container(
+                margin: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: appColors.gray,
+                  border: Border.all(color: appColors.black),
+                ),
+                child: DropdownButton(
+                  hint: Container(
+                      margin: const EdgeInsets.only(left: 5.0),
+                      child: const Text("Model")
+                  ),
+                  items: appCars.getModelOptions(),
+                  dropdownColor: appColors.gray,
+                  onChanged: (String? newValue){
+                    setState(() {
+                      appCars.selectedMake = newValue!;
+                      //appCars.makeApi();
+                    });
+                  },
+                ),
+              ),
+            ],
+          ), // Search
+
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.zero,
+              itemCount: _data.getLength(),
+              itemBuilder: _itemBuilder,
+            ),
+          )
+
+        ],
+      )
     );
   }
 }

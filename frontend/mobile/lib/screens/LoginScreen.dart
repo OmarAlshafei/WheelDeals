@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile/routes/routes.dart';
 import 'package:mobile/utils/getAPI.dart';
 import 'package:mobile/utils/Colors.dart';
+import 'package:mobile/utils/Cars.dart';
 import 'package:mobile/utils/header.dart';
 import 'package:mobile/utils/currentUser.dart' as currentUser;
 import 'dart:convert';
+import 'package:localstorage/localstorage.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'HomeScreen.dart';
 
 class GlobalData
 {
@@ -110,15 +117,90 @@ class _MainPageState extends State<MainPage> {
   Color messageColor = appColors.black;
   bool obscurePassword = true;
 
+  late SharedPreferences prefs;
+
   @override
   void initState() {
     super.initState();
+    initSharedPref();
+  }
+
+  void initSharedPref() async {
+      prefs = await SharedPreferences.getInstance();
   }
 
   changeText() {
     setState(() {
       message = newMessageText;
     });
+  }
+
+  Future<bool> verify() async {
+    // verificationSent = true;
+    // setState(() {
+    //   message = "Account has not been verified\nPlease re-register.";
+    //   messageColor = appColors.errRed;
+    // });
+
+    return true;
+  }
+
+  void login() async {
+    newMessageText = "";
+    changeText();
+
+    bool success = true;
+
+    String payload = '{"userName":"' + loginName.trim() + '","password":"' + password.trim() + '"}';
+    var fname ='-';
+    var jsonObject;
+    var ret;
+    var token;
+
+    try
+    {
+      String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/login';
+      ret = await CarsData.getJson(url, payload);
+      jsonObject = json.decode(ret);
+      token = jsonObject["accessToken"];
+      print(token);
+    }
+    catch(e)
+    {
+      newMessageText = e.toString();
+      changeText();
+      return;
+    }
+    if (token == null) {
+      newMessageText = "Incorrect Login/Password";
+      messageColor = appColors.errRed;
+      changeText();
+      success = false;
+    }
+    if(success) {
+      Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(token);
+      print(jwtDecodedToken["email"]);
+      print(jwtDecodedToken["firstName"]);
+      print(jwtDecodedToken["lastName"]);
+      // print(jwtDecodedToken["_id"]);
+      // currentUser.userId = jwtDecodedToken["_id"];
+      currentUser.firstName = jwtDecodedToken["firstName"];
+      currentUser.lastName = jwtDecodedToken["lastName"];
+      if (jwtDecodedToken["email"] != null) {
+        currentUser.email = jwtDecodedToken["email"];
+      }
+      currentUser.userName = loginName;
+      currentUser.password = password;
+      //prefs.setString("token",token);
+      currentUser.loggedIn = true;
+      currentUser.token = token;
+
+      Navigator.pushNamed(context, Routes.HOMESCREEN);
+      //Navigator.push(context, MaterialPageRoute(builder:(context)=>HomeScreen(token:token)));
+    }
+    else{
+      print("Why no success?");
+    }
   }
 
   @override
@@ -224,60 +306,7 @@ class _MainPageState extends State<MainPage> {
                           ),
                           onPressed: () async
                           {
-                            newMessageText = "";
-                            changeText();
-
-                            String payload = '{"userName":"' + loginName.trim() + '","password":"' + password.trim() + '"}';
-                            var userId = '';
-                            var fname ='-';
-                            var jsonObject;
-                            String ret = 'ah';
-
-                            try
-                            {
-                              String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/login';
-                              ret = await CarsData.getJson(url, payload);
-                              jsonObject = json.decode(ret);
-                              fname = jsonObject["firstName"];
-                              // newMessageText = jsonObject["email"];
-                              // changeText();
-                            }
-                            catch(e)
-                            {
-                              newMessageText = e.toString();
-                              changeText();
-                              return;
-                            }
-                            if (fname == '')
-                            {
-                              if (loginName == '' && password == '') {
-                                newMessageText = "Please enter Username and Password";
-                              }
-                              else if (loginName == '') {
-                                newMessageText = "Please enter Username";
-                              }
-                              else if (password == '') {
-                                newMessageText = "Please enter Password";
-                              }
-                              else {
-                                newMessageText = "Incorrect Login/Password";
-                              }
-                              messageColor = appColors.errRed;
-                              changeText();
-                            }
-                            else
-                            {
-                              currentUser.userId = jsonObject["_id"];
-                              currentUser.firstName = jsonObject["firstName"];
-                              currentUser.lastName = jsonObject["lastName"];
-                              if (jsonObject["email"] != null) {
-                                currentUser.email = jsonObject["email"];
-                              }
-                              currentUser.userName = loginName;
-                              currentUser.password = password;
-                              currentUser.loggedIn = true;
-                              Navigator.pushNamed(context, Routes.HOMESCREEN);
-                            }
+                            login();
                           },
                         ),
                       ),

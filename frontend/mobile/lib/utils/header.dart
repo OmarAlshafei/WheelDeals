@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/routes/routes.dart';
 import 'package:mobile/utils/Colors.dart';
+import 'package:mobile/utils/Cars.dart';
 import 'package:mobile/utils/currentUser.dart' as currentUser;
+
+
 
 
 class Header extends StatefulWidget implements PreferredSizeWidget{
@@ -23,9 +26,10 @@ class _HeaderState extends State<Header> {
     return AppBar(
       leading: GestureDetector(
         onTap: () {
-          if (currentUser.loggedIn) {
-            Navigator.pushNamed(context, Routes.HOMESCREEN);
-          }
+          Navigator.pushNamed(context, Routes.HOMESCREEN);
+          // if (currentUser.loggedIn) {
+          //   Navigator.pushNamed(context, Routes.HOMESCREEN);
+          // }
         },
         child: Image.asset(
             'images/logo.png',
