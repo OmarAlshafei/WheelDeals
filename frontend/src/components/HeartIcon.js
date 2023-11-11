@@ -1,73 +1,96 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faHeart as faHeartOutline } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHeart as faHeartFilled,
+  faHeart as faHeartOutline,
+} from "@fortawesome/free-solid-svg-icons";
 
 const HeartIcon = (props) => {
-    const make = props.favMake;
-    const model = props.favModel;
-  
-    const [isFilled, setIsFilled] = useState(
-      localStorage.getItem("isFilled") === "true"
-    );
+  const make = props.favMake;
+  const model = props.favModel;
 
-    useEffect(() => {
-      localStorage.setItem("isFilled", isFilled);
-    }, [isFilled]);
-  
-  
-  const jwtToken = localStorage.getItem("jwt");
-  const userDataString = localStorage.getItem('user_data');
-  const userData = JSON.parse (userDataString);
-  const id = userData.id;
-  //console.log("jwt: " +jwtToken);
+  const [isFilled, setIsFilled] = useState(false);
 
+  useEffect(() => {
+    const jwtToken = localStorage.getItem("jwt");
+    const userDataString = localStorage.getItem("user_data");
+    const userData = JSON.parse(userDataString);
+    const id = userData.id;
 
-  const fetchData = async () => {
-    // console.log(id);
-    // console.log(make);
-    // console.log(model);
-    
-    
-    try {
-      const app_name = "wheeldeals-d3e9615ad014";
-      const route = "api/addfavorite";
-      const apiUrl =
-        process.env.NODE_ENV === "production"
-          ? `https://${app_name}.herokuapp.com/${route}`
-          : `http://localhost:9000/${route}`;
+    const getFavorite = async () => {
+      try {
+        const app_name = "wheeldeals-d3e9615ad014";
+        const route = "api/getfavorites";
+        const apiUrl =
+          process.env.NODE_ENV === "production"
+            ? `https://${app_name}.herokuapp.com/${route}`
+            : `http://localhost:9000/${route}`;
 
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({id, make, model, jwtToken}),
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, jwtToken }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`Request failed with status: ${res.status}`);
+        }
+
+        const result = await res.json();
         
-        
-      });
+        result["favorites"].map((favorite) => {
+          if(make === favorite["make"] && favorite["model"] === model){
+            setIsFilled(true);
+          }
+        })
 
-      if (!res.ok) {
-        throw new Error(`Request failed with status: ${res.status}`);
+        // setIsFilled(result !== null);
+      } catch (error) {
+        console.error("Error:", error);
       }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+    };
 
-  
+    getFavorite();
+  }, [make, model]);
 
-  const toggleFilled = () => {
-    // Call API
-    if (isFilled == false) {
-      setIsFilled(true);
-      fetchData();
+  const toggleFilled = async () => {
+    // Call API only if not already filled
+    if (!isFilled) {
+      try {
+        const jwtToken = localStorage.getItem("jwt");
+        const userDataString = localStorage.getItem("user_data");
+        const userData = JSON.parse(userDataString);
+        const id = userData.id;
+
+        const app_name = "wheeldeals-d3e9615ad014";
+        const route = "api/addfavorite";
+        const apiUrl =
+          process.env.NODE_ENV === "production"
+            ? `https://${app_name}.herokuapp.com/${route}`
+            : `http://localhost:9000/${route}`;
+
+        const res = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, make, model, jwtToken }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`Request failed with status: ${res.status}`);
+        }
+
+        setIsFilled(true);
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
-    
   };
 
   return (
-    <td  style={{ cursor: "pointer" }}>
+    <td style={{ cursor: "pointer" }}>
       <FontAwesomeIcon
         onClick={() => toggleFilled()}
-        icon={isFilled ? faHeart : faHeartOutline}
+        icon={isFilled ? faHeartFilled : faHeartOutline}
         style={{
           color: isFilled ? "#ff0000" : "#ccc",
           fontSize: "24px",
