@@ -53,3 +53,10 @@ input[type="submit"] {
   background: #14213d;
   margin-left: 3%;
 }
+
+#loginResult {
+  color: red;
+  margin-left: 5%;
+  text-align: center;
+  font-weight: bold;
+}

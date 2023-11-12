@@ -51,13 +51,13 @@ const LandingPage = () => {
           onRequestClose={() => setVisible(false)}
           className="modal-section"
         >
-          <SigninPage></SigninPage>
-          {/* <button onClick={() => setVisible(false)}>Close modal</button> */}
           <FontAwesomeIcon
             icon={faX}
             onClick={() => setVisible(false)}
             className="close-button"
           />
+          <SigninPage></SigninPage>
+          {/* <button onClick={() => setVisible(false)}>Close modal</button> */}
         </Modal>
       </div>
     </div>
