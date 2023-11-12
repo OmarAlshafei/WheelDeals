@@ -1,6 +1,12 @@
-.filtersContainer{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 20px;
+.filtersContainer {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  gap: 22px;
+}
+
+.search-header {
+  font-size: 25px;
+  text-align: center;
+  margin-top: 20px;
 }

@@ -7,6 +7,7 @@
   width: 100%;
   height: 100vh;
 } */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap");
 
 .video-background {
   position: fixed;
@@ -38,7 +39,7 @@ video {
 
 .intro-section {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -48,13 +49,19 @@ video {
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
+.intro-section-title,
+.intro-section-subtitle {
+  font-family: "Roboto Slab", serif;
+  /* text-shadow: rgba(252, 252, 252, 0.918) 1px 0 10px; */
+}
+
 .intro-section-button {
   text-decoration: none;
   margin-top: 2rem;
   padding: 0.5rem 1rem;
   border: 2px solid white;
   border-radius: 5px;
-  background-color: #14213d;
+  background-color: #ffd50064;
   color: white;
   font-size: 20px;
   font-weight: 600;
@@ -68,11 +75,11 @@ video {
   border: 1px solid rgb(204, 204, 204);
   background: rgb(255, 255, 255);
   overflow: auto;
-  border-radius: 4px;
+  border-radius: 10px;
   outline: none;
   padding: 20px;
   width: 30%;
-  top: 15%;
+  top: 10%;
   /* bottom: 10%; */
   left: 35%;
   background-color: #14213d;

@@ -112,12 +112,15 @@ const Login = (props) => {
           ref={(c) => setLoginPassword(c)}
         />
         <br />
-        <input
+        <button
           type="submit"
           id="loginButton"
-          className="buttons"
+          className="login-button"
           value="LOGIN"
-        />
+        >
+          LOGIN
+        </button>
+
         <br />
         <button
           onClick={() => props.onFormSwitch("Register")}

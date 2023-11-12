@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
+import "./ModelFilter.css";
 
 const ModelFilter = (props) => {
   const { currentMake } = props;
@@ -17,9 +18,12 @@ const ModelFilter = (props) => {
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ make: currentMake,  jwtToken: localStorage.getItem("jwt") }),
+        body: JSON.stringify({
+          make: currentMake,
+          jwtToken: localStorage.getItem("jwt"),
+        }),
       });
-      
+
       if (!res.ok) {
         throw new Error(`Request failed with status: ${res.status}`);
       }
@@ -56,8 +60,9 @@ const ModelFilter = (props) => {
           pathname: "/cardetail",
           state: { make: currentMake, model: model },
         }}
+        className="search-button"
       >
-        search
+        SEARCH
       </Link>
     </div>
   );

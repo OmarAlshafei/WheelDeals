@@ -57,19 +57,19 @@ const Table = () => {
 
   return (
     <>
-      <h1 className="tableTitle">Top popular cars</h1>
+      <h1 className="tableTitle">Top Popular Cars</h1>
       <table
         className="table table-hover align-middle mb-0 bg-white"
-        style={{ marginTop: "30px" }}
+        style={{ marginTop: "30px", width: '80%',
+        marginLeft: '200px', }}
       >
-        <thead className="bg-light">
+        <thead className="bg-light" >
           <tr>
             <th>Rank</th>
             <th>Type</th>
             <th>Brand</th>
             <th>Model</th>
             <th>Price</th>
-            {/* <th>Favorite</th> */}
           </tr>
         </thead>
         <tbody>

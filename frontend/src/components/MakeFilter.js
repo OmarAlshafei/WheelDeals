@@ -19,7 +19,7 @@ const MakeFilter = () => {
       let res = await fetch(buildPath("api/makes"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jwtToken : localStorage.getItem("jwt") })
+        body: JSON.stringify({ jwtToken: localStorage.getItem("jwt") }),
       });
       setOptions(await res.json());
     } catch (error) {
@@ -39,15 +39,21 @@ const MakeFilter = () => {
   };
 
   return (
-    <div className="filtersContainer">
-      <select value={currentMake} onChange={handleChange}>
-        <option value="">Select a make</option>
-        {options.map((option, index) => (
-          <option>{option}</option>
-        ))}
-      </select>
-      <ModelFilter currentMake={currentMake} />
-    </div>
+    <>
+      <div className="search-header">
+        <div>WELCOME TO WHEELDEALS</div>
+        <div>Look For Your Dream Car</div>
+      </div>
+      <div className="filtersContainer">
+        <select value={currentMake} onChange={handleChange}>
+          <option value="">Select a make</option>
+          {options.map((option, index) => (
+            <option>{option}</option>
+          ))}
+        </select>
+        <ModelFilter currentMake={currentMake} />
+      </div>
+    </>
   );
 };
 

@@ -54,11 +54,12 @@ input[type="submit"] {
   margin-left: 28%;
   margin-bottom: 20px;
   padding: 6px;
-  border: 2px solid white;
+  border: 1px solid;
   border-radius: 3px;
-  background: #14213d;
-  color: #fff;
+  background: #fca311;
+  color: black;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .login-link {
@@ -67,4 +68,32 @@ input[type="submit"] {
   border-radius: 3px;
   background: #14213d;
   margin-left: 3%;
+}
+
+.confirmation-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 20%;
+}
+
+.header {
+  display: flex;
+  left: 5px;
+  flex-direction: column;
+}
+
+.message {
+  margin-top: 20px;
+  font-size: 27px;
+  align-items: center;
+  text-align: center;
+  font-weight: bold;
+}
+
+.second-message {
+  margin-top: 20px;
+  font-size: 20px;
+  text-align: center;
 }

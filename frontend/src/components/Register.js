@@ -31,7 +31,7 @@ const Register = (props) => {
         if (response.error) {
           alert(response.error);
         } else {
-          setConfirmationMessage("A verification email has been sent to you");
+          setConfirmationMessage("A verification email has been sent to you.");
           // alert("User has been added");
           // props.onFormSwitch("Login");
         }
@@ -46,8 +46,14 @@ const Register = (props) => {
     <div>
       {confirmationMessage && (
         <div className="confirmation-message">
-          <a href="/home">
-            <img src={logo} height="40" alt="Logo" loading="lazy" />
+          <a href="/" className="header">
+            <img
+              src={logo}
+              height="40"
+              alt="Logo"
+              loading="lazy"
+              className="logo"
+            />
             <br></br>
             <FontAwesomeIcon
               icon={faEnvelopeCircleCheck}
@@ -56,8 +62,8 @@ const Register = (props) => {
             />
           </a>
 
-          <div>{confirmationMessage}</div>
-          <div>
+          <div className="message">{confirmationMessage}</div>
+          <div className="second-message">
             Check your inbox and verify your email address to get started. If
             you don't see it, please check your spam folder.
           </div>

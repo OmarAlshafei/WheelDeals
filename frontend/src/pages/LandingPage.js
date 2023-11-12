@@ -36,7 +36,7 @@ const LandingPage = () => {
         <div className="intro-section">
           <h1 className="intro-section-title">WHEEL DEALS</h1>
           <p className="intro-section-subtitle">
-            Keep you updated with the lastest trendy cars!
+            Keep updated with the lastest popular cars!
           </p>
           <button
             onClick={() => setVisible(true)}

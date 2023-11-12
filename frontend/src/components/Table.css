@@ -1,4 +1,8 @@
-.tableTitle{
-    text-align: center;
-    margin-top: 20px;
+.tableTitle {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.carousel-indicators [data-bs-target] {
+  background-color: black;
 }
