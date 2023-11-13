@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { Link, NavLink, useHistory } from "react-router-dom";
 import HeartIcon from "../components/HeartIcon";
+import image from "../assets/fav-header5.jpg";
+import "./FavoritesPage.css";
 
 const FavoritesPage = () => {
   const userDataString = localStorage.getItem("user_data");
@@ -55,37 +57,50 @@ const FavoritesPage = () => {
 
   return (
     <>
-      <h1 className="tableTitle">Your favorite cars</h1>
-      <div className="container">
-      <div className="table-responsive">
-      <table
-        className="table table-hover align-middle mb-0 bg-white"
-        style={{ marginTop: "30px" }}
-      >
-        <thead className='table-warning'>
-          <tr>
-            <th>Number</th>
-            <th>Type</th>
-            <th>Brand</th>
-            <th>Model</th>
-            <th>Price</th>
-            <th>Favorite</th>
-          </tr>
-        </thead>
-        <tbody>
-          {newCars.map((car, index) => (
-            <tr key={index}>
-              <td onClick={() => handleRowClick(car)}>{index + 1}</td>
-              <td onClick={() => handleRowClick(car)}>{car.type}</td>
-              <td onClick={() => handleRowClick(car)}>{car.make}</td>
-              <td onClick={() => handleRowClick(car)}>{car.model}</td>
-              <td onClick={() => handleRowClick(car)}>${car.price}</td>
-              <HeartIcon favMake={car.make} favModel={car.model} />
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="favorites-header">
+        <div className="image-container">
+          <img
+            src={image} // Replace with the actual image URL
+            alt="My Favorites"
+            className="img-fluid"
+          />
+        </div>
+        <div className="title-container">
+          <a href="/favorites" className="favorites-title">
+            MY FAVORITES
+          </a>
+        </div>
       </div>
+      <div className="container">
+        <div className="table-responsive">
+          <table
+            className="table table-hover align-middle mb-0 bg-white"
+            style={{ marginTop: "30px" }}
+          >
+            <thead className="table-warning">
+              <tr>
+                <th>Number</th>
+                <th>Type</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Price</th>
+                <th>Favorite</th>
+              </tr>
+            </thead>
+            <tbody>
+              {newCars.map((car, index) => (
+                <tr key={index}>
+                  <td onClick={() => handleRowClick(car)}>{index + 1}</td>
+                  <td onClick={() => handleRowClick(car)}>{car.type}</td>
+                  <td onClick={() => handleRowClick(car)}>{car.make}</td>
+                  <td onClick={() => handleRowClick(car)}>{car.model}</td>
+                  <td onClick={() => handleRowClick(car)}>${car.price}</td>
+                  <HeartIcon favMake={car.make} favModel={car.model} />
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );
