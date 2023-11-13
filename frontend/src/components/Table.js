@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-regular-svg-icons";
-import HeartIcon from "./HeartIcon";
 import "./Table.css";
 import { Link, NavLink, useHistory } from "react-router-dom";
 
@@ -58,12 +55,14 @@ const Table = () => {
   return (
     <>
       <h1 className="tableTitle">Top Popular Cars</h1>
+      <div className="container">
+      <div className="table-responsive">
       <table
         className="table table-hover align-middle mb-0 bg-white"
-        style={{ marginTop: "30px", width: '80%',
-        marginLeft: '200px', }}
+        style={{ marginTop: "30px", 
+         }}
       >
-        <thead className="bg-light" >
+        <thead className='table-warning' >
           <tr>
             <th>Rank</th>
             <th>Type</th>
@@ -80,11 +79,12 @@ const Table = () => {
               <td>{car.brand}</td>
               <td>{car.model}</td>
               <td>${car.price}</td>
-              <td>{/* <HeartIcon brand={car.brand} model={car.model}/> */}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      </div>
+      </div>
     </>
   );
 };
