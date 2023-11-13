@@ -677,6 +677,102 @@ app.post('/api/removefavorite', async (req, res, next) => {
 })
 
 
+app.post("/api/modify", async (req, res, next) => {
+  // incoming: userID; new firstName, lastName and userName
+  // outgoing: new firstName, lastName and userName
+
+  var token = require('./createJWT.js');
+  var error = "";
+
+  const { userId, newFirstName, newLastName, newUserName, jwtToken} = req.body;
+
+  try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+  
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch (e) {
+    console.log(e.message);
+  }
+
+    const db = client.db('cop4331');
+    var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
+    carList = Object.values(results["carsArr"])
+    carList = carList.filter((car) => (car["make"] != make || car["model"] != model))
+    console.log(carList)
+
+    await db.collection("Users").updateOne({ _id : new ObjectId(id)}, {$set: {carsArr: carList}});
+
+    var ret = { message: "Favorite removed successfully", error: '' };
+    res.status(200).json(ret);
+})
+
+
+app.post("/api/modify", async (req, res, next) => {
+  // incoming: userID; new firstName, lastName and userName
+  // outgoing: new firstName, lastName and userName
+
+  var token = require('./createJWT.js');
+  var error = "";
+
+  const { userId, newFirstName, newLastName, newUserName, jwtToken} = req.body;
+
+  try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+  
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch (e) {
+    console.log(e.message);
+  }
+
+    const db = client.db('cop4331');
+    var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
+    carList = Object.values(results["carsArr"])
+    carList = carList.filter((car) => (car["make"] != make || car["model"] != model))
+    console.log(carList)
+
+    await db.collection("Users").updateOne({ _id : new ObjectId(id)}, {$set: {carsArr: carList}});
+
+    var ret = { message: "Favorite removed successfully", error: '' };
+    res.status(200).json(ret);
+})
+
+
 
 
 

@@ -52,9 +52,10 @@ const FavoritesPage = () => {
       state: { make: item.make, model: item.model },
     });
   };
-
+  //const imageUrl = 'https://images.pexels.com/photos/3422964/pexels-photo-3422964.jpeg?auto=compress&cs=tinysrgb&w=800';
   return (
     <>
+    {/* <img src={imageUrl} alt="Car Example" style={{ width: '100%' }}/> */}
       <h1 className="tableTitle">Your favorite cars</h1>
       <div className="container">
       <div className="table-responsive">
