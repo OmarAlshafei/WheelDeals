@@ -11,4 +11,29 @@
 
 select {
   height: 38px;
+  width: 50%;
+}
+
+.search-button {
+  width: 50%;
+  text-align: center;
+}
+
+@media screen and (max-width: 1386px) {
+  .search-button {
+    margin-top: 10px; /* Adjust spacing for smaller screens */
+    margin-left: 0; /* Reset left margin */
+    display: block; /* Make the button a block element for full width */
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .search-button {
+    margin-top: 10px; /* Adjust spacing for smaller screens */
+    margin-left: 0; /* Reset left margin */
+    display: block; /* Make the button a block element for full width */
+    width: 50%;
+    font-size: 13px;
+    text-align: center;
+  }
 }
