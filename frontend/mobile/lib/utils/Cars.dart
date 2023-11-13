@@ -8,12 +8,14 @@ class Car {
   String model = "";
   String type = "?";
   String price = "?";
-  var histData;
+  int rank = -1;
+  var histData = null;
 
-  Car(this.make, this.model, this.price, this.type, this.histData);
+  Car(this.rank, this.make, this.model, this.price, this.type, this.histData);
+
 
   factory Car.fromJson(dynamic json) {
-    return Car(json['make'] as String, json['model'] as String, json['price'] as String, json['type'] as String, json['histogramData']);
+    return Car(json['rank'] as int, json['make'] as String, json['model'] as String, json['price'] as String, json['type'] as String, json['histogramData']);
   }
 
   @override
@@ -42,21 +44,36 @@ class appCars {
 
   static Image carPic = Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNOLQiaToHY1eu0J6Bz5XD5-IoBxrhcf3XeQ&usqp=CAU");
 
+  static List<Car> popularCars = [];
 
-
+  static void initPopularCars() {
+    for (int i = 0; i < 25; i++) {
+      popularCars.add(Car(-1,"","","","",null));
+    }
+  }
 
   static Future<void> getHomeApi() async {
     //_data = fetchedData["data"];
+    //popularCars = [];
 
     String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/homepage';
-    var ret = await CarsData.getJson(url, "");
-    print(ret);
+    String payload = '{"jwtToken":"${currentUser.token}"}';
+    var ret = await CarsData.getJson(url, payload);
     var jsonObject = json.decode(ret);
-    var object;
-    for (object in jsonObject)
-    {
-      _data?.add(object);
+    //print(jsonObject["matchedCars"]);
+
+    var obj;
+
+    for (int i=0; i < jsonObject["matchedCars"].length; i++) {
+      obj = jsonObject["matchedCars"][i];
+      popularCars[i] = Car(i+1, obj["brand"], obj["model"], "\$${obj['price']}", obj["type"], null);
     }
+
+    popularCars = popularCars.sublist(0, 25); // keep 1st 25 (fixing extra empty cars)
+    // for (Car c in popularCars) {
+    //   print(c);
+    // }
+    // print(popularCars.length);
   }
 
   // static Future<String> getPicApi(String make, String model) async{
@@ -215,7 +232,7 @@ class appCars {
   }
 
   static String price = "?";
-  static Car currentCar = Car("","","","","");
+  static Car currentCar = Car(-1, "","","","","");
 
   static Future<void> search(context, String make, String model) async {
     // API returns image, price, brandLogo, and histogramData
@@ -249,7 +266,7 @@ class appCars {
       price = "\$${jsonObj["price"]}";
       print(price);
 
-      currentCar = Car(make, model, price, jsonObj["type"], jsonObj["histogramData"]);
+      currentCar = Car(-1, make, model, price, jsonObj["type"], jsonObj["histogramData"]);
 
       String picUrl = jsonObj["image"];
       appCars.carPic = Image.network(picUrl, width: 350,);

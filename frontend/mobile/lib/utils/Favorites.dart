@@ -20,7 +20,7 @@ class Favorites {
     payload = '{"jwtToken":"${currentUser.token}","make":"$make","model":"$model"}';
     ret = await CarsData.getJson(url,payload);
     jsonObj = json.decode(ret);
-    currentUser.favCars.add(Car(make, model, "\$${jsonObj["price"]}", jsonObj["type"], jsonObj["histogramData"]));
+    currentUser.favCars.add(Car(-1, make, model, "\$${jsonObj["price"]}", jsonObj["type"], jsonObj["histogramData"]));
 
     if (originPage == "home") {
       Navigator.pushNamed(context, Routes.HOMESCREEN);
@@ -31,7 +31,7 @@ class Favorites {
   }
 
   static Future<void> unfavorite(context, String make, String model, String originPage) async {
-    Car goner = Car("","","","","");
+    Car goner = Car(-1, "","","","","");
     print("Unfavoriting $make $model");
 
     // Delete from database
@@ -86,7 +86,7 @@ class Favorites {
       payload = '{"jwtToken":"${currentUser.token}","make":"${obj["make"]}","model":"${obj["model"]}"}';
       ret = await CarsData.getJson(url,payload);
       jsonObj = json.decode(ret);
-      currentUser.favCars.add(Car(obj["make"], obj["model"], "\$${jsonObj["price"]}", jsonObj["type"], jsonObj["histogramData"]));
+      currentUser.favCars.add(Car(-1,obj["make"], obj["model"], "\$${jsonObj["price"]}", jsonObj["type"], jsonObj["histogramData"]));
     }
 
     for (Car c in currentUser.favCars) {

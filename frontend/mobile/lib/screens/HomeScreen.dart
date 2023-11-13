@@ -94,20 +94,20 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
 
   late String email;
-  final appCars _data = appCars();
+  final List _data = [];
   List<bool> fav = <bool>[];
+
 
   Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(currentUser.token);
 
   //email = jwtDecodedToken["email"];
 
+
   @override
   void initState() {
+    appCars.initPopularCars();
+    appCars.getHomeApi();
     super.initState();
-    // initialize favorites list to all false
-    for (int i=0; i < _data.getLength(); i++) {
-      fav.add(false);
-    }
   }
 
   void favorite(String id, int index) {
@@ -121,18 +121,19 @@ class _MainPageState extends State<MainPage> {
 
   Widget _itemBuilder(BuildContext context, int index) {
     IconData type;
-    bool fav = Favorites.isFav(appCars.getMake(index), appCars.getModel(index));
-    String make = appCars.getMake(index);
-    String model = appCars.getModel(index);
-    String price = appCars.getPrice(index);
-    switch (appCars.getType(index)) {
-      case "truck":
+    bool fav = Favorites.isFav(appCars.popularCars[index].make, appCars.popularCars[index].model);
+    String make = appCars.popularCars[index].make;
+    String model = appCars.popularCars[index].model;
+    String price = appCars.popularCars[index].price;
+    int rank = appCars.popularCars[index].rank;
+    switch (appCars.popularCars[index].type) {
+      case "Truck":
         type = FontAwesomeIcons.truckPickup;
         break;
-      case "sedan":
+      case "Sedan":
         type = FontAwesomeIcons.carSide;
         break;
-      case "suv":
+      case "SUV":
         type = FontAwesomeIcons.vanShuttle;
         break;
       default:
@@ -171,7 +172,7 @@ class _MainPageState extends State<MainPage> {
                 child: Column(
                     children: [
                       ListTile(
-                        title: Text("$make $model"),
+                        title: Text("$rank) $make $model"),
                         subtitle: Text(price),
                         trailing: Theme (
                             data: ThemeData(useMaterial3: true),
@@ -229,8 +230,8 @@ class _MainPageState extends State<MainPage> {
             child: Column(
                 children: [
                   ListTile(
-                    title: Text("${appCars.getMake(index)} ${appCars.getModel(index)}"),
-                    subtitle: Text(appCars.getPrice(index)),
+                    title: Text("$rank) $make $model"),
+                    subtitle: Text(price),
                     trailing: Theme (
                         data: ThemeData(useMaterial3: true),
                         child: IconButton(
@@ -362,7 +363,7 @@ class _MainPageState extends State<MainPage> {
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.zero,
-              itemCount: _data.getLength(),
+              itemCount: appCars.popularCars.length,
               itemBuilder: _itemBuilder,
             ),
           )
