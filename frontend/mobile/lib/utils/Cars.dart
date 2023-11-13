@@ -121,43 +121,25 @@ class appCars {
     return currentCarIndex;
   }
 
-  static int getCarIndexFromID(String id) {
-    for (int i=0; i < _data!.length; i++) {
-      if (getId(i) == id) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  static String getId(int index) {
-    return _data![index]["id"];
-  }
-
   static String getMake(int index) {
-    return _data![index]["make"];
+    return popularCars[index].make;
   }
 
   static String getModel(int index) {
     if (_data == null) return "";
-    return _data![index]["model"];
-  }
-
-  static int getYear(int index) {
-    if (_data == null) return -1;
-    return _data![index]["year"];
+    return popularCars[index].model;
   }
 
   static String getPrice(int index) {
-    return _data![index]["price"];
+    return popularCars[index].price;
   }
 
   static String getType(int index) {
-    return _data![index]["type"];
+    return popularCars[index].type;
   }
 
   int getLength() {
-    return _data!.length;
+    return popularCars.length;
   }
 
   static List<String> makes = [];
