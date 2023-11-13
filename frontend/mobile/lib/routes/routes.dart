@@ -4,6 +4,7 @@ import 'package:mobile/screens/LoginScreen.dart';
 import 'package:mobile/screens/CarsScreen.dart';
 import 'package:mobile/screens/HomeScreen.dart';
 import 'package:mobile/screens/RegisterScreen.dart';
+import 'package:mobile/screens/FavScreen.dart';
 
 
 class Routes {
@@ -12,6 +13,7 @@ class Routes {
   static const String HOMESCREEN = '/home';
   static const String REGISTERSCREEN = '/register';
   static const String ACCOUNTSCREEN = '/account';
+  static const String FAVSCREEN = '/fav';
 
   // routes of pages in the app
   static Map<String, Widget Function(BuildContext)> get getroutes => {
@@ -21,5 +23,6 @@ class Routes {
     HOMESCREEN: (context) => HomeScreen(),
     REGISTERSCREEN: (context) => RegisterScreen(),
     ACCOUNTSCREEN: (context) => AccountScreen(),
+    FAVSCREEN: (context) => FavScreen(),
   };
 }

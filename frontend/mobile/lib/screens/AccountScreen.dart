@@ -38,12 +38,7 @@ class _AccountScreenState extends State<AccountScreen> {
               ListTile(
                 title: const Text('Favorites'),
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Favorites'),
-                    ),//AlertDialog
-                  );
+                  Navigator.pushNamed(context, Routes.FAVSCREEN);
                 },
               ),
               ListTile(
@@ -139,12 +134,7 @@ class _MainPageState extends State<MainPage> {
                           backgroundColor: appColors.gold,
                         ),
                         onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (ctx) => const AlertDialog(
-                              title: Text("Favorites page coming soon!"),
-                              )
-                          );
+                          Navigator.pushNamed(context, Routes.FAVSCREEN);
                         },
                         child: const Text('View Favorite Vehicles',style: TextStyle(fontSize: 18,color:Colors.black)),
                       ),

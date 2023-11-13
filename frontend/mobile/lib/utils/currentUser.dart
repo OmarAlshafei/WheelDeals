@@ -1,4 +1,6 @@
 
+import 'Cars.dart';
+
 bool loggedIn = false;
 bool verified = false;
 String userId = '';
@@ -7,7 +9,7 @@ String lastName = '';
 String userName = '';
 String password = '';
 String email = '-';
-List<String> favCars = <String>[];
+List<Car> favCars = <Car>[];
 String token = '';
 
 void clear() {
@@ -18,5 +20,8 @@ void clear() {
   password = '';
   email = '';
   loggedIn = false;
+  favCars = [];
 }
+
+
 

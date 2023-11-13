@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile/routes/routes.dart';
+import 'package:mobile/utils/Favorites.dart';
 import 'package:mobile/utils/getAPI.dart';
 import 'package:mobile/utils/Colors.dart';
 import 'package:mobile/utils/Cars.dart';
@@ -179,11 +180,11 @@ class _MainPageState extends State<MainPage> {
     }
     if(success) {
       Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(token);
-      print(jwtDecodedToken["email"]);
-      print(jwtDecodedToken["firstName"]);
-      print(jwtDecodedToken["lastName"]);
-      // print(jwtDecodedToken["_id"]);
-      // currentUser.userId = jwtDecodedToken["_id"];
+      // print(jwtDecodedToken["email"]);
+      // print(jwtDecodedToken["firstName"]);
+      // print(jwtDecodedToken["lastName"]);
+      print(jwtDecodedToken);
+      currentUser.userId = jwtDecodedToken["userId"];
       currentUser.firstName = jwtDecodedToken["firstName"];
       currentUser.lastName = jwtDecodedToken["lastName"];
       if (jwtDecodedToken["email"] != null) {
@@ -195,6 +196,7 @@ class _MainPageState extends State<MainPage> {
       currentUser.loggedIn = true;
       currentUser.token = token;
 
+      Favorites.getFavorites(context);
       Navigator.pushNamed(context, Routes.HOMESCREEN);
       //Navigator.push(context, MaterialPageRoute(builder:(context)=>HomeScreen(token:token)));
     }

@@ -6,6 +6,10 @@ import 'package:mobile/utils/header.dart';
 import 'dart:convert';
 import 'package:mobile/utils/currentUser.dart' as currentUser;
 import 'package:mobile/utils/Cars.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:intl/intl.dart';
+
+import '../utils/Favorites.dart';
 
 
 
@@ -40,12 +44,7 @@ class _CarsScreenState extends State<CarsScreen> {
               ListTile(
                 title: const Text('Favorites'),
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Favorites'),
-                    ),//AlertDialog
-                  );
+                  Navigator.pushNamed(context, Routes.FAVSCREEN);
                 },
               ),
               ListTile(
@@ -75,28 +74,60 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
+class histData {
+  final double percentOfMarket;
+  final int bucket;
+
+  histData(this.percentOfMarket, this.bucket);
+}
+
 class _MainPageState extends State<MainPage> {
 
   String carId = "";
   appCars _data = appCars();
   int carIndex = appCars.getCarIndex();
+  Car car = appCars.currentCar;
+  bool fav = Favorites.isFav(appCars.currentCar.make, appCars.currentCar.model);
 
   @override
   void initState() {
     super.initState();
   }
 
+  SfCartesianChart makeHist(List jsonData) {
+    List<histData> data = [];
+    for (var obj in jsonData) {
+      data.add(histData(obj["percentOfMarket"], obj["bucket"]));
+    }
 
+    return SfCartesianChart(
+      title: ChartTitle(text: 'Percent of Market w/ Car Price'),
+      legend: Legend(isVisible: true),
+      //tooltipBehavior: _tooltipBehavior,
+      series: <ChartSeries>[
+        BarSeries<histData, int>(
+            name: 'GDP',
+            dataSource: data,
+            xValueMapper: (histData d, _) => d.bucket,
+            yValueMapper: (histData d, _) => d.percentOfMarket,
+            dataLabelSettings: DataLabelSettings(isVisible: true),
+            enableTooltip: true)
+      ],
+      primaryXAxis: NumericAxis(),
+      primaryYAxis: NumericAxis(
+          edgeLabelPlacement: EdgeLabelPlacement.shift,
+          numberFormat: NumberFormat.simpleCurrency(decimalDigits: 0),
+          title: AxisTitle(text: 'Car Price')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    String make = appCars.getMake(carIndex);
-    String model = appCars.getModel(carIndex);
-    int year = appCars.getYear(carIndex);
-    String price = appCars.getPrice(carIndex);
+    String make = appCars.selectedMake;
+    String model = appCars.selectedModel;
+    String price = appCars.price;
 
-    print(make + model);
-
+    print(fav);
 
     return Container(
         width: 400,
@@ -124,21 +155,42 @@ class _MainPageState extends State<MainPage> {
                     Container(
                       //margin: const EdgeInsets.only(bottom: 10.0),
                       child: Text(
-                        "$year $make $model",
+                        "$make $model",
                         style: const TextStyle(fontSize: 24),
                       ),
                     ),
                     const Spacer(),
-                    Container(
-                      margin: const EdgeInsets.only(right: 10.0),
-                      child: Text(
-                        price,
-                        style: const TextStyle(fontSize: 18),
-                      )
+                    IconButton(
+                      isSelected: fav,
+                      color: appColors.red,
+                      onPressed: () {
+                        setState(() {
+                          fav = !fav;
+                        });
+                        if (fav) {
+                          Favorites.unfavorite(context, make, model, "carInfo");
+                        }
+                        else {
+                          Favorites.favorite(context, make, model, "carInfo");
+                        }
+                      },
+                      icon: const Icon(Icons.favorite_outline),
+                      selectedIcon: const Icon(Icons.favorite),
                     )
 
                   ],
                 ),// name
+                Row(
+                  children: [
+                    Container(
+                        margin: const EdgeInsets.only(right: 10.0),
+                        child: Text(
+                          price,
+                          style: const TextStyle(fontSize: 18),
+                        )
+                    )
+                  ],
+                ),
 
                 Row(
                   children: <Widget>[
@@ -156,10 +208,8 @@ class _MainPageState extends State<MainPage> {
                     Container(
                       margin: const EdgeInsets.only(left:50, top:30),
                       alignment: Alignment.center,
-                      child: const Text(
-                        "Stay tuned for more info!",
-                        style: TextStyle(fontSize: 24),
-                      )
+                      //child: makeHist(car.histData)
+                      child: const Text("Working on histogram")
                     )
                   ],
                 )

@@ -3,6 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:mobile/utils/getAPI.dart';
 import 'package:mobile/utils/currentUser.dart' as currentUser;
 
+class Car {
+  String make = "";
+  String model = "";
+  String type = "?";
+  String price = "?";
+  var histData;
+
+  Car(this.make, this.model, this.price, this.type, this.histData);
+
+  factory Car.fromJson(dynamic json) {
+    return Car(json['make'] as String, json['model'] as String, json['price'] as String, json['type'] as String, json['histogramData']);
+  }
+
+  @override
+  String toString() {
+    return '{ $make, $model , $price, $type}';
+  }
+
+}
 
 class appCars {
   Map fetchedData = {
@@ -22,23 +41,23 @@ class appCars {
     _data = fetchedData["data"];
   }
 
-  static Future<String> getPicApi(String make, String model) async{
-    String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/search';
-    String payload = '{"make":"$make","model":"$model"}';
-    String ret = await CarsData.getJson(url, payload);
-    var jsonObject = json.decode(ret);
-
-    return jsonObject["image"];
-  }
-
-  static void getImage(String make, String model) async {
-
-    String pic = await getPicApi(make, model);
-    print(pic);
-    appCars.carPic = Image.network(pic, width: 350,);
-
-    return;
-  }
+  // static Future<String> getPicApi(String make, String model) async{
+  //   String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/search';
+  //   String payload = '{"make":"$make","model":"$model"}';
+  //   String ret = await CarsData.getJson(url, payload);
+  //   var jsonObject = json.decode(ret);
+  //
+  //   return jsonObject["image"];
+  // }
+  //
+  // static void getImage(String make, String model) async {
+  //
+  //   String pic = await getPicApi(make, model);
+  //   //print(pic);
+  //   appCars.carPic = Image.network(pic, width: 350,);
+  //
+  //   return;
+  // }
 
   /*Future load() {
     rocket = new ImageElement(src: "nofire.png");
@@ -55,11 +74,12 @@ class appCars {
   }*/
 
   // for more car info
-  static Future setCarIndex(int index) async {
+  static Future selectCar(int index, context) async {
     currentCarIndex = index;
+    selectedMake = getMake(index);
+    selectedModel = getModel(index);
 
-    getImage(getMake(index), getModel(index));
-
+    await search(context, selectedMake, selectedModel);
   }
 
   static int getCarIndex() {
@@ -112,7 +132,7 @@ class appCars {
     String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/makes';
     String payload = '{"jwtToken":"${currentUser.token}"}';
     var ret = await CarsData.getJson(url,payload);
-    print(ret);
+    //print(ret);
     var makesDyn = json.decode(ret);
     var makesStr = makesDyn.cast<String>();
     int count = 0;
@@ -127,15 +147,15 @@ class appCars {
 
   static void modelApi() async {
     String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/models';
-    String payload = '{"jwtToken":"${currentUser.token}"}';
-    print(selectedMake);
-    var ret = await CarsData.getJson(url,selectedMake);
-    print(ret);
+    //print("Selected Make: $selectedMake");
+    String payload = '{"jwtToken":"${currentUser.token}","make":"$selectedMake"}';
+    var ret = await CarsData.getJson(url,payload);
     var modelsDyn = json.decode(ret);
     var modelsStr = modelsDyn.cast<String>();
     int count = 0;
+    models = [];
     for (String m in modelsStr) {
-      //print(makes);
+      //print(m);
       if (!models.contains(m)) {
         count = count + 1;
         models.add(m);
@@ -143,10 +163,13 @@ class appCars {
     }
   }
 
+  static String selectedMake = "";
+  static String selectedModel = "";
+
   static List<DropdownMenuItem<String>> getMakeOptions() {
     makeApi();
     List<DropdownMenuItem<String>> makeItems = [];
-    print(makes);
+    //print(makes);
     for (String make in makes) {
       //print(make);
       makeItems.add(DropdownMenuItem(value: make, child: Text(make)));
@@ -154,33 +177,66 @@ class appCars {
     return makeItems;
   }
 
-  static String selectedMake = "";
-
   static List<DropdownMenuItem<String>> getModelOptions() {
     List<DropdownMenuItem<String>> modelItems = [];
-    print("Selected Make: $selectedMake");
 
     if (selectedMake == "") {
-      print("Empty make");
+      //print("Empty make");
       modelItems.add(const DropdownMenuItem(value: "", child: Text("Select a Make")));
       return modelItems;
     }
-
     else {
-      //modelItems.remove(""); // get rid of "Select a Make"
       modelItems = [];
-      //print("Calling modelAPI");
       modelApi();
-      //print("Models populated");
       for (String model in models) {
         //print(model);
         modelItems.add(DropdownMenuItem(value: model, child: Text(model)));
       }
       return modelItems;
-
     }
   }
 
+  static String price = "?";
+  static Car currentCar = Car("","","","","");
+
+  static Future<void> search(context, String make, String model) async {
+    // API returns image, price, brandLogo, and histogramData
+
+    if (selectedMake == "") {
+      showDialog(
+        context: context,
+        builder: (context) => const AlertDialog(
+          title: Text('Select a car make'),
+        ),//
+      );
+    }
+    else if (selectedModel == "" ){
+      showDialog(
+        context: context,
+        builder: (context) => const AlertDialog(
+          title: Text('Select a car model'),
+        ),//
+      );
+    }
+    else {
+      String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/search';
+      String payload = '{"jwtToken":"${currentUser.token}","make":"$make","model":"$model"}';
+      var ret = await CarsData.getJson(url,payload);
+      var jsonObj = json.decode(ret);
+      print(jsonObj["histogramData"].runtimeType);
+      print(jsonObj["histogramData"]);
+
+      print("Searching for $make $model");
+
+      price = "\$${jsonObj["price"]}";
+      print(price);
+
+      currentCar = Car(make, model, price, jsonObj["type"], jsonObj["histogramData"]);
+
+      String picUrl = jsonObj["image"];
+      appCars.carPic = Image.network(picUrl, width: 350,);
+    }
+  }
 
 
 }
