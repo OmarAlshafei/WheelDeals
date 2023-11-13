@@ -474,7 +474,7 @@ app.post('/api/homepage', async (req, res, next) => {
 app.post("/api/makes", async (req, res, next) => {
   // incoming: N/A
   // outgoing: json of all the makes
-  var token = require('./createJWT.js');
+  //var token = require('./createJWT.js');
   var error = "";
   const db = client.db("carTypes");
   console.log("test");
@@ -677,6 +677,111 @@ app.post('/api/removefavorite', async (req, res, next) => {
 })
 
 
+app.post("/api/modify", async (req, res, next) => {
+  // incoming: userID; new firstName, lastName and userName
+  // outgoing: new firstName, lastName and userName
+
+  var token = require('./createJWT.js');
+  var error = "";
+
+  const { userId, newFirstName, newLastName, newUserName, jwtToken} = req.body;
+
+  try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+  
+  var refreshedToken = null;
+  try
+  {
+    refreshedToken = token.refresh(jwtToken);
+  }
+  catch (e) {
+    console.log(e.message);
+  }
+
+    const db = client.db('cop4331');
+    var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
+    carList = Object.values(results["carsArr"])
+    carList = carList.filter((car) => (car["make"] != make || car["model"] != model))
+    console.log(carList)
+
+    await db.collection("Users").updateOne({ _id : new ObjectId(id)}, {$set: {carsArr: carList}});
+
+    var ret = { message: "Favorite removed successfully", error: '' };
+    res.status(200).json(ret);
+})
+
+
+app.post("/api/modify", async (req, res, next) => {
+  // incoming: userID; new firstName, lastName and userName
+  // outgoing: new firstName, lastName and userName
+
+  var token = require('./createJWT.js');
+  var error = "";
+
+  const { userId, newFirstName, newLastName, newUserName, jwtToken} = req.body;
+
+  try
+      {
+        if( token.isExpired(jwtToken))
+        {
+          var r = {error:'The JWT is no longer valid', jwtToken: ''};
+          res.status(200).json(r);
+          return;
+        }
+      }
+      catch(e)
+      {
+        console.log(e.message);
+        var r = {error:e.message, jwtToken: ''};
+        res.status(200).json(r);
+        return;
+      }
+
+      var refreshedToken = null;
+      try
+      {
+        refreshedToken = token.refresh(jwtToken);
+      }
+      catch(e)
+      {
+        console.log(e.message);
+      }
+  
+
+  const db = client.db("cop4331");
+
+  try {
+    const result = await db.collection("Users").updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { firstName: newFirstName, lastName: newLastName, userName: newUserName } }
+    );
+
+    if (result.matchedCount > 0) {
+      // If at least one document is matched and updated
+      res.status(200).json({ firstName: newFirstName, lastName: newLastName, userName: newUserName });
+    } else {
+      // If no document is matched
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 
 
