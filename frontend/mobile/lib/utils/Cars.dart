@@ -24,6 +24,8 @@ class Car {
 }
 
 class appCars {
+
+  /*
   Map fetchedData = {
     "data": [
       {"id": "1", "make": "Ford", "model":"F-150", "year":2020, "price":"\$13,000","type":"truck"},
@@ -32,13 +34,29 @@ class appCars {
       {"id": "4", "make": "Toyota", "model":"Camry", "year":2021, "price":"\$12,000","type":"sedan"},
     ]
   };
-  static List? _data;
+
+   */
+
+  static List? _data = [];
   static int currentCarIndex = -1;
 
   static Image carPic = Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNOLQiaToHY1eu0J6Bz5XD5-IoBxrhcf3XeQ&usqp=CAU");
 
-  appCars() {
-    _data = fetchedData["data"];
+
+
+
+  static Future<void> getHomeApi() async {
+    //_data = fetchedData["data"];
+
+    String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/homepage';
+    var ret = await CarsData.getJson(url, "");
+    print(ret);
+    var jsonObject = json.decode(ret);
+    var object;
+    for (object in jsonObject)
+    {
+      _data?.add(object);
+    }
   }
 
   // static Future<String> getPicApi(String make, String model) async{
