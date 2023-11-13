@@ -56,11 +56,13 @@ const FavoritesPage = () => {
   return (
     <>
       <h1 className="tableTitle">Your favorite cars</h1>
+      <div className="container">
+      <div className="table-responsive">
       <table
         className="table table-hover align-middle mb-0 bg-white"
         style={{ marginTop: "30px" }}
       >
-        <thead className="bg-light">
+        <thead className='table-warning'>
           <tr>
             <th>Number</th>
             <th>Type</th>
@@ -83,6 +85,8 @@ const FavoritesPage = () => {
           ))}
         </tbody>
       </table>
+      </div>
+      </div>
     </>
   );
 };
