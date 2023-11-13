@@ -40,18 +40,36 @@ const MakeFilter = () => {
 
   return (
     <>
-      <div className="search-header">
-        <div>WELCOME TO WHEELDEALS</div>
-        <div>Look For Your Dream Car</div>
-      </div>
-      <div className="filtersContainer">
-        <select value={currentMake} onChange={handleChange}>
-          <option value="">Select a make</option>
-          {options.map((option, index) => (
-            <option>{option}</option>
-          ))}
-        </select>
-        <ModelFilter currentMake={currentMake} />
+      <div className="flex-container">
+        {/* welcome start */}
+        <div className="flex-item">
+          <h4 style={{ color: "#14213d" }}>
+            <strong>WELCOME</strong> TO OUR WEBSITE
+          </h4>
+          <p style={{ marginTop: "19px", fontSize: "larger" }}>
+            We are CS seniors at University of Central Florida. This is a course
+            project. Our mission is to provide you the top popular cars and
+            their sale distributions to boost up your business.
+          </p>
+        </div>
+        {/* Search start */}
+
+        <div className="filtersContainer flex-item">
+          <div className="search-header">
+            <h4 style={{ color: "#14213d" }}>
+              <strong>SEARCH</strong> OUR INVENTORY
+            </h4>
+          </div>
+
+          <select value={currentMake} onChange={handleChange}>
+            <option value="">Select a make</option>
+            {options.map((option, index) => (
+              <option>{option}</option>
+            ))}
+          </select>
+
+          <ModelFilter currentMake={currentMake} />
+        </div>
       </div>
     </>
   );

@@ -1,8 +1,9 @@
 .tableTitle {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 30px;
+  color: #14213d;
 }
 
 .carousel-indicators [data-bs-target] {
-  background-color: black;
+  background-color: rgb(255, 255, 255);
 }

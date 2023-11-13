@@ -54,36 +54,35 @@ const Table = () => {
 
   return (
     <>
-      <h1 className="tableTitle">Top Popular Cars</h1>
+      <h1 className="tableTitle">TOP POPULAR CARS</h1>
       <div className="container">
-      <div className="table-responsive">
-      <table
-        className="table table-hover align-middle mb-0 bg-white"
-        style={{ marginTop: "30px", 
-         }}
-      >
-        <thead className='table-warning' >
-          <tr>
-            <th>Rank</th>
-            <th>Type</th>
-            <th>Brand</th>
-            <th>Model</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {newCars.map((car, index) => (
-            <tr key={index} onClick={() => handleRowClick(car)}>
-              <td>{car.rank}</td>
-              <td>{car.type}</td>
-              <td>{car.brand}</td>
-              <td>{car.model}</td>
-              <td>${car.price}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
+        <div className="table-responsive">
+          <table
+            className="table table-hover align-middle mb-0 bg-white"
+            style={{ marginTop: "30px" }}
+          >
+            <thead className="table-warning">
+              <tr>
+                <th>Rank</th>
+                <th>Type</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              {newCars.map((car, index) => (
+                <tr key={index} onClick={() => handleRowClick(car)}>
+                  <td>{car.rank}</td>
+                  <td>{car.type}</td>
+                  <td>{car.brand}</td>
+                  <td>{car.model}</td>
+                  <td>${car.price}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );

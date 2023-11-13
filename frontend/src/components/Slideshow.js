@@ -1,9 +1,9 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import Carousel from "react-bootstrap/Carousel";
 import React, { useState, useEffect } from "react";
-import Image1 from "./Toyota_Rav4.jpg";
-import Image2 from "./Toyota_Corolla.jpg";
-import Image3 from "./Toyota_Camry.jpg";
+import Image1 from "../assets/Toyota-Rav4-2.jpeg";
+import Image2 from "../assets/Toyota-Camry-2.jpeg";
+import Image3 from "../assets/Toyota-Corolla-2.jpeg";
 import "./Slideshow.css";
 
 const Slideshow = () => {
@@ -51,20 +51,17 @@ const Slideshow = () => {
   }, []);
 
   return (
-    <Carousel
-      activeIndex={index}
-      onSelect={handleSelect}
-    >
+    <Carousel activeIndex={index} onSelect={handleSelect}>
       <Carousel.Item>
         <img
           className="d-block w-100"
           src={Image1}
           style={{
-            height: "600px",
-            marginTop: "50px",
+            height: "750px",
+            // marginTop: "50px",
             marginBottom: "10px",
-            paddingRight: "50px",
-            paddingLeft: "50px",
+            // paddingRight: "50px",
+            // paddingLeft: "50px",
           }}
           alt="Car 1"
         />
@@ -73,16 +70,17 @@ const Slideshow = () => {
           <p>Top 1</p>
         </Carousel.Caption>
       </Carousel.Item>
+
       <Carousel.Item>
         <img
           src={Image2}
           className="d-block w-100"
           style={{
-            height: "600px",
-            marginTop: "50px",
+            height: "750px",
+            // marginTop: "50px",
+            // paddingRight: "50px",
+            // paddingLeft: "50px",
             marginBottom: "10px",
-            paddingRight: "50px",
-            paddingLeft: "50px",
           }}
           alt="Car 2"
         />
@@ -91,16 +89,17 @@ const Slideshow = () => {
           <p>Top 2</p>
         </Carousel.Caption>
       </Carousel.Item>
+
       <Carousel.Item>
         <img
           src={Image3}
           className="d-block w-100"
           style={{
-            height: "600px",
-            marginTop: "50px",
+            height: "750px",
+            // marginTop: "50px",
+            // paddingRight: "50px",
+            // paddingLeft: "50px",
             marginBottom: "10px",
-            paddingRight: "50px",
-            paddingLeft: "50px",
           }}
           alt="Car 3"
         />

@@ -3,10 +3,43 @@
   justify-content: center;
   padding-top: 20px;
   gap: 22px;
+  flex-direction: column;
 }
 
-.search-header {
+/* .search-header {
   font-size: 25px;
   text-align: center;
   margin-top: 20px;
+} */
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.flex-item {
+  flex: 1;
+  padding: 20px;
+}
+
+@media screen and (max-width: 900px) {
+  select {
+    width: 50%; /* Make the select element full width on smaller screens */
+  }
+
+  .filtersContainer {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    gap: 22px;
+  }
+
+  .flex-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
 }

@@ -7,8 +7,8 @@ import "./HomePage.css";
 const HomePage = () => {
   return (
     <div className="HomePage">
-      <MakeFilter />
       <Slideshow />
+      <MakeFilter />
       <Table />
     </div>
   );

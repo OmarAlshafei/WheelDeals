@@ -24,5 +24,8 @@
 .carousel {
   /* width: 1000px;
   height: 700px; */
-  margin: auto;
+  /* margin: auto; */
+  width: 100%;
+  height: auto;
+  object-fit: cover;
 }
