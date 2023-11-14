@@ -276,7 +276,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
 
     String makeText = (appCars.selectedMake == "") ? "Make" : appCars.selectedMake;
-    String modelText = (appCars.selectedModel == "") ? "Make" : appCars.selectedModel;
+    String modelText = (appCars.selectedModel == "") ? "Model" : appCars.selectedModel;
 
     return Container(
       child: Column(
