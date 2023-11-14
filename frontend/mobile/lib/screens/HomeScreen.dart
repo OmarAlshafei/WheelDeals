@@ -275,8 +275,8 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
 
-    String makeText = (appCars.selectedMake == "") ? "Make" : appCars.selectedMake;
-    String modelText = (appCars.selectedModel == "") ? "Model" : appCars.selectedModel;
+    String makeText = (appCars.searchedMake == "") ? "Make" : appCars.searchedMake;
+    String modelText = (appCars.searchedModel == "") ? "Model" : appCars.searchedModel;
 
     return Container(
       child: Column(
@@ -304,12 +304,12 @@ class _MainPageState extends State<MainPage> {
                   items: appCars.getMakeOptions(),
                   dropdownColor: appColors.gray,
                   onChanged: (String? newValue) async {
-                    appCars.selectedMake = newValue!;
+                    appCars.searchedMake = newValue!;
                     await appCars.modelApi();
                     setState(() {
                       make = newValue!;
                       // print("Make: ${appCars.selectedMake}");
-                      appCars.selectedModel = ""; // no cross contamination
+                      appCars.searchedModel = ""; // no cross contamination
                       //print(selectedMake);
                       //appCars.makeApi();
                     });
@@ -332,7 +332,7 @@ class _MainPageState extends State<MainPage> {
                   dropdownColor: appColors.gray,
                   onChanged: (String? newValue){
                     setState(() {
-                      appCars.selectedModel = newValue!;
+                      appCars.searchedModel = newValue!;
                       model = newValue!;
                       // print("Model: ${appCars.selectedModel}");
                       //appCars.makeApi();
@@ -345,7 +345,7 @@ class _MainPageState extends State<MainPage> {
                 child: IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () async {
-                    await appCars.search(context, appCars.selectedMake, appCars.selectedModel);
+                    appCars.currentCar = await appCars.searchCar(appCars.searchedMake, appCars.searchedModel,context);
                     Navigator.pushNamed(context, Routes.CARSSCREEN);
                   },)
               )

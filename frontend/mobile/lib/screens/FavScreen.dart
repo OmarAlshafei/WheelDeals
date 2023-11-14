@@ -144,7 +144,10 @@ class _MainPageState extends State<MainPage> {
                           child: const Text('MORE INFO',
                               style:TextStyle(color:appColors.navy)),
                           onPressed: () async {
-                            appCars.currentCar = await appCars.selectCar(index, context, "favScreen");
+                            print(currentUser.favCars);
+
+                            print(index);
+                            appCars.currentCar = await appCars.selectCar(index, context, "fav");
                             //await appCars.search(context, make, model);
                             Navigator.pushNamed(context, Routes.CARSSCREEN);
                           },

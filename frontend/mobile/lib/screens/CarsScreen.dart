@@ -130,8 +130,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    String make = appCars.selectedMake;
-    String model = appCars.selectedModel;
+    String make = car.make;
+    String model = car.model;
     String price = car.price;
 
     //print(fav);
