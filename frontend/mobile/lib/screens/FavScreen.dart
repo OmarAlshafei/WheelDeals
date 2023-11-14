@@ -27,8 +27,6 @@ class _FavScreenState extends State<FavScreen> {
     super.initState();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,7 +117,7 @@ class _MainPageState extends State<MainPage> {
               children: [
                 ListTile(
                   title: Text("$make $model"),
-                  subtitle: Text("$price"),
+                  subtitle: Text(price, style: const TextStyle(color: appColors.black),),
                   trailing: Theme (
                       data: ThemeData(useMaterial3: true),
                       child: IconButton(
@@ -138,15 +136,16 @@ class _MainPageState extends State<MainPage> {
                     Container(
                       margin: const EdgeInsets.only(left: 20.0),
                       child: FaIcon(type,color: appColors.navy),
-                    ),
+                    ), // TYPE ICON
                     const Spacer(),
                     ButtonBar(
                       children: [
                         TextButton(
                           child: const Text('MORE INFO',
                               style:TextStyle(color:appColors.navy)),
-                          onPressed: () {
-                            appCars.search(context, make, model);
+                          onPressed: () async {
+                            appCars.currentCar = await appCars.selectCar(index, context, "favScreen");
+                            //await appCars.search(context, make, model);
                             Navigator.pushNamed(context, Routes.CARSSCREEN);
                           },
                         )
@@ -156,7 +155,6 @@ class _MainPageState extends State<MainPage> {
                 )
               ]
           )
-
       ),
     );
   }
@@ -174,7 +172,7 @@ class _MainPageState extends State<MainPage> {
                   fontSize: 28
               ),
             ),
-          ) ,
+          ) , // TITLE
 
           Expanded(
             child: ListView.builder(

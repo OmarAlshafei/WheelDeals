@@ -10,7 +10,7 @@ import 'package:mobile/screens/FavScreen.dart';
 import 'package:mobile/utils/header.dart';
 import 'package:mobile/utils/Cars.dart';
 import 'package:mobile/utils/Favorites.dart' as favClass;
-import 'package:mobile/screens/LoginScreen.dart' as login;
+import 'package:mobile/screens/CarsScreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/utils/currentUser.dart' as currentUser;
 
@@ -29,6 +29,10 @@ class HomeScreen extends StatefulWidget {
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
+
+  HomeScreen({@required this.CarsScreenState});
+
+  final CarsScreenState;
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -93,30 +97,21 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
-  late String email;
-  final List _data = [];
-  List<bool> fav = <bool>[];
-
+  String make = "Make";
+  String model = "Model";
 
   Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(currentUser.token);
 
-  //email = jwtDecodedToken["email"];
+  void getHomeApiHelper() async {
+    await appCars.getHomeApi();
+  }
 
 
   @override
   void initState() {
-    appCars.initPopularCars();
-    appCars.getHomeApi();
+    appCars.initPopularCars();  // set all to empty
+    getHomeApiHelper();
     super.initState();
-  }
-
-  void favorite(String id, int index) {
-
-    //AlertDialog(content:Text("something"));
-    setState(() {
-      fav[index] = !fav[index];
-    });
-    //Navigator.pushNamed(context, Routes.CARSSCREEN);
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
@@ -126,6 +121,7 @@ class _MainPageState extends State<MainPage> {
     String model = appCars.popularCars[index].model;
     String price = appCars.popularCars[index].price;
     int rank = appCars.popularCars[index].rank;
+
     switch (appCars.popularCars[index].type) {
       case "Truck":
         type = FontAwesomeIcons.truckPickup;
@@ -163,7 +159,7 @@ class _MainPageState extends State<MainPage> {
                 fontSize: 28
               ),
             )
-          ),
+          ), // TITLE
           Container(
             height: 150,
             child: Card(
@@ -173,7 +169,7 @@ class _MainPageState extends State<MainPage> {
                     children: [
                       ListTile(
                         title: Text("$rank) $make $model"),
-                        subtitle: Text(price),
+                        subtitle: Text(price, style: const TextStyle(color: appColors.black),),
                         trailing: Theme (
                             data: ThemeData(useMaterial3: true),
                             child: IconButton(
@@ -204,10 +200,8 @@ class _MainPageState extends State<MainPage> {
                               TextButton(
                                 child: const Text('MORE INFO',
                                     style:TextStyle(color:appColors.navy)),
-                                onPressed: () {
-                                  //getCarId(_data.getId(index));
-                                  //getImage(make, model);
-                                  appCars.selectCar(index, context);
+                                onPressed: () async {
+                                  appCars.currentCar = await appCars.selectCar(index, context, "home");
                                   Navigator.pushNamed(context, Routes.CARSSCREEN);
                                 },
                               )
@@ -218,7 +212,7 @@ class _MainPageState extends State<MainPage> {
                     ]
                 )
             ),
-          )
+          )  // FIRST CARD
         ],
       );
     } // Make slideshow before first card
@@ -231,7 +225,7 @@ class _MainPageState extends State<MainPage> {
                 children: [
                   ListTile(
                     title: Text("$rank) $make $model"),
-                    subtitle: Text(price),
+                    subtitle: Text(price, style: const TextStyle(color: appColors.black),),
                     trailing: Theme (
                         data: ThemeData(useMaterial3: true),
                         child: IconButton(
@@ -262,8 +256,8 @@ class _MainPageState extends State<MainPage> {
                           TextButton(
                             child: const Text('MORE INFO',
                                 style:TextStyle(color:appColors.navy)),
-                            onPressed: () {
-                              appCars.selectCar(index, context);
+                            onPressed: () async {
+                              appCars.currentCar = await appCars.selectCar(index, context, "home");
                               Navigator.pushNamed(context, Routes.CARSSCREEN);
                             },
                           )
@@ -275,17 +269,14 @@ class _MainPageState extends State<MainPage> {
             )
 
         ),
-    );
+    ); // CARD
   }
-
-  String make = "Make";
-  String model = "Model";
 
   @override
   Widget build(BuildContext context) {
-    //appCars _data = appCars();
-    // appCars.selectedMake = "";
-    // appCars.selectedModel = "";
+
+    String makeText = (appCars.selectedMake == "") ? "Make" : appCars.selectedMake;
+    String modelText = (appCars.selectedModel == "") ? "Make" : appCars.selectedModel;
 
     return Container(
       child: Column(
@@ -294,7 +285,7 @@ class _MainPageState extends State<MainPage> {
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.only(left:5, top:10),
             child: const Text("Search:", style: TextStyle(fontSize: 18),)
-          ),
+          ), // SEARCH TITLE
           Row(
             children: [
               Container(
@@ -308,22 +299,23 @@ class _MainPageState extends State<MainPage> {
                 child: DropdownButton(
                   hint: Container(
                       margin: const EdgeInsets.only(left: 5.0),
-                      child: Text(make)
+                      child: Text(makeText)
                   ),
                   items: appCars.getMakeOptions(),
                   dropdownColor: appColors.gray,
-                  onChanged: (String? newValue){
+                  onChanged: (String? newValue) async {
+                    appCars.selectedMake = newValue!;
+                    await appCars.modelApi();
                     setState(() {
-                      appCars.selectedMake = newValue!;
                       make = newValue!;
-                      print("Make: ${appCars.selectedMake}");
+                      // print("Make: ${appCars.selectedMake}");
                       appCars.selectedModel = ""; // no cross contamination
                       //print(selectedMake);
                       //appCars.makeApi();
                     });
                   },
                 ),
-              ),// MAKE
+              ),// MAKE DROPDOWN
               Container(
                 height: 35,
                 margin: const EdgeInsets.only(top:5, bottom:10, left: 5),
@@ -334,7 +326,7 @@ class _MainPageState extends State<MainPage> {
                 child: DropdownButton(
                   hint: Container(
                       margin: const EdgeInsets.only(left: 5.0),
-                      child: Text(model)
+                      child: Text(modelText)
                   ),
                   items: appCars.getModelOptions(),
                   dropdownColor: appColors.gray,
@@ -342,23 +334,23 @@ class _MainPageState extends State<MainPage> {
                     setState(() {
                       appCars.selectedModel = newValue!;
                       model = newValue!;
-                      print("Model: ${appCars.selectedModel}");
+                      // print("Model: ${appCars.selectedModel}");
                       //appCars.makeApi();
                     });
                   },
                 ),
-              ),
+              ), // MODEL DROPDOWN
               Container(
                 //margin: const EdgeInsets.all(5),
                 child: IconButton(
                   icon: const Icon(Icons.search),
-                  onPressed: () {
-                    appCars.search(context, appCars.selectedMake, appCars.selectedModel);
+                  onPressed: () async {
+                    await appCars.search(context, appCars.selectedMake, appCars.selectedModel);
                     Navigator.pushNamed(context, Routes.CARSSCREEN);
                   },)
               )
             ],
-          ), // Search
+          ), // SEARCH
 
           Expanded(
             child: ListView.builder(

@@ -19,7 +19,7 @@ class CarsData {
           },
           encoding: Encoding.getByName("utf-8")
       );
-      ret = response.body;
+      ret = await response.body;
     }
     catch (e)
     {

@@ -56,6 +56,9 @@ class Favorites {
     if (originPage == "carInfo") {
       Navigator.pushNamed(context, Routes.CARSSCREEN);
     }
+    if (originPage == "home") {
+      Navigator.pushNamed(context, Routes.HOMESCREEN);
+    }
   }
 
   static bool isFav(String make, String model) {

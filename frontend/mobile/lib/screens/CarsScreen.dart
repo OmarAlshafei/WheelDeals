@@ -15,12 +15,12 @@ import '../utils/Favorites.dart';
 
 class CarsScreen extends StatefulWidget {
   @override
-  _CarsScreenState createState() => _CarsScreenState();
+  CarsScreenState createState() => CarsScreenState();
 }
 
-class _CarsScreenState extends State<CarsScreen> {
+class CarsScreenState extends State<CarsScreen> {
   @override
-  void initState() {
+   void initState() {
     super.initState();
   }
 
@@ -67,6 +67,12 @@ class _CarsScreenState extends State<CarsScreen> {
       body: MainPage(),
     );
   }
+
+  static void mySetState() {
+    setState() {
+
+    }
+  }
 }
 
 class MainPage extends StatefulWidget {
@@ -87,6 +93,7 @@ class _MainPageState extends State<MainPage> {
   appCars _data = appCars();
   int carIndex = appCars.getCarIndex();
   Car car = appCars.currentCar;
+
   bool fav = Favorites.isFav(appCars.currentCar.make, appCars.currentCar.model);
 
   @override
@@ -125,9 +132,9 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     String make = appCars.selectedMake;
     String model = appCars.selectedModel;
-    String price = appCars.price;
+    String price = car.price;
 
-    print(fav);
+    //print(fav);
 
     return Container(
         width: 400,
@@ -140,7 +147,7 @@ class _MainPageState extends State<MainPage> {
                 Row(
                   children: [
                     Container(
-                      margin:const EdgeInsets.only(bottom: 40.0),
+                      margin:const EdgeInsets.only(bottom: 20.0),
                       child:
                       const Text(
                         "Car Information",
@@ -149,48 +156,69 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ],
                 ),// title
-
-                Row(
-                  children: <Widget>[
-                    Container(
-                      //margin: const EdgeInsets.only(bottom: 10.0),
-                      child: Text(
-                        "$make $model",
-                        style: const TextStyle(fontSize: 24),
-                      ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      isSelected: fav,
-                      color: appColors.red,
-                      onPressed: () {
-                        setState(() {
-                          fav = !fav;
-                        });
-                        if (fav) {
-                          Favorites.unfavorite(context, make, model, "carInfo");
-                        }
-                        else {
-                          Favorites.favorite(context, make, model, "carInfo");
-                        }
-                      },
-                      icon: const Icon(Icons.favorite_outline),
-                      selectedIcon: const Icon(Icons.favorite),
-                    )
-
-                  ],
-                ),// name
-                Row(
-                  children: [
-                    Container(
-                        margin: const EdgeInsets.only(right: 10.0),
-                        child: Text(
-                          price,
-                          style: const TextStyle(fontSize: 18),
-                        )
-                    )
-                  ],
+                ListTile(
+                  title: Text("$make $model", style: const TextStyle(fontSize: 28),),
+                  subtitle: Text(price, style: const TextStyle(color: appColors.black, fontSize: 20),),
+                  trailing: Theme (
+                      data: ThemeData(useMaterial3: true),
+                      child: IconButton(
+                        isSelected: fav,
+                        color: appColors.red,
+                        onPressed: () {
+                          if (fav) {
+                            Favorites.unfavorite(context, make, model, "carInfo");
+                          }
+                          else {
+                            Favorites.favorite(context, make, model, "carInfo");
+                          }
+                        },
+                        icon: const Icon(Icons.favorite_outline, size: 35,),
+                        selectedIcon: const Icon(Icons.favorite, size: 35),
+                      )
+                  ),
                 ),
+
+
+                // Row(
+                //   children: <Widget>[
+                //     Container(
+                //       //margin: const EdgeInsets.only(bottom: 10.0),
+                //       child: Text(
+                //         "$make $model",
+                //         style: const TextStyle(fontSize: 24),
+                //       ),
+                //     ),
+                //     const Spacer(),
+                //     IconButton(
+                //       isSelected: fav,
+                //       color: appColors.red,
+                //       onPressed: () {
+                //         setState(() {
+                //           fav = !fav;
+                //         });
+                //         if (fav) {
+                //           Favorites.unfavorite(context, make, model, "carInfo");
+                //         }
+                //         else {
+                //           Favorites.favorite(context, make, model, "carInfo");
+                //         }
+                //       },
+                //       icon: const Icon(Icons.favorite_outline),
+                //       selectedIcon: const Icon(Icons.favorite),
+                //     )
+                //   ],
+                // ),// name
+                // Row(
+                //   children: [
+                //     Container(
+                //         margin: const EdgeInsets.only(right: 10.0),
+                //         child: Text(
+                //           price,
+                //           style: const TextStyle(fontSize: 18),
+                //         )
+                //     )
+                //   ],
+                // ),
 
                 Row(
                   children: <Widget>[
