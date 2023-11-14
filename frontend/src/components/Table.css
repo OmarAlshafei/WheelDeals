@@ -1,9 +1,25 @@
 .tableTitle {
-  text-align: center;
+  /* text-align: center;
   margin-top: 30px;
-  color: #14213d;
+  color: #14213d; */
+  text-align: center;
+  /* background-color: lightgrey; */
+  padding: 10px;
+  margin-top: 3%;
 }
 
 .carousel-indicators [data-bs-target] {
   background-color: rgb(255, 255, 255);
+}
+
+@media screen and (max-width: 900px) {
+  .tableTitle {
+    text-align: left;
+    padding: 10px;
+    margin-left: 30px;
+  }
+
+  .container {
+    margin-left: 30px;
+  }
 }
