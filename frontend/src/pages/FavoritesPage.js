@@ -54,7 +54,7 @@ const FavoritesPage = () => {
       state: { make: item.make, model: item.model },
     });
   };
-  //const imageUrl = 'https://images.pexels.com/photos/3422964/pexels-photo-3422964.jpeg?auto=compress&cs=tinysrgb&w=800';
+  
   return (
     <>
       <div className="favorites-header">

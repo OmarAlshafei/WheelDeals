@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Image from 'react-bootstrap/Image';
-import Container from 'react-bootstrap/Container';
-import ImageHeader from "./headerImg.jpg";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit } from '@fortawesome/free-regular-svg-icons'
+import image from "../assets/fav-header5.jpg";
+import "./UserInformation.css";
 
 const UserInfomation = (props) => {
       var _ud = localStorage.getItem('user_data');
@@ -25,41 +26,48 @@ const UserInfomation = (props) => {
 
   return (
     <div>
-      <div style={{ position: 'absolute', top: '50%', right: '60%', transform: 'translate(-50%, -50%)', zIndex: '1', textAlign: 'center', color: 'white' }}>
-        <h1>My Account</h1>
-      </div>
-      <Image src={ImageHeader} fluid style={{ width: '100%',  height: '700px' }} />
-
-      <div style={{color: 'black',  textAlign: 'center' }}>
-        <h1>Manage Account</h1>
+     <div className="favorites-header">
+        <div className="image-container">
+          <img
+            src={image} 
+            alt="My Favorites"
+            className="img-fluid"
+          />
+        </div>
+        <div className="title-container">
+          <a href="/favorites" className="favorites-title">
+            MY PROFILE
+          </a>
+        </div>
       </div>
      
+    <div className="display-info">
     <Form className="mx-3 mx-md-5">
       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-        <Form.Label>First Name</Form.Label>
+        <Form.Label>First Name </Form.Label>
         <Form.Control
-          type="email"
+          type="text"
           placeholder={firstName}
           readOnly={readOnly}
-          style={{ maxWidth: '400px' }} 
+          className="info-box"
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
         <Form.Label>Last Name</Form.Label>
         <Form.Control
-          type="email"
+          type="text"
           placeholder={lastName}
           readOnly={readOnly}
-          style={{ maxWidth: '400px' }} 
+          className="info-box"
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
         <Form.Label>Username</Form.Label>
         <Form.Control
-          type="email"
+          type="text"
           placeholder={userName}
           readOnly={readOnly}
-          style={{ maxWidth: '400px' }} 
+          className="info-box"
         />
       </Form.Group>
       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -67,14 +75,17 @@ const UserInfomation = (props) => {
         <Form.Control
           type="email"
           placeholder={email}
-          readOnly={readOnly}
-          style={{ maxWidth: '400px' }} 
+          readOnly={true}
+          className="info-box"
         />
       </Form.Group>
-      <Button variant="primary" onClick={handleEditClick}>
+  
+      <button variant="primary"  className="search-button" onClick={handleEditClick}>
         Edit
-      </Button>
+        <FontAwesomeIcon icon={faEdit} style={{color: "#080808", paddingLeft:'20px'}} />
+      </button>
     </Form>
+    </div>
     </div>
   );
 };
