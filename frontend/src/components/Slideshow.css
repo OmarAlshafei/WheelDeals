@@ -3,29 +3,3 @@
   justify-content: center;
   align-items: center;
 }
-/* 
-.slideshowImg{
-    height: "600px";
-    width: "300px";
-    margin-top: "50px";
-    margin-bottom: "10px";
-    padding-right: "50px";
-    padding-left: "50px";
-    display: 'block';
-
-    
-} */
-
-/* .carousel-inner > .carousel-item > img {
-  width: 1000px;
-  height: 360px;
-} */
-
-.carousel {
-  /* width: 1000px;
-  height: 700px; */
-  /* margin: auto; */
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}

@@ -48,7 +48,7 @@ const ModelFilter = (props) => {
   };
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "row", gap: "100px" }}>
       <select value={model} onChange={handleChange}>
         <option value="">Select a model</option>
         {options.map((option) => (

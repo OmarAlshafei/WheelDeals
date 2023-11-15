@@ -1,9 +1,9 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import Carousel from "react-bootstrap/Carousel";
 import React, { useState, useEffect } from "react";
-import Image1 from "../assets/Toyota-Rav4-2.jpeg";
-import Image2 from "../assets/Toyota-Camry-2.jpeg";
-import Image3 from "../assets/Toyota-Corolla-2.jpeg";
+import Image1 from "../assets/Toyota_Rav5.jpeg";
+import Image2 from "../assets/Toyota-Corolla-3.jpeg";
+import Image3 from "../assets/Toyota-Camry-3.jpeg";
 import "./Slideshow.css";
 
 const Slideshow = () => {
@@ -11,44 +11,46 @@ const Slideshow = () => {
   const handleSelect = (selectedIndex) => {
     setIndex(selectedIndex);
   };
-  const [detail, setDetail] = useState([]);
-  const jwtToken = localStorage.getItem("jwt");
-  const fetchData1 = async () => {
-    try {
-      const app_name = "wheeldeals-d3e9615ad014";
-      const route = "api/search";
-      const apiUrl =
-        process.env.NODE_ENV === "production"
-          ? `https://${app_name}.herokuapp.com/${route}`
-          : `http://localhost:9000/${route}`;
 
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          make: "Toyota",
-          model: "Rav4",
-          jwtToken: jwtToken,
-        }),
-      });
 
-      if (!res.ok) {
-        throw new Error(`Request failed with status: ${res.status}`);
-      }
+  // const [detail, setDetail] = useState([]);
+  // const jwtToken = localStorage.getItem("jwt");
+  // const fetchData1 = async () => {
+  //   try {
+  //     const app_name = "wheeldeals-d3e9615ad014";
+  //     const route = "api/search";
+  //     const apiUrl =
+  //       process.env.NODE_ENV === "production"
+  //         ? `https://${app_name}.herokuapp.com/${route}`
+  //         : `http://localhost:9000/${route}`;
 
-      const data = await res.json();
-      setDetail(data);
-      console.log("slideshow testing: ");
-      console.log(data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  //     const res = await fetch(apiUrl, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         make: "Toyota",
+  //         model: "Rav4",
+  //         jwtToken: jwtToken,
+  //       }),
+  //     });
 
-  useEffect(() => {
-    console.log("test search API");
-    fetchData1();
-  }, []);
+  //     if (!res.ok) {
+  //       throw new Error(`Request failed with status: ${res.status}`);
+  //     }
+
+  //     const data = await res.json();
+  //     setDetail(data);
+  //     console.log("slideshow testing: ");
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   console.log("test search API");
+  //   fetchData1();
+  // }, []);
 
   return (
     <Carousel activeIndex={index} onSelect={handleSelect}>
@@ -59,7 +61,7 @@ const Slideshow = () => {
           style={{
             height: "750px",
             // marginTop: "50px",
-            marginBottom: "10px",
+            // marginBottom: "10px",
             // paddingRight: "50px",
             // paddingLeft: "50px",
           }}
@@ -80,7 +82,7 @@ const Slideshow = () => {
             // marginTop: "50px",
             // paddingRight: "50px",
             // paddingLeft: "50px",
-            marginBottom: "10px",
+            // marginBottom: "10px",
           }}
           alt="Car 2"
         />
@@ -99,7 +101,7 @@ const Slideshow = () => {
             // marginTop: "50px",
             // paddingRight: "50px",
             // paddingLeft: "50px",
-            marginBottom: "10px",
+            // marginBottom: "10px",
           }}
           alt="Car 3"
         />
