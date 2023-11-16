@@ -13,19 +13,29 @@ const UserInfomation = (props) => {
       var firstName = ud.firstName;
       var lastName = ud.lastName;
       var userName = ud.userName
-      var email = ud.email;
+      var userEmail = ud.email;
       //var password = ud.password
-    const [message, setMessage] = useState("");
+    //const [message, setMessage] = useState("");
+ 
+  //const [readOnly, setReadOnly] = useState(true);
+  const [editing, setEditing] = useState(false);
 
-  const [readOnly, setReadOnly] = useState(true);
+  let viewMode = {};
+  let editMode = {};
+  if (editing) {
+    viewMode.display = 'none';
+  } else {
+    editMode.display = 'none';
+  }
 
-  const handleEditClick = () => {
-    setReadOnly(false);
+  const handleEditing = () => {
+    setEditing(true);
   };
 
 
   return (
     <div>
+      {/* header */}
      <div className="favorites-header">
         <div className="image-container">
           <img
@@ -36,55 +46,48 @@ const UserInfomation = (props) => {
         </div>
         <div className="title-container">
           <a href="/favorites" className="favorites-title">
-            MY PROFILE
+            MY ACCOUNT
           </a>
         </div>
       </div>
      
-    <div className="display-info">
-    <Form className="mx-3 mx-md-5">
-      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-        <Form.Label>First Name </Form.Label>
-        <Form.Control
+     {/* info boxes */}
+    <div className="display-info" >
+      <p id="infoTitle">Fist Name</p>
+
+        <input
           type="text"
-          placeholder={firstName}
-          readOnly={readOnly}
+          value={firstName}
           className="info-box"
+          id="info"
         />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-        <Form.Label>Last Name</Form.Label>
-        <Form.Control
+        <p id="infoTitle">Last Name</p>
+         <input
           type="text"
-          placeholder={lastName}
-          readOnly={readOnly}
+          value={lastName}
           className="info-box"
+          id="info"
         />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-        <Form.Label>Username</Form.Label>
-        <Form.Control
+        <p id="infoTitle">Username</p>
+        <input
           type="text"
-          placeholder={userName}
-          readOnly={readOnly}
+          value={userName}
           className="info-box"
+          id="info"
         />
-      </Form.Group>
-      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-        <Form.Label>Email</Form.Label>
-        <Form.Control
-          type="email"
-          placeholder={email}
-          readOnly={true}
+        <p id="infoTitle" >Email</p>
+         <input
+          type="text"
+          value={userEmail}
           className="info-box"
+          id="info"
         />
-      </Form.Group>
-  
-      <button variant="primary"  className="search-button" onClick={handleEditClick}>
-        Edit
-        <FontAwesomeIcon icon={faEdit} style={{color: "#080808", paddingLeft:'20px'}} />
-      </button>
-    </Form>
+         <button variant="primary"  className="search-button" onClick={handleEditing}>
+            Edit
+            <FontAwesomeIcon icon={faEdit} style={{color: "#080808", paddingLeft:'20px'}} />
+          </button>
+
+         
     </div>
     </div>
   );

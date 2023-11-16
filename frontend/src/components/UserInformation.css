@@ -40,3 +40,16 @@
   height: 70vh;
   
 }
+#info{
+  width: 100%;
+  margin-bottom: 20px;
+  background: none;
+  border: 2px solid #fca311;
+  border-radius: 3px;
+  color: black;
+}
+
+#infoTitle{
+    font-weight: bold;
+    font-size: 20px;
+}

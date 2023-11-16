@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import HeartIcon from "../components/HeartIcon";
 import Histogram from "../components/Histogram";
+import "./CarDetail.css";
+import image from "./headerImg.jpg";
 
 const CarDetail = (props) => {
   let { make, model } = props.location.state;
@@ -41,19 +43,46 @@ const CarDetail = (props) => {
 
   return (
     <div>
-      <h1>Car Detail</h1>
-      {/* <HeartIcon  /> */}
-      <HeartIcon favMake={make} favModel={model} />
-      <div className="header-brand">
-        <p>Brand: {make}</p>
-        <img src={detail.brandLogo}></img>
+      <div className="favorites-header">
+        <div className="image-container">
+          <img
+            src={image} 
+            alt="My Favorites"
+            className="img-fluid"
+          />
+        </div>
+        <div className="title-container">
+          <a href="/favorites" className="favorites-title">
+          CAR DETAILS
+          </a> 
+        </div>
+      </div>
+
+      {/* <h1>Car Details</h1> */}
+      <div className="header-container">
+        <div className="header-brand">
+          <p id="carInfo">{make}</p>
+          {/* <img src={detail.brandLogo}></img> */}
+        </div>
+        <div className="header-model">
+          <p id="carInfo">{model}</p>
+        </div>
+        <div className="header-type">
+          <p id="carInfo">{detail.type}</p>
+        </div>
+        <HeartIcon favMake={make} favModel={model} />
+      </div>    
+      <div className="header-price">
+        <p id="carInfo">${detail.price}</p>
       </div>
       <div className="body">
-        <p>Type: {detail.type}</p>
-        <p>Model: {model}</p>
-        <p>Price: ${detail.price}</p>
+        <div className="searchImage">
         <img src={detail.image} className="carImage"></img>
+        </div>
+        <h3 className="histogram-header">Histogram: percentage of cars sold based on bucket price</h3>
+        <div className="histogramGraph">
         <Histogram data={detail.histogramData} />
+        </div>
       </div>
 
 

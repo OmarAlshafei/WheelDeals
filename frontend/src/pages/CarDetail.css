@@ -1,0 +1,48 @@
+.header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    background-color: #fca311;
+    height: 10vh;
+    width: 100%; 
+    max-width: 800px; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.header-brand,
+.header-model,
+.header-type {
+    margin-right: 100px; 
+}
+
+.header-price{
+    display: flex;
+    justify-content: center;
+    margin-top: 30px; 
+}
+
+.carImage{
+    max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.histogram-header{
+    margin-top: 50px;
+}
+
+/* .histogramGraph{
+    width: 100%; 
+    margin-left: 90px;
+    max-width: 1200px; 
+    height: auto; 
+} */
+
+#carInfo{
+    font-weight: bold;
+    font-size: 25px;
+}
