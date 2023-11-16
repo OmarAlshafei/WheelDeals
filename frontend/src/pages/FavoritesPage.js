@@ -54,7 +54,7 @@ const FavoritesPage = () => {
       state: { make: item.make, model: item.model },
     });
   };
-
+  
   return (
     <>
       <div className="favorites-header">
