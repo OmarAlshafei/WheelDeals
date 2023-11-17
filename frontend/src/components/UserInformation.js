@@ -11,13 +11,13 @@ const UserInformation = (props) => {
   var userId = ud.id;
   var firstName = ud.firstName;
   var lastName = ud.lastName;
-  var userName = ud.userName;
+  var userName = ud.username;
   var userEmail = ud.email;
+  //alert(userDataString);
 
   const [editing, setEditing] = useState(false);
   const [editedFirstName, setEditedFirstName] = useState(firstName);
   const [editedLastName, setEditedLastName] = useState(lastName);
-  const [editedUserName, setEditedUserName] = useState(userName);
 
   const handleEditing = () => {
     setEditing(!editing);
@@ -28,10 +28,11 @@ const UserInformation = (props) => {
   }
 
   // try to call modify api on handleConfirmChanges()
-  // incoming: userID; new firstName, lastName and userName
+  // incoming: userID; new firstName, lastName
   // outgoing: new firstName, lastName and userName
-  
+
   // const handleConfirmChanges = async () => {
+  //   console.log("Confirm Changes button clicked");
   //   try {
   //     const app_name = "wheeldeals-d3e9615ad014";
   //     const route = "/api/modify";
@@ -50,7 +51,6 @@ const UserInformation = (props) => {
   //         userId,
   //         newFirstName: editedFirstName,
   //         newLastName: editedLastName,
-  //         newUserName: editedUserName,
   //       }),
   //     });
 
@@ -62,7 +62,11 @@ const UserInformation = (props) => {
   //     console.log("API Response:", result);
 
   //     setEditing(false);
-      
+  //     // setEditing(prevEditing => {
+  //     //   // Ensure the state is updated correctly
+  //     //   console.log("Inside setEditing callback");
+  //     //   return false;
+  //     // });
   //   } catch (error) {
   //     console.error("Error:", error);
   //   }
@@ -113,17 +117,7 @@ const UserInformation = (props) => {
           <p>{editedLastName}</p>
         )}
         <p id="infoTitle">Username</p>
-        {editing ? (
-          <input
-            type="text"
-            value={editedUserName}
-            className="info-box"
-            id="info"
-            onChange={(e) => setEditedUserName(e.target.value)}
-          />
-        ) : (
-          <p>{editedUserName}</p>
-        )}
+        <p>{userName}</p>
         <p id="infoTitle">Email</p>
         <p>{userEmail}</p>
         {editing ? (

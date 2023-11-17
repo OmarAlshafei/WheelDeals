@@ -27,22 +27,24 @@ const Login = (props) => {
       const { accessToken } = res;
       //alert("Access token is " + accessToken);
       const jwtDecoded = jwtDecode(accessToken, { complete: true });
-
+    
       try {
         var ud = jwtDecoded;
         var userId = ud.userId;
         var firstName = ud.firstName;
         var lastName = ud.lastName;
+        var userEmail = ud.email;;
+        //alert("jwt email " + ud.email);
         //alert(ud.accessToken);
 
         if (userId <= 0) {
           setMessage("User/Password combination incorrect");
         } else {
-          var user = { firstName: firstName, lastName: lastName, id: userId };
+          var user = { firstName: firstName, lastName: lastName, id: userId, email:userEmail, username: loginName.value };
           localStorage.setItem("user_data", JSON.stringify(user));
           localStorage.setItem("jwt", accessToken);
           //alert(localStorage.getItem('jwt'))
-
+         
           setMessage("");
           window.location.href = "/home";
         }
