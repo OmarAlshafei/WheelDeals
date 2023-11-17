@@ -21,7 +21,7 @@ function App() {
           <Route path="/home" component={HomePage} />
           <Route path="/signin" component={SigninPage} />
           <Route path="/cardetail" component={CarDetail} />
-          <Route path="/logout" component={Logout} />
+          {/* <Route path="/logout" component={Logout} /> */}
           <Route path="/account" component={AccountPage} />
           <Route path="/favorites" component={FavoritesPage} />
         </div>

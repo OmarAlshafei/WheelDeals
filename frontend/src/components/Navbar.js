@@ -4,8 +4,22 @@ import logo from "./main-logo.png";
 import React from "react";
 import Form from "react-bootstrap/Form";
 import "./Navbar.css";
+import { useHistory } from "react-router-dom";
 
 const Navbar = () => {
+  const history = useHistory();
+
+  const handleLogout = () => {
+    alert("Are you sure that you want to log out?");
+    // Clear local storage
+    localStorage.clear();
+
+    // Redirect to the landing page
+    history.push("/");
+
+    // Prevent going back to the previous page
+    history.go(1);
+  };
   return (
     <nav className="navbar navbar-light">
       <div className="container">
@@ -33,9 +47,11 @@ const Navbar = () => {
           </li>
 
           <li className="nav-item">
-            <a href="/logout" className="nav-link">
-              Log out
-            </a>
+            <alert>
+              <Link onClick={handleLogout} className="nav-link">
+                Log out
+              </Link>
+            </alert>
           </li>
         </ul>
       </div>
