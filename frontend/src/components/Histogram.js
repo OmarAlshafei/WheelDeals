@@ -16,7 +16,6 @@ console.log("go to histogram page");
 export default function Histogram({ data }) {
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>Price Distribution Histogram</h2>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart
           // width={400}
