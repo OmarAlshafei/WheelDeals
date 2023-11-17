@@ -4,10 +4,15 @@
     justify-content: center;
     align-items: center;
     margin-top: 50px;
-    background-color: #fca311;
+    /* background-color: #fca311; */
+    /* background-color: #ffd50064; */
+    background-color:  #14213d;
+    text-shadow: 0 0 10px #14213d, 0 0 20px #14213d, 0 0 42px #14213d, 0 0 82px #14213d, 0 0 92px #14213d;
+    /* box-shadow: 0 0 10px rgba(20, 33, 61, 0.5), 0 0 20px rgba(20, 33, 61, 0.5), 0 0 42px rgba(20, 33, 61, 0.5), 0 0 82px rgba(20, 33, 61, 0.5), 0 0 92px rgba(20, 33, 61, 0.5); */
+    border-radius: 4px;
     height: 10vh;
     width: 100%; 
-    max-width: 800px; 
+    max-width: 1100px; 
     margin-left: auto;
     margin-right: auto;
 }
@@ -15,13 +20,20 @@
 .header-brand,
 .header-model,
 .header-type {
-    margin-right: 100px; 
+    margin-right: 15%; 
+    padding-top: 1%;
+}
+
+.header-like{
+
 }
 
 .header-price{
     display: flex;
     justify-content: center;
-    margin-top: 30px; 
+    margin-top: 50px; 
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px #fca311, 0 0 20px #fca311, 0 0 42px #fca311, 0 0 82px #fca311, 0 0 92px #fca311;
 }
 
 .carImage{
@@ -31,18 +43,49 @@
   margin: 0 auto;
 }
 
-.histogram-header{
-    margin-top: 50px;
+.histogramGraph{
+    width: 100%; 
+    margin-left: 4%;
+    /* margin-right: 25%; */
+    max-width: 90%; 
+    height: auto; 
+    margin-bottom: 10%;
 }
 
-/* .histogramGraph{
-    width: 100%; 
-    margin-left: 90px;
-    max-width: 1200px; 
-    height: auto; 
-} */
+.histogramInfo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6%;
+    margin-bottom: 3%;
+}
+.popup{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    margin-left: 10%;
+    margin-right: 10%;
+    font-size: 19px;
+
+}
 
 #carInfo{
     font-weight: bold;
-    font-size: 25px;
+    font-size: 30px;
+    color: white;
 }
+#carPrice{
+    font-weight: bold;
+    font-size: 30px;
+    color: black;
+}
+
+#text-glow {
+    /* text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 42px #0fa, 0 0 82px #0fa,0 0 92px #0fa; */
+    text-shadow: 0 0 10px #fca311, 0 0 20px #fca311, 0 0 42px #fca311, 0 0 82px #fca311, 0 0 92px #fca311;
+	color: black;
+	font-size: 30px;
+	text-align: center;	  	
+   }

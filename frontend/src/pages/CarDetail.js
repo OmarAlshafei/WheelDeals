@@ -3,11 +3,22 @@ import HeartIcon from "../components/HeartIcon";
 import Histogram from "../components/Histogram";
 import "./CarDetail.css";
 import image from "./headerImg.jpg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faInfoCircle,
+  faCircleInfo 
+} from "@fortawesome/free-solid-svg-icons";
+
 
 const CarDetail = (props) => {
   let { make, model } = props.location.state;
   const [detail, setDetail] = useState([]);
   const jwtToken = localStorage.getItem("jwt");
+
+  const [isPopupVisible, setPopupVisibility] = useState(false);
+  const handleIconClick = () => {
+    setPopupVisibility(!isPopupVisible);
+  };
 
   const fetchData = async () => {
     try {
@@ -70,18 +81,33 @@ const CarDetail = (props) => {
         <div className="header-type">
           <p id="carInfo">{detail.type}</p>
         </div>
+        <div className="header-like">
         <HeartIcon favMake={make} favModel={model} />
+        </div>
       </div>    
       <div className="header-price">
-        <p id="carInfo">${detail.price}</p>
+        <p id="carPrice"> Price: ${detail.price}</p>
       </div>
       <div className="body">
         <div className="searchImage">
         <img src={detail.image} className="carImage"></img>
         </div>
-        <h3 className="histogram-header">Histogram: percentage of cars sold based on bucket price</h3>
+        <div className="histogramHeader">
+          <div className="histogramInfo">
+            <h2 id="text-glow" >Price Distribution Histogram</h2>
+            <FontAwesomeIcon icon={faInfoCircle} onClick={handleIconClick} style={{color: "#080808", paddingLeft:'20px'}} />
+          </div>
+          {isPopupVisible && (
+            <div className="popup">
+              <p>Use this graph to help decide if a car’s price is right for you.</p>
+              <p>The histogram organizes data by prices and visually represents the quantity of cars sold at each price point to give you a comprehensive picture of the market, 
+              so that you can easily recognize a fair price for the car you want. 
+            </p>
+            </div>
+          )}
+        </div>
         <div className="histogramGraph">
-        <Histogram data={detail.histogramData} />
+         <Histogram data={detail.histogramData} />
         </div>
       </div>
 
