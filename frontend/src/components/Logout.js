@@ -6,7 +6,7 @@ const Logout = () => {
 
   const handleLogout = () => {
     // Clear local storage
-//     localStorage.clear();
+    //     localStorage.clear();
 
     // Redirect to the landing page
     history.push("/");
