@@ -14,17 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'HomeScreen.dart';
 
-class GlobalData
-{
-  static String userId = '';
-  static String firstName = '';
-  static String lastName = '';
-  static String loginName = '';
-  static String password = '';
-  // state, email
-}
-
-
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -40,66 +29,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Header(),
-      // endDrawer: Drawer(
-      //     child: Column(
-      //       children: [
-      //         const SizedBox(
-      //           height: 110, // To change the height of DrawerHeader
-      //           width: double.infinity, // To Change the width of DrawerHeader
-      //           child: DrawerHeader(
-      //             decoration: BoxDecoration(color: Colors.amber),
-      //             child: Text('Menu',
-      //               style: TextStyle(color: Colors.black),
-      //             ),
-      //           ),
-      //         ),
-      //         ListTile(
-      //           title: const Text('Login/Signup'),
-      //           onTap: () {
-      //             showDialog(
-      //               context: context,
-      //               builder: (context) => AlertDialog(
-      //                 title: Text('Login/Signup'),
-      //               ),//AlertDialog
-      //             );
-      //           },
-      //         ),
-      //         ListTile(
-      //           title: const Text('Favorites'),
-      //           onTap: () {
-      //             showDialog(
-      //               context: context,
-      //               builder: (context) => AlertDialog(
-      //                 title: Text('Favorites'),
-      //               ),//AlertDialog
-      //             );
-      //           },
-      //         ),
-      //         ListTile(
-      //           title: const Text('Account'),
-      //           onTap: () {
-      //             showDialog(
-      //               context: context,
-      //               builder: (context) => AlertDialog(
-      //                 title: Text('Account'),
-      //               ),//AlertDialog
-      //             );
-      //           },
-      //         ),
-      //         ListTile(
-      //           title: const Text('Logout'),
-      //           onTap: () {
-      //             showDialog(
-      //               context: context,
-      //               builder: (context) => AlertDialog(
-      //                 title: Text('Logout'),
-      //               ),//AlertDialog
-      //             );
-      //           },
-      //         ),
-      //       ],
-      //     )
-      // ),
       backgroundColor: Colors.white,
       body: MainPage(),
     );
@@ -113,7 +42,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
 
-  String message = "or", newMessageText = '';
+  String message = "", newMessageText = '';
   String loginName = currentUser.userName, password = currentUser.password;
   Color messageColor = appColors.black;
   bool obscurePassword = true;
@@ -158,13 +87,15 @@ class _MainPageState extends State<MainPage> {
     var ret;
     var token;
 
+    print("In login()");
+
     try
     {
       String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/login';
       ret = await CarsData.getJson(url, payload);
       jsonObject = json.decode(ret);
       token = jsonObject["accessToken"];
-      print(token);
+      //print(token);
     }
     catch(e)
     {
@@ -183,8 +114,10 @@ class _MainPageState extends State<MainPage> {
       // print(jwtDecodedToken["email"]);
       // print(jwtDecodedToken["firstName"]);
       // print(jwtDecodedToken["lastName"]);
+      print(token);
       print(jwtDecodedToken);
-      currentUser.userId = jwtDecodedToken["userId"];
+      //currentUser.userId = jwtDecodedToken["userId"];
+      currentUser.userId = "65579ed44b4737fe6207cddc";
       currentUser.firstName = jwtDecodedToken["firstName"];
       currentUser.lastName = jwtDecodedToken["lastName"];
       if (jwtDecodedToken["email"] != null) {
@@ -196,6 +129,7 @@ class _MainPageState extends State<MainPage> {
       currentUser.loggedIn = true;
       currentUser.token = token;
 
+      await appCars.getHomeApi();
       Favorites.getFavorites(context);
       Navigator.pushNamed(context, Routes.HOMESCREEN);
       //Navigator.push(context, MaterialPageRoute(builder:(context)=>HomeScreen(token:token)));
@@ -207,6 +141,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    String email = "";
+    String newPassword = "";
     return Container(
         width: 600,
         //margin:const EdgeInsets.only(top: 10.0),
@@ -252,7 +188,7 @@ class _MainPageState extends State<MainPage> {
                                 filled: true,
                                 fillColor: Colors.white,
                                 border: OutlineInputBorder(),
-                                labelText: 'Username',
+                                labelText: "Username",
                                 hintText: 'Enter Your Username'
                             ),
                             onChanged: (text) {
@@ -297,9 +233,10 @@ class _MainPageState extends State<MainPage> {
                       ]
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                        margin:const EdgeInsets.only(left: 160.0),
+                        //margin:const EdgeInsets.only(left: 160.0),
                         child:
                         ElevatedButton(
                           child: Text('Login',style: TextStyle(fontSize: 14 ,color:Colors.black)),
@@ -314,7 +251,86 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        //margin:const EdgeInsets.only(left: 160.0),
+                        child:
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: appColors.gold,
+                          ),
+                          onPressed: () async
+                          {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("Reset Password"),
+                                  content: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        const Text("Enter your email"),
+                                        Container(
+                                          width: 200,
+                                          margin:const EdgeInsets.only(top:10, bottom: 10),
+                                          child:
+                                          TextField (
+                                            controller: TextEditingController(text: email),
+                                            decoration: const InputDecoration(
+                                                filled: true,
+                                                fillColor: Colors.white,
+                                                border: OutlineInputBorder(),
+                                                hintText: 'Email'
+                                            ),
+                                            onChanged: (text) {
+                                              email = text;
+                                            },
+                                          ),
+                                        ),
+                                        const Text("Enter your new password"),
+                                        Container(
+                                          width: 200,
+                                          margin:const EdgeInsets.only(top:10),
+                                          child:
+                                          TextField (
+                                            controller: TextEditingController(text: newPassword),
+                                            decoration: const InputDecoration(
+                                                filled: true,
+                                                fillColor: Colors.white,
+                                                border: OutlineInputBorder(),
+                                                hintText: 'New Password'
+                                            ),
+                                            onChanged: (text) {
+                                              newPassword = text;
+                                            },
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: appColors.gold,
+                                          ),
+                                          onPressed: (){
 
+                                          },
+                                          child: const Text(
+                                            "Done",
+                                            style: TextStyle(color: appColors.black),
+                                          )
+                                        )
+                                      ],
+                                    )
+                                  ),
+                                );
+                              }
+                            );
+                          },
+                          child: const Text('Forgot Password',style: TextStyle(fontSize: 14 ,color:Colors.black)),
+                        ),
+                      ),
+                    ],
+                  ), // FORGOT PASSWORD
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -327,11 +343,19 @@ class _MainPageState extends State<MainPage> {
                           )
                       ),
                     ],
-                  ),// message
+                  ),// MESSAGE
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        margin:const EdgeInsets.only(left: 120.0, top: 20),
+                        margin:const EdgeInsets.only(top: 50),
+                        child: const Text(
+                          "New User?",
+                          style: TextStyle(fontSize: 18),
+                        )
+                      ),
+                      Container(
+                        margin:const EdgeInsets.only(left:20,top: 50),
                         child:
                         ElevatedButton(
                           child: Text('Create an Account',style: TextStyle(fontSize: 14 ,color:Colors.black)),
@@ -345,7 +369,7 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
                     ],
-                  ),// register button
+                  ),// REGISTER
                 ],
               )
             )

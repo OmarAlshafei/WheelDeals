@@ -82,82 +82,89 @@ class _MainPageState extends State<MainPage> {
       newMessageText = "Please enter first name";
       messageColor = appColors.errRed;
       changeText();
-
     }
-    if (lastName=='') {
+    else if (lastName=='') {
       newMessageText = "Please enter last name";
       messageColor = appColors.errRed;
       changeText();
-
     }
-    if (loginName=='') {
+    else if (loginName=='') {
       newMessageText = "Please enter Username";
       messageColor = appColors.errRed;
       changeText();
-
     }
-    if (password=='') {
+    else if (password=='') {
       newMessageText = "Please enter password";
       messageColor = appColors.errRed;
       changeText();
-
     }
-    if (email=='') {
+    else if (email=='') {
       newMessageText = "Please enter email";
-      messageColor = appColors.errRed;
-      changeText();
-    }
-
-    try
-    {
-      String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/register';
-      ret = await CarsData.getJson(url, payload);
-      jsonObject = json.decode(ret);
-      // newMessageText = jsonObject["error"];
-      // changeText();
-      //fname = jsonObject["firstName"];
-    }
-    catch(e)
-    {
-      newMessageText = e.toString();
-      changeText();
-      return;
-    }
-    if (jsonObject["message"] != "User Added Successfully") {
-      String err1 = " - At least 8 characters\n";
-      String err2 = " - No more than 100 characters\n";
-      String err3 = " - At least 1 uppercase character\n";
-      String err4 = " - At least 1 lowercase character\n";
-
-      newMessageText = "Error: Password requires\n$err1$err3$err4$err2";
       messageColor = appColors.errRed;
       changeText();
     }
     else
     {
-      bool success = verify() as bool;
-
-      if (success) {
-        //currentUser.userId = jsonObject["_id"];
-        currentUser.firstName = firstName.trim();
-        currentUser.lastName = lastName.trim();
-        currentUser.email = email.trim();
-        currentUser.userName = loginName.trim();
-        currentUser.password = password.trim();
-        currentUser.loggedIn = true;
-
-        Navigator.pushNamed(context, Routes.LOGINSCREEN);
+      try {
+        String url =
+            'https://wheeldeals-d3e9615ad014.herokuapp.com/api/register';
+        ret = await CarsData.getJson(url, payload);
+        jsonObject = json.decode(ret);
+        print(jsonObject);
+        if (jsonObject["error"] != null) {
+          print("!" + jsonObject["error"] + "!");
+        }
+        // newMessageText = jsonObject["error"];
+        // changeText();
+        //fname = jsonObject["firstName"];
+      } catch (e) {
+        print("Caught error in register");
+        newMessageText = e.toString();
+        changeText();
+        return;
       }
-      else {
-        message = "Failed to verify. Please resend the link";
-        messageColor = appColors.black;
+      if (jsonObject["error"] != "" && jsonObject["error"] != null) {
+        String err1 = " - At least 8 characters\n";
+        String err2 = " - No more than 100 characters\n";
+        String err3 = " - At least 1 uppercase character\n";
+        String err4 = " - At least 1 lowercase character\n";
+
+        newMessageText = "Error: Password requires\n$err1$err3$err4$err2";
+        messageColor = appColors.errRed;
         changeText();
       }
+      else if (jsonObject["msg"] == 'This email address is already associated with another account.') {
+        newMessageText = 'This email address is already associated\n                  with another account.';
+        messageColor = appColors.errRed;
+        changeText();
+      }
+      else {
+        newMessageText = 'This email address is already associated\n                  with another account.';
+        messageColor = appColors.errRed;
+        changeText();
 
+        bool success = verify() as bool;
+
+        if (success) {
+          //currentUser.userId = jsonObject["_id"];
+          currentUser.firstName = firstName.trim();
+          currentUser.lastName = lastName.trim();
+          currentUser.email = email.trim();
+          currentUser.userName = loginName.trim();
+          currentUser.password = password.trim();
+          currentUser.loggedIn = true;
+
+          Navigator.pushNamed(context, Routes.LOGINSCREEN);
+        } else {
+          message = "Failed to verify. Please resend the link";
+          messageColor = appColors.black;
+          changeText();
+        }
+      }
     }
   }
 
-  Future<bool> verify() async {
+  bool verify()  {
     verificationSent = true;
     setState(() {
       verificationSent = true;

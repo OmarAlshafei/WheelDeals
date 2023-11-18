@@ -1,22 +1,14 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile/routes/routes.dart';
 import 'package:mobile/utils/Colors.dart';
-import 'package:mobile/screens/FavScreen.dart';
 import 'package:mobile/utils/header.dart';
 import 'package:mobile/utils/Cars.dart';
-import 'package:mobile/utils/Favorites.dart' as favClass;
-import 'package:mobile/screens/CarsScreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile/utils/currentUser.dart' as currentUser;
-
 import '../utils/Favorites.dart';
-import '../utils/currentUser.dart';
-import '../utils/getAPI.dart';
+
 
 final List<String> imgList = [
   'https://www.lensrentals.com/blog/media/2015/11/Automotive-Photography-Guide-1.jpg',
@@ -101,11 +93,11 @@ class _MainPageState extends State<MainPage> {
   String model = "Model";
 
   Map<String,dynamic> jwtDecodedToken = JwtDecoder.decode(currentUser.token);
+  List<Car> popCars = [];
 
   void getHomeApiHelper() async {
-    await appCars.getHomeApi();
+    appCars.popularCars = await appCars.getHomeApi();
   }
-
 
   @override
   void initState() {

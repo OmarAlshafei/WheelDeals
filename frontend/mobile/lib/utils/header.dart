@@ -26,10 +26,13 @@ class _HeaderState extends State<Header> {
     return AppBar(
       leading: GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, Routes.HOMESCREEN);
-          // if (currentUser.loggedIn) {
-          //   Navigator.pushNamed(context, Routes.HOMESCREEN);
-          // }
+          //Navigator.pushNamed(context, Routes.HOMESCREEN);
+          if (currentUser.loggedIn) {
+            Navigator.pushNamed(context, Routes.HOMESCREEN);
+          }
+          else {
+            Navigator.pushNamed(context, Routes.LOGINSCREEN);
+          }
         },
         child: Image.asset(
             'images/logo.png',

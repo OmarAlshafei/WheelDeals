@@ -91,7 +91,7 @@ class _MainPageState extends State<MainPage> {
               Row(
                 children: [
                   Container(
-                    margin:const EdgeInsets.only(bottom: 40.0),
+                    margin:const EdgeInsets.only(bottom: 20.0),
                     child:
                     const Text(
                       "Account Information",
@@ -101,34 +101,95 @@ class _MainPageState extends State<MainPage> {
                 ],
               ),// title
 
-              Row(
+              const Row(
                 children: <Widget>[
-                  Container(
-                    //margin: const EdgeInsets.only(bottom: 10.0),
-                    child: Text(
-                      "NAME\n${currentUser.firstName} ${currentUser.lastName}",
-                      style: const TextStyle(fontSize: 18),
-                    ),
+                  Text(
+                    "First Name",
+                    style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
                   )
                 ],
               ),// name
-
               Row(
                 children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.only(top: 25.0),
-                    child: Text(
-                      "EMAIL\n${currentUser.email}",
-                      style: const TextStyle(fontSize: 18),
-                    ),
+                  Text(
+                    currentUser.firstName,
+                    style: TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
+              const Row(
+                children: <Widget>[
+                  Text(
+                    "\nLast Name",
+                    style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),// name
+              Row(
+                children: <Widget>[
+                  Text(
+                    currentUser.lastName,
+                    style: TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
+              const Row(
+                children: <Widget>[
+                  Text(
+                    "\nUsername",
+                    style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),// name
+              Row(
+                children: <Widget>[
+                  Text(
+                    currentUser.userName,
+                    style: TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
+
+              const Row(
+                children: <Widget>[
+                  Text(
+                    "\nEmail",
+                    style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),// name
+              Row(
+                children: <Widget>[
+                  Text(
+                    currentUser.email,
+                    style: TextStyle(fontSize: 18),
                   )
                 ],
               ),
 
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     margin: const EdgeInsets.only(top: 25.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: appColors.gold,
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.EDITACCOUNTSCREEN);
+                      },
+                      child: const Text('Edit Information',style: TextStyle(fontSize: 18,color:Colors.black)),
+                    ),
+                  ),
+                ],
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.only(top: 10.0),
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: appColors.gold,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile/utils/getAPI.dart';
 import 'package:mobile/utils/currentUser.dart' as currentUser;
+import 'package:mobile/screens/CarsScreen.dart' as carsScreen;
 
 class Car {
   String make = "";
@@ -9,13 +10,12 @@ class Car {
   String type = "?";
   String price = "?";
   int rank = -1;
-  var histData = null;
+  List<carsScreen.histData> histDataList = [];
 
-  Car(this.rank, this.make, this.model, this.price, this.type, this.histData);
-
+  Car(this.rank, this.make, this.model, this.price, this.type, this.histDataList);
 
   factory Car.fromJson(dynamic json) {
-    return Car(json['rank'] as int, json['make'] as String, json['model'] as String, json['price'] as String, json['type'] as String, json['histogramData']);
+    return Car(json['rank'] as int, json['make'] as String, json['model'] as String, json['price'] as String, json['type'] as String, carsScreen.histData.makeHist(json['histogramData']));
   }
 
   @override
@@ -33,11 +33,11 @@ class appCars {
 
   static void initPopularCars() {
     for (int i = 0; i < 25; i++) {
-      popularCars.add(Car(-1,"","","","",null));
+      popularCars.add(Car(-1,"","","","",[]));
     }
   }
 
-  static Future<void> getHomeApi() async {
+  static Future<List<Car>> getHomeApi() async {
 
     String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/homepage';
     String payload = '{"jwtToken":"${currentUser.token}"}';
@@ -48,14 +48,12 @@ class appCars {
 
     for (int i=0; i < jsonObject["matchedCars"].length; i++) {
       obj = jsonObject["matchedCars"][i];
-      popularCars[i] = Car(i+1, obj["brand"], obj["model"], "\$${obj['price']}", obj["type"], null);
+      //popularCars[i] = Car(i+1, obj["brand"], obj["model"], "\$${obj['price']}", obj["type"], []);
+      popularCars.add(Car(i+1, obj["brand"], obj["model"], "\$${obj['price']}", obj["type"], []));
     }
 
     popularCars = popularCars.sublist(0, 25); // keep 1st 25 (fixing extra empty cars)
-    // for (Car c in popularCars) {
-    //   print(c);
-    // }
-    // print(popularCars.length);
+    return popularCars;
   }
 
   static Future<Car> searchCar(String make, String model, context) async{
@@ -65,7 +63,7 @@ class appCars {
     String ret = await search(context, searchedMake, searchedModel);
     var jsonObj = json.decode(ret);
     print(ret);
-    currentCar = Car(-1, searchedMake, searchedModel, price, jsonObj["type"], jsonObj["histogramData"]);
+    currentCar = Car(-1, searchedMake, searchedModel, price, jsonObj["type"], carsScreen.histData.makeHist(jsonObj['histogramData']));
     print("In select car");
     print(currentCar);
 
@@ -81,7 +79,7 @@ class appCars {
 
     String ret = await search(context, selectedMake, selectedModel);
     var jsonObj = json.decode(ret);
-    currentCar = Car(-1, selectedMake, selectedModel, price, jsonObj["type"], jsonObj["histogramData"]);
+    currentCar = Car(-1, selectedMake, selectedModel, price, jsonObj["type"], carsScreen.histData.makeHist(jsonObj['histogramData']));
     
     return currentCar;
   }
@@ -121,7 +119,7 @@ class appCars {
     String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/makes';
     String payload = '{"jwtToken":"${currentUser.token}"}';
     var ret = await CarsData.getJson(url,payload);
-    //print(ret);
+    print("Make API: $ret");
     var makesDyn = json.decode(ret);
     var makesStr = makesDyn.cast<String>();
     int count = 0;
@@ -193,7 +191,7 @@ class appCars {
   }
 
   static String price = "?";
-  static Car currentCar = Car(-1, "","","","","");
+  static Car currentCar = Car(-1, "","","","",[]);
 
   static Future<String> search(context, String make, String model) async {
     // API returns image, price, brandLogo, and histogramData
@@ -235,7 +233,7 @@ class appCars {
       price = "\$${jsonObj["price"]}";
       print(price);
 
-      currentCar = Car(-1, make, model, price, jsonObj["type"], jsonObj["histogramData"]);
+      currentCar = Car(-1, make, model, price, jsonObj["type"], carsScreen.histData.makeHist(jsonObj['histogramData']));
 
       String picUrl = jsonObj["image"];
       appCars.carPic = Image.network(picUrl, width: 350,);
