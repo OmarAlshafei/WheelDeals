@@ -23,54 +23,48 @@ const UserInformation = (props) => {
     setEditing(!editing);
   };
 
-  const handleConfirmChanges = async () => {
-    setEditing(false);
-  }
-
-  // try to call modify api on handleConfirmChanges()
-  // incoming: userID; new firstName, lastName
-  // outgoing: new firstName, lastName and userName
-
   // const handleConfirmChanges = async () => {
-  //   console.log("Confirm Changes button clicked");
-  //   try {
-  //     const app_name = "wheeldeals-d3e9615ad014";
-  //     const route = "/api/modify";
-  //     const apiUrl =
-  //       process.env.NODE_ENV === "production"
-  //         ? `https://${app_name}.herokuapp.com/${route}`
-  //         : `http://localhost:9000/${route}`;
+  //   setEditing(false);
+  // }
 
-  //     const res = await fetch(apiUrl, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${jwtToken}`,
-  //       },
-  //       body: JSON.stringify({
-  //         userId,
-  //         newFirstName: editedFirstName,
-  //         newLastName: editedLastName,
-  //       }),
-  //     });
+  const handleConfirmChanges = async () => {
+    console.log("Confirm Changes button clicked");
+    console.log("Edited name " + editedFirstName);
+    console.log("Edited last " + editedLastName);
+    console.log("userName " + userName);
+    console.log("jwtToken " + jwtToken);
+    console.log("user id " + userId);
 
-  //     if (!res.ok) {
-  //       throw new Error(`Request failed with status: ${res.status}`);
-  //     }
+    try {
+      const app_name = "wheeldeals-d3e9615ad014";
+      const route = "/api/modify";
+      const apiUrl =
+        process.env.NODE_ENV === "production"
+          ? `https://${app_name}.herokuapp.com/${route}`
+          : `http://localhost:9000/${route}`;
 
-  //     const result = await res.json();
-  //     console.log("API Response:", result);
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({userId: userId, newFirstName: editedFirstName, newLastName: editedLastName, newUserName: userName, jwtToken: jwtToken}),
+      });
 
-  //     setEditing(false);
-  //     // setEditing(prevEditing => {
-  //     //   // Ensure the state is updated correctly
-  //     //   console.log("Inside setEditing callback");
-  //     //   return false;
-  //     // });
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
+      console.log("res: " + res);
+      if (!res.ok) {
+        throw new Error(`Request failed with status: ${res.status}`);
+      }
+
+      const result = await res.json();
+      console.log("API Response:", result);
+
+      setEditing(false);
+    
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <div>

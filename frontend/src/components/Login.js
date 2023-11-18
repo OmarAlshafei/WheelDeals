@@ -33,7 +33,7 @@ const Login = (props) => {
         var userId = ud.userId;
         var firstName = ud.firstName;
         var lastName = ud.lastName;
-        var userEmail = ud.email;;
+        var userEmail = ud.email;
         //alert("jwt email " + ud.email);
         //alert(ud.accessToken);
 
