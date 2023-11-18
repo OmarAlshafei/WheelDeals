@@ -28,16 +28,15 @@ const UserInformation = (props) => {
   // }
 
   const handleConfirmChanges = async () => {
-    console.log("Confirm Changes button clicked");
-    console.log("Edited name " + editedFirstName);
-    console.log("Edited last " + editedLastName);
-    console.log("userName " + userName);
-    console.log("jwtToken " + jwtToken);
-    console.log("user id " + userId);
+    // console.log("Confirm Changes button clicked");
+    // console.log("Edited name " + editedFirstName);
+    // console.log("Edited last " + editedLastName);
+    // console.log("jwtToken " + jwtToken);
+    // console.log("user id " + userId);
 
     try {
       const app_name = "wheeldeals-d3e9615ad014";
-      const route = "/api/modify";
+      const route = "api/modify";
       const apiUrl =
         process.env.NODE_ENV === "production"
           ? `https://${app_name}.herokuapp.com/${route}`
@@ -48,10 +47,9 @@ const UserInformation = (props) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({userId: userId, newFirstName: editedFirstName, newLastName: editedLastName, newUserName: userName, jwtToken: jwtToken}),
+        body: JSON.stringify({userId: userId, newFirstName: editedFirstName, newLastName: editedLastName, jwtToken: jwtToken}),
       });
 
-      console.log("res: " + res);
       if (!res.ok) {
         throw new Error(`Request failed with status: ${res.status}`);
       }
