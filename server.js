@@ -347,7 +347,7 @@ app.post("/api/search", async (req, res, next) => {
 app.post("/api/register", async (req, res, next) => {
   // incoming: firstName, lastName, userName, email, password
   // outgoing: message, error
-  // var token = require('./createJWT.js');
+  var token = require('./createJWT.js');
   var error = "";
   const db = client.db("cop4331");
   const { firstName, lastName, userName, email, password } = req.body;
