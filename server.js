@@ -1,4 +1,5 @@
 // Node.js Dependencies
+const { login, signup, confirmEmail, resetPassword, changePassword } = require('./email')
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -9,12 +10,19 @@ const app = express();
 const MongoClient = require('mongodb').MongoClient;
 const passwordValidator = require('password-validator');
 const ObjectId = require("mongodb").ObjectId;
+// const tokenSchema = require("./email.js")
+const Bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
+const mongoose = require('mongoose');
 
 // Environment Variables
 require("dotenv").config();
 const url = process.env.MONGODB_URL;
 const client = new MongoClient(url);
 const API_KEY = process.env.REACT_APP_API_KEY;
+const SEND_GRID_API_KEY = process.env.SENDGRID_API_KEY;
 
 // Port Configurations
 client.connect();
@@ -37,6 +45,11 @@ app.listen(PORT, () => {
 const region = "REGION_STATE_FL";
 
 // Functions
+var tokenSchema = new mongoose.Schema({
+  _userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
+  token: { type: String, required: true },
+  expireAt: { type: Date, default: Date.now, index: { expires: 86400000 } }
+});
 
 // incoming: make
 // outgoing: link to logo image (string)
@@ -328,26 +341,72 @@ app.post("/api/register", async (req, res, next) => {
   // outgoing: message, error
   // var token = require('./createJWT.js');
   var error = "";
+  const db = client.db("cop4331");
   const { firstName, lastName, userName, email, password } = req.body;
+  var Token = mongoose.model('Token', tokenSchema);
   var validation = isComplex(password);
 
   if (validation != "Valid Password") {
     ret = { message: "", error: validation };
     res.status(200).json(ret);
   } else {
-    const db = client.db("cop4331");
-    const results = await db.collection("Users").insertOne({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      userName: userName,
-      password: password,
-      carsArr: []
-    });
-    // console.log(results)
+    try {
+      console.log("about to search db")
+      var user = await db.collection("Users").findOne({ email: email })
+      console.log("searched db")
+      // error occur
+      // if email is exist into database i.e. email is associated with another user.
+      if (user) {
+        return res.status(400).send({ msg: 'This email address is already associated with another account.' });
+      }
+      // if user is not exist into database then save the user into database for register account
+      else {
+        // password hashing for save into databse
+        // create and save user
+        console.log("about to add user")
+        await db.collection("Users").insertOne({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          userName: userName,
+          password: password,
+          isVerified: false,
+          carsArr: []
+        });
+        console.log("added user")
+        user = await db.collection("Users").findOne({ email: req.body.email })
 
-    var ret = { message: "User Added Successfully", error: "" };
-    res.status(200).json(ret);
+        // generate token and save
+        try {
+          var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex'), expireAt: { type: Date, default: Date.now, index: { expires: 86400000 } } });
+          await db.collection("Tokens").insertOne(token);
+        }
+        catch (e) {
+          return res.status(500).send({ msg: "Failed to generate token. Please try again." });
+        }
+
+        // Send email (use verified sender's email address & generated API_KEY on SendGrid)
+        const transporter = nodemailer.createTransport(
+          sendgridTransport({
+            auth: {
+              api_key: SEND_GRID_API_KEY,
+            }
+          })
+        )
+        var mailOptions = { from: 'thaihungtran57116@gmail.com', to: user.email, subject: 'Account Verification Link', text: 'Hello ' + req.body.firstName + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.email + '\/' + token.token + '\n\nThank You!\n' };
+        try {
+          transporter.sendMail(mailOptions)
+        }
+        catch (e) {
+          return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
+        }
+        return res.status(200).send({ msg: 'A verification email has been sent to ' + user.email + '. It will be expire after one day. If you not get verification Email click on resend token.' });
+        // sendEmail()
+      }
+    }
+    catch (e) {
+      return res.status(500).send({ msg: "Failed to register user. Please try again." });
+    }
   }
 });
 
@@ -357,35 +416,47 @@ app.post('/api/login', async (req, res, next) => {
   var token = require('./createJWT.js');
   var error = '';
   const { userName, password } = req.body;
-  // console.log(userName, password)
+  console.log(userName, password)
 
-  const db = client.db('cop4331');
-  const results = await db.collection('Users').find({ userName: userName, password: password }).toArray();
-  var id = -1;
-  var fn = '';
-  var ln = '';
-  var em = '';
-  if (results.length > 0) {
-    id = results[0]._id;
-    fn = results[0].firstName;
-    ln = results[0].lastName;
-    em = results[0].email;
+  var db = client.db("cop4331");
 
-    try {
-      const token = require("./createJWT.js");
-      ret = token.createToken(fn, ln, id, em);
-      console.log(ret)
+  try {
+    const user = await db.collection("Users").findOne({ userName: userName, password: password })
+    const id = user.id;
+    const fn = user.firstName;
+    const ln = user.lastName;
+    const em = user.email;
+
+    // user is not found in database i.e. user is not registered yet.
+    if (!user) {
+      return res.status(401).send({ msg: "Username or Password is invalid!" });
     }
-    catch (e) {
-      ret = { error: e.message };
+    // comapre user's password if user is find in above step
+    // else if (password != user.password) {
+    //   return res.status(401).send({ msg: 'Wrong Password!' });
+    // }
+    // check user is verified or not
+    else if (!user.isVerified) {
+      return res.status(401).send({ msg: 'Your Email has not been verified. Please click on resend' });
+    }
+    // user successfully logged in
+    else {
+      try {
+        const token = require("./createJWT.js");
+        ret = token.createToken(fn, ln, id, em);
+        console.log(ret)
+      }
+      catch (e) {
+        ret = { error: e.message };
+      }
+
+      return res.status(200).send(ret);
     }
   }
-  else {
-    ret = { error: "Login/Password incorrect" };
-    console.log("Password incorrect")
+  catch (e) {
+    return res.status(500).send({ msg: "Incorrect username or password." });
   }
 
-  res.status(200).json(ret);
 });
 
 
@@ -579,12 +650,18 @@ app.post('/api/getfavorites', async (req, res, next) => {
   var curCar;
   const db = client.db('cop4331');
   var results = await db.collection("Users").findOne({ _id: new ObjectId(id) });
-  results = Object.values(results["carsArr"])
+  var carPromises = [];
+  console.log("users cars are", results)
 
-  const carPromises = results.map(async (car) => {
-    curCar = await client.db('carTypes').collection(car["make"]).findOne({ model: car["model"] })
-    return ({ make: car["make"], model: curCar["model"], price: curCar["price"], type: curCar["type"] })
-  })
+  if (results && results["carsArr"]) {
+    results = Object.values(results["carsArr"])
+
+    carPromises = results.map(async (car) => {
+      curCar = await client.db('carTypes').collection(car["make"]).findOne({ model: car["model"] })
+      return ({ make: car["make"], model: curCar["model"], price: curCar["price"], type: curCar["type"] })
+
+    })
+  }
 
   const carDetails = await Promise.all(carPromises);
   carData = carDetails;
@@ -600,6 +677,7 @@ app.post('/api/addfavorite', async (req, res, next) => {
   var token = require('./createJWT.js');
   var error = '';
   const { id, make, model, jwtToken } = req.body;
+  var carList = [];
 
   try {
     if (token.isExpired(jwtToken)) {
@@ -625,7 +703,9 @@ app.post('/api/addfavorite', async (req, res, next) => {
 
   const db = client.db('cop4331');
   var results = await db.collection("Users").findOne({ _id: new ObjectId(id) });
-  carList = Object.values(results["carsArr"])
+  if (results !== null && results["carsArr"] !== null) {
+    carList = Object.values(results["carsArr"])
+  }
   carList.push({ make: make, model: model })
 
   await db.collection("Users").updateOne({ _id: new ObjectId(id) }, { $set: { carsArr: carList } });
@@ -641,6 +721,7 @@ app.post('/api/removefavorite', async (req, res, next) => {
   var token = require('./createJWT.js');
   var error = '';
   const { id, make, model, jwtToken } = req.body;
+  var carList = [];
 
   try {
     if (token.isExpired(jwtToken)) {
@@ -666,9 +747,10 @@ app.post('/api/removefavorite', async (req, res, next) => {
 
   const db = client.db('cop4331');
   var results = await db.collection("Users").findOne({ _id: new ObjectId(id) });
-  carList = Object.values(results["carsArr"])
-  carList = carList.filter((car) => (car["make"] != make || car["model"] != model))
-  console.log(carList)
+  if (results && results["carsArr"]) {
+    carList = Object.values(results["carsArr"])
+    carList = carList.filter((car) => (car["make"] != make || car["model"] != model))
+  }
 
   await db.collection("Users").updateOne({ _id: new ObjectId(id) }, { $set: { carsArr: carList } });
 
@@ -676,104 +758,60 @@ app.post('/api/removefavorite', async (req, res, next) => {
   res.status(200).json(ret);
 })
 
-
 app.post("/api/modify", async (req, res, next) => {
-  // incoming: userID; new firstName, lastName and userName
-  // outgoing: new firstName, lastName and userName
+  // incoming: userID; new firstName and lastName 
+  // outgoing: new firstName and lastName
 
   var token = require('./createJWT.js');
   var error = "";
 
-  const { userId, newFirstName, newLastName, newUserName, jwtToken} = req.body;
+  const { userId, newFirstName, newLastName, jwtToken } = req.body;
 
-  try
-      {
-        if( token.isExpired(jwtToken))
-        {
-          var r = {error:'The JWT is no longer valid', jwtToken: ''};
-          res.status(200).json(r);
-          return;
-        }
-      }
-      catch(e)
-      {
-        console.log(e.message);
-        var r = {error:e.message, jwtToken: ''};
-        res.status(200).json(r);
-        return;
-      }
-  
+  try {
+    if (token.isExpired(jwtToken)) {
+      var r = { error: 'The JWT is no longer valid', jwtToken: '' };
+      res.status(200).json(r);
+      return;
+    }
+  }
+  catch (e) {
+    console.log(e.message);
+    var r = { error: e.message, jwtToken: '' };
+    res.status(200).json(r);
+    return;
+  }
+
   var refreshedToken = null;
-  try
-  {
+  try {
     refreshedToken = token.refresh(jwtToken);
   }
   catch (e) {
     console.log(e.message);
   }
 
-    const db = client.db('cop4331');
-    var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
-    carList = Object.values(results["carsArr"])
-    carList = carList.filter((car) => (car["make"] != make || car["model"] != model))
-    console.log(carList)
 
-    await db.collection("Users").updateOne({ _id : new ObjectId(id)}, {$set: {carsArr: carList}});
+  const db = client.db("cop4331");
 
-    var ret = { message: "Favorite removed successfully", error: '' };
-    res.status(200).json(ret);
-})
+  try {
+    const result = await db.collection("Users").updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { firstName: newFirstName, lastName: newLastName } }
+    );
 
-
-app.post("/api/modify", async (req, res, next) => {
-  // incoming: userID; new firstName, lastName and userName
-  // outgoing: new firstName, lastName and userName
-
-  var token = require('./createJWT.js');
-  var error = "";
-
-  const { userId, newFirstName, newLastName, newUserName, jwtToken} = req.body;
-
-  try
-      {
-        if( token.isExpired(jwtToken))
-        {
-          var r = {error:'The JWT is no longer valid', jwtToken: ''};
-          res.status(200).json(r);
-          return;
-        }
-      }
-      catch(e)
-      {
-        console.log(e.message);
-        var r = {error:e.message, jwtToken: ''};
-        res.status(200).json(r);
-        return;
-      }
-  
-  var refreshedToken = null;
-  try
-  {
-    refreshedToken = token.refresh(jwtToken);
+    if (result.matchedCount > 0) {
+      // If at least one document is matched and updated
+      res.status(200).json({ firstName: newFirstName, lastName: newLastName });
+    } else {
+      // If no document is matched
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-  catch (e) {
-    console.log(e.message);
-  }
+});
 
-    const db = client.db('cop4331');
-    var results = await db.collection("Users").findOne({ _id : new ObjectId(id)});
-    carList = Object.values(results["carsArr"])
-    carList = carList.filter((car) => (car["make"] != make || car["model"] != model))
-    console.log(carList)
-
-    await db.collection("Users").updateOne({ _id : new ObjectId(id)}, {$set: {carsArr: carList}});
-
-    var ret = { message: "Favorite removed successfully", error: '' };
-    res.status(200).json(ret);
-})
-
-
-
-
-
-
+app.get('/confirmation/:email/:token', confirmEmail)
+app.post('/api/resetPassword', resetPassword);
+app.get('/confirmation/:email/:token', confirmEmail)
+app.post('/api/changePassword', changePassword);
