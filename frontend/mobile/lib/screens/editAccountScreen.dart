@@ -174,23 +174,9 @@ class _MainPageState extends State<MainPage> {
                 ),// name
                 Row(
                   children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.only(top:10),
-                      width: 150,
-                      height: 50,
-                      child: TextField (
-                        controller: TextEditingController(text: uname),
-                        decoration: const InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(),
-                            //labelText: 'First Name',
-                            hintText: 'Enter Your User Name'
-                        ),
-                        onChanged: (text) {
-                          uname = text;
-                        },
-                      ),
+                    Text(
+                      currentUser.userName,
+                      style: TextStyle(fontSize: 18),
                     )
                   ],
                 ),
