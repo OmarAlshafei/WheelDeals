@@ -422,7 +422,7 @@ app.post("/api/register", async (req, res, next) => {
             "Hello " +
             req.body.firstName +
             ",\n\n" +
-            "Please verify your account by clicking the link: \nhttps://" +
+            "Please verify your account by clicking the link: \nhttp://" +
             req.headers.host +
             "/confirmation/" +
             user.email +
