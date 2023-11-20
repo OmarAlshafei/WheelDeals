@@ -862,9 +862,9 @@ app.post("/api/modify", async (req, res, next) => {
   }
 });
 
-app.get("/confirmation/:email/:token", confirmEmail);
+// app.get("/confirmation/:email/:token", confirmEmail);
 app.post("/api/resetPassword", resetPassword);
-app.get("/confirmation/:email/:token", confirmEmail);
+app.get("api/confirmation/:email/:token", confirmEmail);
 app.post("/api/changePassword", changePassword);
 
 module.exports = app; 
