@@ -42,10 +42,11 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
   });
 }
-
-app.listen(PORT, () => {
-  console.log("Server listening on port " + PORT);
-});
+if (process.env.NODE_ENV !== 'test'){
+  app.listen(PORT, () => {
+    console.log("Server listening on port " + PORT);
+  });
+}
 
 // Global Constants
 const region = "REGION_STATE_FL";
@@ -865,3 +866,5 @@ app.get("/confirmation/:email/:token", confirmEmail);
 app.post("/api/resetPassword", resetPassword);
 app.get("/confirmation/:email/:token", confirmEmail);
 app.post("/api/changePassword", changePassword);
+
+module.exports = app; 
