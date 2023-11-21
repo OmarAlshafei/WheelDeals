@@ -3,20 +3,20 @@ const request = require('supertest');
   
   describe('Server API tests', () => {
 
-  // test('POST /api/register - it should register a new user', async () => {
-  //   const response = await request(app)
-  //     .post('/api/register')
-  //     .send({
-  //         firstName: 'Test',
-  //         lastName: 'User',
-  //         userName: 'test_user',
-  //         email: 'testing_@example.com',
-  //         password: 'TestPassword@123',
-  //         isVerified: 'true'
-  //       });
+  test('POST /api/register - it should register a new user', async () => {
+    const response = await request(app)
+      .post('/api/register')
+      .send({
+          firstName: 'Test',
+          lastName: 'User',
+          userName: 'test_2user',
+          email: 'testing_2@example.com',
+          password: 'TestPassword@123',
+          isVerified: 'true'
+        });
     
-  //     expect(response.status).toBe(200);
-  //   });
+      expect(response.status).toBe(200);
+    });
     
   test('POST /api/login - it should log in an existing user', async () => {
     
@@ -32,7 +32,7 @@ const request = require('supertest');
 
   });
   
-  test('POST /api/homepage - returns array of popular cars, their price and vehicle type', async () => {
+  test('POST /api/homepage - returns array of popular cars, prices and types', async () => {
     
     const res = await request(app)
       .post('/api/homepage')
