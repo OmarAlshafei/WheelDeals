@@ -32,7 +32,7 @@ const request = require('supertest');
 
   });
   
-  test('POST /api/homepage - it should return array of cars', async () => {
+  test('POST /api/homepage - returns array of popular cars, their price and vehicle type', async () => {
     
     const res = await request(app)
       .post('/api/homepage')
@@ -43,7 +43,7 @@ const request = require('supertest');
     expect(res.status).toBe(200);
   });
   
-  test('POST /api/makes - it should return array of makes', async () => {
+  test('POST /api/makes - returns array of makes', async () => {
     
     const res = await request(app)
       .post('/api/makes')
@@ -54,7 +54,7 @@ const request = require('supertest');
     expect(res.status).toBe(200);
   });
   
-  test('POST /api/models - it should return array of makes', async () => {
+  test('POST /api/models - returns array of array of models for a specific make', async () => {
     
     const res = await request(app)
       .post('/api/models')
@@ -66,7 +66,7 @@ const request = require('supertest');
     expect(res.status).toBe(200);
   });
   
-  test('POST /api/search - it should return array of makes', async () => {
+  test('POST /api/search - returns car details', async () => {
     
     const res = await request(app)
       .post('/api/search')
