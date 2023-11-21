@@ -417,16 +417,12 @@ app.post("/api/register", async (req, res, next) => {
         var mailOptions = {
           from: "thaihungtran57116@gmail.com",
           to: user.email,
-          subject: "Account Verification Link",
+          subject: "Account Verification Code",
           text:
             "Hello " +
             req.body.firstName +
             ",\n\n" +
-            "Please verify your account by clicking the link: \nhttp://" +
-            req.headers.host +
-            "/confirmation/" +
-            user.email +
-            "/" +
+            "Here is your login token: " + 
             token.token +
             "\n\nThank You!\n",
         };
@@ -861,7 +857,7 @@ app.post("/api/modify", async (req, res, next) => {
   }
 });
 
-app.get("/confirmation/:email/:token", confirmEmail);
+app.post("/api/confirmEmail", confirmEmail);
 app.post("/api/resetPassword", resetPassword);
-app.get("/confirmation/:email/:token", confirmEmail);
+// app.get("/confirmation/:email/:token", confirmEmail);
 app.post("/api/changePassword", changePassword);

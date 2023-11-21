@@ -65,82 +65,83 @@ const sendEmail = async({userName, email, token, host}) => {
   
 }
 
-exports.signup = async function (req, res, next) {
-  var db = client.db("cop4331");
-  const { firstName, lastName, userName, email, password } = req.body;
-  var Token = mongoose.model('Token', tokenSchema);
+// exports.signup = async function (req, res, next) {
+//   var db = client.db("cop4331");
+//   const { firstName, lastName, userName, email, password } = req.body;
+//   var Token = mongoose.model('Token', tokenSchema);
 
-  try {
-    var user = await db.collection("Users").findOne({ email: req.body.email })
-    // error occur
-    // if email is exist into database i.e. email is associated with another user.
-    if (user) {
-      return res.status(400).send({ msg: 'This email address is already associated with another account.' });
-    }
-    // if user is not exist into database then save the user into database for register account
-    else {
-      // password hashing for save into databse
-      // create and save user
-      await db.collection("Users").insertOne({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        userName: userName,
-        password: password,
-        isVerified: false,
-        carsArr: []
-      });
-      user = await db.collection("Users").findOne({ email: req.body.email })
+//   try {
+//     var user = await db.collection("Users").findOne({ email: req.body.email })
+//     // error occur
+//     // if email is exist into database i.e. email is associated with another user.
+//     if (user) {
+//       return res.status(400).send({ msg: 'This email address is already associated with another account.' });
+//     }
+//     // if user is not exist into database then save the user into database for register account
+//     else {
+//       // password hashing for save into databse
+//       // create and save user
+//       await db.collection("Users").insertOne({
+//         firstName: firstName,
+//         lastName: lastName,
+//         email: email,
+//         userName: userName,
+//         password: password,
+//         isVerified: false,
+//         carsArr: []
+//       });
+//       user = await db.collection("Users").findOne({ email: req.body.email })
 
-      // generate token and save
-      try {
-        var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex'), expireAt: { type: Date, default: Date.now, index: { expires: 86400000 } } });
-        await db.collection("Tokens").insertOne(token);
-      }
-      catch (e) {
-        return res.status(500).send({ msg: "Failed to generate token. Please try again." });
-      }
+//       // generate token and save
+//       try {
+//         var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex'), expireAt: { type: Date, default: Date.now, index: { expires: 86400000 } } });
+//         await db.collection("Tokens").insertOne(token);
+//       }
+//       catch (e) {
+//         return res.status(500).send({ msg: "Failed to generate token. Please try again." });
+//       }
 
-      // Send email (use verified sender's email address & generated API_KEY on SendGrid)
-      const transporter = nodemailer.createTransport(
-        sendgridTransport({
-          auth: {
-            api_key: API_KEY,
-          }
-        })
-      )
-      var mailOptions = { from: 'thaihungtran57116@gmail.com', to: user.email, subject: 'Account Verification Link', text: 'Hello ' + req.body.firstName + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.email + '\/' + token.token + '\n\nThank You!\n' };
-      try {
-        transporter.sendMail(mailOptions)
-      }
-      catch (e) {
-        return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
-      }
-      return res.status(200).send({ msg: 'A verification email has been sent to ' + user.email + '. It will be expire after one day. If you not get verification Email click on resend token.' });
-      // sendEmail()
-    }
-  }
-  catch (e) {
-    return res.status(500).send({ msg: "Failed to register user. Please try again." }); 
-  }
+//       // Send email (use verified sender's email address & generated API_KEY on SendGrid)
+//       const transporter = nodemailer.createTransport(
+//         sendgridTransport({
+//           auth: {
+//             api_key: API_KEY,
+//           }
+//         })
+//       )
+//       var mailOptions = { from: 'thaihungtran57116@gmail.com', to: user.email, subject: 'Account Verification Link', text: 'Hello ' + req.body.firstName + ',\n\n' + 'Here is your login token: ' + token.token };
+//       try {
+//         transporter.sendMail(mailOptions)
+//       }
+//       catch (e) {
+//         return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
+//       }
+//       return res.status(200).send({ msg: 'A verification email has been sent to ' + user.email + '. It will be expire after one day. If you not get verification Email click on resend token.' });
+//       // sendEmail()
+//     }
+//   }
+//   catch (e) {
+//     return res.status(500).send({ msg: "Failed to register user. Please try again." }); 
+//   }
 
-};
+// };
 
 // It is GET method, you have to write like that
 //    app.get('/confirmation/:email/:token',confirmEmail)
 exports.confirmEmail = async function (req, res, next) {
+  const { jwtToken, email } = req.body;
   var db = client.db("cop4331");
 
   try {
-    var token = await db.collection("Tokens").findOne({ token: req.params.token })
+    var token = await db.collection("Tokens").findOne({ token: jwtToken })
     // token is not found into database i.e. token may have expired 
 
     if (!token) {
-      return res.status(400).send({ msg: 'Your verification link may have expired. Please click on resend for verify your Email.' });
+      return res.status(400).send({ msg: 'Invalid Token!' });
     }
     // if token is found then check valid user 
     else {
-      user = await db.collection("Users").findOne({ _id: token._userId, email: req.params.email })
+      user = await db.collection("Users").findOne({ _id: token._userId, email: email })
 
       // not valid user
       if (!user) {
@@ -250,7 +251,10 @@ exports.resetPassword = async function (req, res, next) {
           }
         })
       )
-      var mailOptions = { from: 'thaihungtran57116@gmail.com', to: user.email, subject: 'Verification to Reset Password Link', text: 'Hello ' + user.firstName + ',\n\n' + 'Please verify your account to reset your password by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + user.email + '\/' + token.token + '\n\nThank You!\n' };
+      var mailOptions = { from: 'thaihungtran57116@gmail.com', 
+                          to: user.email, subject: 'Reset Password Code', 
+                          text: 'Hello ' + user.firstName + ',\n\n' + 'Here is your reset password token: ' + 
+                          token.token + '\n\nThank You!\n' };
       try {
         transporter.sendMail(mailOptions)
       }
@@ -281,7 +285,7 @@ exports.changePassword = async function (req, res, next) {
     else {
       await db.collection("Users").updateOne({ _id: new ObjectId(user._id) }, { $set: { password: password,} });
     }
-    return res.status(200).send({ msg: 'The password for ' + user.userName + 'has been changed!' });
+    return res.status(200).send({ msg: 'The password for ' + user.userName + ' has been changed!' });
   }
   catch (e) {
     return res.status(500).send({ msg: "Failed to change password. Please try again." }); 
