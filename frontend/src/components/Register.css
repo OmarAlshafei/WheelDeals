@@ -76,6 +76,7 @@ input[type="submit"] {
   align-items: center;
   position: absolute;
   top: 20%;
+  margin-right: 5%;
 }
 
 .header {
@@ -96,4 +97,8 @@ input[type="submit"] {
   margin-top: 20px;
   font-size: 20px;
   text-align: center;
+}
+
+.emailToken{
+  margin-top: 10%;
 }

@@ -11,6 +11,7 @@ const Register = (props) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
+  const [emailToken, setEmailToken] = useState("");
 
   const doRegister = async (event) => {
     event.preventDefault();
@@ -31,7 +32,7 @@ const Register = (props) => {
         if (response.error) {
           alert(response.error);
         } else {
-          setConfirmationMessage("A verification email has been sent to you.");
+          setConfirmationMessage("Verify your email address.");
           // alert("User has been added");
           // props.onFormSwitch("Login");
         }
@@ -39,6 +40,39 @@ const Register = (props) => {
         alert(error.toString());
         return;
       }
+    }
+  };
+
+  const handleSubmitToken = async () => {
+    console.log("submit token button clicked");
+    console.log("email token " + emailToken);
+    console.log("email " + email);
+
+    try {
+      const app_name = "wheeldeals-d3e9615ad014";
+      const route = "api/confirmEmail";
+      const apiUrl =
+        process.env.NODE_ENV === "production"
+          ? `https://${app_name}.herokuapp.com/${route}`
+          : `http://localhost:9000/${route}`;
+
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({jwtToken: emailToken, email: email}),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Request failed with status: ${res.status}`);
+      }
+
+      const result = await res.json();
+      console.log("API Response:", result);
+    
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -61,12 +95,28 @@ const Register = (props) => {
               style={{ color: "#ffffff" }}
             />
           </a>
-
           <div className="message">{confirmationMessage}</div>
           <div className="second-message">
-            Check your inbox and verify your email address to get started. If
-            you don't see it, please check your spam folder.
+            We emailed you a login token. Enter the token below to confirm your account.
+            If you don't see it, please check your spam folder.
           </div>
+          <div className="emailToken">
+            <label>Login Token</label>
+            <input
+              type="text"
+              name="firstName"
+              value={emailToken}
+              placeholder="Token"
+              onChange={(e) => setEmailToken(e.target.value)}
+            />
+          </div>
+          <button
+            variant="primary"
+            className="edit-button"
+            onClick={handleSubmitToken}
+          >
+            Submit
+          </button>
         </div>
       )}
       {!confirmationMessage && (
