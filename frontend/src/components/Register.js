@@ -89,6 +89,21 @@ const Register = (props) => {
     <div>
       {tokenStatus && (
         <div className="token-status-message">
+          <a href="/" className="header">
+            <img
+              src={logo}
+              height="60"
+              alt="Logo"
+              loading="lazy"
+              className="logo"
+            />
+            <br></br>
+            <FontAwesomeIcon
+              icon={faEnvelopeCircleCheck}
+              size="3x"
+              style={{ color: "#ffffff" }}
+            />
+          </a>
           <div className="message">{tokenStatus}</div>
           <button
             onClick={() => props.onFormSwitch("Login")}
@@ -103,7 +118,7 @@ const Register = (props) => {
           <a href="/" className="header">
             <img
               src={logo}
-              height="40"
+              height="60"
               alt="Logo"
               loading="lazy"
               className="logo"
