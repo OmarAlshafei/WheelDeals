@@ -27,7 +27,7 @@ const Login = (props) => {
       const { accessToken } = res;
       //alert("Access token is " + accessToken);
       const jwtDecoded = jwtDecode(accessToken, { complete: true });
-    
+
       try {
         var ud = jwtDecoded;
         var userId = ud.userId;
@@ -40,11 +40,17 @@ const Login = (props) => {
         if (userId <= 0) {
           setMessage("User/Password combination incorrect");
         } else {
-          var user = { firstName: firstName, lastName: lastName, id: userId, email:userEmail, username: loginName.value };
+          var user = {
+            firstName: firstName,
+            lastName: lastName,
+            id: userId,
+            email: userEmail,
+            username: loginName.value,
+          };
           localStorage.setItem("user_data", JSON.stringify(user));
           localStorage.setItem("jwt", accessToken);
           //alert(localStorage.getItem('jwt'))
-         
+
           setMessage("");
           window.location.href = "/home";
         }
@@ -130,6 +136,14 @@ const Login = (props) => {
         >
           Don't have an account? Register here
         </button>
+
+        <button
+          onClick={() => props.onFormSwitch("ForgetPassword")}
+          className="register-link"
+        >
+          Forgot Password?
+        </button>
+
         <div id="loginResult">{message}</div>
       </form>
     </div>
