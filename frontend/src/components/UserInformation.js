@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSquareCheck } from '@fortawesome/free-regular-svg-icons';
+import { faPen } from "@fortawesome/free-solid-svg-icons";
 import image from "../assets/fav-header5.jpg";
 import "./UserInformation.css";
 
@@ -58,6 +59,16 @@ const UserInformation = (props) => {
       console.log("API Response:", result);
 
       setEditing(false);
+
+      // updating local storage after name changes
+      var user = {
+        firstName: editedFirstName,
+        lastName: editedLastName,
+        id: userId,
+        email: userEmail,
+        username: userName,
+      };
+      localStorage.setItem("user_data", JSON.stringify(user));
     
     } catch (error) {
       console.error("Error:", error);
@@ -86,18 +97,22 @@ const UserInformation = (props) => {
       <div className="display-info">
         <p id="infoTitle">First Name</p>
         {editing ? (
-          <input
-            type="text"
-            value={editedFirstName}
-            className="info-box"
-            id="info"
-            onChange={(e) => setEditedFirstName(e.target.value)}
-          />
+          <div style={{ display: 'flex', alignItems: 'center', marginLeft:'1.8%' }}>
+            <input
+              type="text"
+              value={editedFirstName}
+              className="info-box"
+              id="info"
+              onChange={(e) => setEditedFirstName(e.target.value)}
+            />
+            <FontAwesomeIcon icon={faPen} style={{ color: "#080808", fontSize: '16px', paddingLeft: '15px', marginBottom: "30px"}} />
+          </div>
         ) : (
-          <p>{editedFirstName}</p>
+          <p className="info-box" id="info2">{editedFirstName}</p>
         )}
         <p id="infoTitle">Last Name</p>
         {editing ? (
+           <div style={{ display: 'flex', alignItems: 'center', marginLeft:'1.8%' }}>
           <input
             type="text"
             value={editedLastName}
@@ -105,13 +120,15 @@ const UserInformation = (props) => {
             id="info"
             onChange={(e) => setEditedLastName(e.target.value)}
           />
+          <FontAwesomeIcon icon={faPen} style={{ color: "#080808", fontSize: '16px', paddingLeft: '15px', marginBottom: "30px"}} />
+          </div>
         ) : (
-          <p>{editedLastName}</p>
+          <p className="info-box" id="info2">{editedLastName}</p>
         )}
         <p id="infoTitle">Username</p>
-        <p>{userName}</p>
+        <p className="info-box" id="info2">{userName}</p>
         <p id="infoTitle">Email</p>
-        <p>{userEmail}</p>
+        <p className="info-box" id="info2">{userEmail}</p>
         {editing ? (
           <button
             variant="primary"
