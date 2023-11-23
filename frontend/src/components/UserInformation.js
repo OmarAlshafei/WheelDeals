@@ -87,7 +87,7 @@ const UserInformation = (props) => {
           />
         </div>
         <div className="title-container">
-          <a href="/favorites" className="favorites-title">
+          <a href="/account" className="favorites-title">
             MY ACCOUNT
           </a>
         </div>
