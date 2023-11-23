@@ -107,7 +107,7 @@ const Register = (props) => {
           <div className="message">{tokenStatus}</div>
           <button
             onClick={() => props.onFormSwitch("Login")}
-            className="logbutton"
+            className="submit-token-button"
           >
             Login here
           </button>
@@ -151,7 +151,7 @@ const Register = (props) => {
           </div>
           <button
             variant="primary"
-            className="edit-button"
+            className="submit-token-button"
             onClick={handleSubmitToken}
           >
             Submit
