@@ -12,8 +12,8 @@ const Register = (props) => {
   const [lastName, setLastName] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [emailToken, setEmailToken] = useState("");
-  const [tokenStatus, setTokenStatus] = useState('');
-  const [tokenError, setTokenError] = useState('');
+  const [tokenStatus, setTokenStatus] = useState("");
+  const [tokenError, setTokenError] = useState("");
 
   const doRegister = async (event) => {
     event.preventDefault();
@@ -67,18 +67,17 @@ const Register = (props) => {
       });
 
       if (!res.ok) {
-        setTokenError('Invalid token. Please try again.');
+        setTokenError("Invalid token. Please try again.");
         throw new Error(`Request failed with status: ${res.status}`);
       }
 
       const result = await res.json();
       setTokenStatus(result.msg);
-      setTokenError('');
+      setTokenError("");
       console.log("API Response:", result);
-
     } catch (error) {
       console.error("Error:", error);
-      setTokenError('Invalid token. Please try again.');
+      setTokenError("Invalid token. Please try again.");
     }
   };
 
@@ -88,7 +87,7 @@ const Register = (props) => {
 
   return (
     <div>
-        {tokenStatus && (
+      {tokenStatus && (
         <div className="token-status-message">
           <div className="message">{tokenStatus}</div>
           <button
@@ -211,7 +210,7 @@ const Register = (props) => {
             onClick={() => props.onFormSwitch("Login")}
             className="login-link"
           >
-            Already have an account? Login here
+            Already have an account? <u>Login here</u>
           </button>
         </form>
       )}

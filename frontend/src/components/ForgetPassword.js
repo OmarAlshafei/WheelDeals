@@ -1,16 +1,18 @@
-import React, { useState, useHistory } from "react";
+import React, { useState } from "react";
 import "./ForgetPassword.css";
 import { Link } from "react-router-dom";
 import Login from "./Login.js";
+import logo from "./main-logo.png";
+import { useHistory } from "react-router-dom";
 
-const ForgetPassword = () => {
+const ForgetPassword = (props) => {
   const [email, setEmail] = useState("");
   const [jwtToken, setToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [currentForm, setCurrentForm] = useState("enterEmail");
   const [message, setMessage] = useState("");
 
-  // const history = useHistory();
+  const history = useHistory();
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -93,12 +95,20 @@ const ForgetPassword = () => {
       <form onSubmit={handleFormSubmit} className="login-form">
         {currentForm === "enterEmail" && (
           <>
+            <a href="/" className="header">
+              <img
+                src={logo}
+                height="60"
+                alt="Logo"
+                loading="lazy"
+                className="logo"
+              />
+              <br></br>
+            </a>
             <span id="inner-title" className="login-title">
               FORGOT PASSWORD
             </span>
-            <div className="login-remind">
-              Please enter the email address you use to sign in
-            </div>
+            <div className="login-remind">Please enter your email address!</div>
             <br />
             <label className="login-label">Email</label>
             <br></br>
@@ -118,6 +128,16 @@ const ForgetPassword = () => {
 
         {currentForm === "enterCode" && (
           <>
+            <a href="/" className="header">
+              <img
+                src={logo}
+                height="60"
+                alt="Logo"
+                loading="lazy"
+                className="logo"
+              />
+              <br></br>
+            </a>
             <span id="inner-title" className="login-title">
               ENTER YOUR CODE
             </span>
@@ -143,6 +163,16 @@ const ForgetPassword = () => {
 
         {currentForm === "enterPassword" && (
           <>
+            <a href="/" className="header">
+              <img
+                src={logo}
+                height="60"
+                alt="Logo"
+                loading="lazy"
+                className="logo"
+              />
+              <br></br>
+            </a>
             <span id="inner-title" className="login-title">
               RESET YOUR PASSWORD
             </span>
@@ -167,9 +197,26 @@ const ForgetPassword = () => {
 
         {currentForm === "resetSuccess" && (
           <>
+            <a href="/" className="header">
+              <img
+                src={logo}
+                height="60"
+                alt="Logo"
+                loading="lazy"
+                className="logo"
+              />
+              <br></br>
+            </a>
             <span id="inner-title" className="login-title">
-              Password reset successfully. Please try to login again.
+              Password reset successfully. Please try to login again with your
+              new password. Thank you.
             </span>
+            <button
+              className="login-button"
+              onClick={() => props.onFormSwitch("Login")}
+            >
+              Login
+            </button>
           </>
         )}
 

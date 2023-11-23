@@ -134,14 +134,14 @@ const Login = (props) => {
           onClick={() => props.onFormSwitch("Register")}
           className="register-link"
         >
-          Don't have an account? Register here
+          Don't have an account? <u>Register here</u>
         </button>
 
         <button
           onClick={() => props.onFormSwitch("ForgetPassword")}
           className="register-link"
         >
-          Forgot Password? Click here
+          Forgot Password? <u>Click here</u>
         </button>
 
         <div id="loginResult">{message}</div>
