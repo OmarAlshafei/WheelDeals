@@ -79,6 +79,35 @@ input[type="submit"] {
   margin-right: 5%;
 }
 
+.token-status-message{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 30%;
+  margin-right: 5%;
+}
+.error-message{
+  color: red;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.logbutton{
+  font-size: small;
+  text-align: center;
+  width: 45%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 6px;
+  border: 1px solid;
+  border-radius: 3px;
+  background: #fca311;
+  color: black;
+  cursor: pointer;
+  font-weight: bold;
+}
 .header {
   display: flex;
   left: 5px;
