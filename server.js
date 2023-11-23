@@ -5,6 +5,7 @@ const {
   confirmEmail,
   resetPassword,
   changePassword,
+  Token
 } = require("./email");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -16,7 +17,6 @@ const app = express();
 const MongoClient = require("mongodb").MongoClient;
 const passwordValidator = require("password-validator");
 const ObjectId = require("mongodb").ObjectId;
-// const tokenSchema = require("./email.js")
 const Bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
@@ -50,17 +50,6 @@ if (process.env.NODE_ENV !== 'test'){
 
 // Global Constants
 const region = "REGION_STATE_FL";
-
-// Functions
-var tokenSchema = new mongoose.Schema({
-  _userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
-  token: { type: String, required: true },
-  expireAt: { type: Date, default: Date.now, index: { expires: 86400000 } },
-});
 
 // incoming: make
 // outgoing: link to logo image (string)
@@ -342,17 +331,22 @@ app.post("/api/search", async (req, res, next) => {
     type: type,
     histogramData: histogramData,
   };
+
   res.status(200).json(ret);
 });
 
 app.post("/api/register", async (req, res, next) => {
   // incoming: firstName, lastName, userName, email, password
   // outgoing: message, error
+  console.log("starting to register")
   var token = require('./createJWT.js');
   var error = "";
+
+  console.log("connecting to db")
   const db = client.db("cop4331");
+  console.log("db connected")
   const { firstName, lastName, userName, email, password } = req.body;
-  var Token = mongoose.model("Token", tokenSchema);
+  console.log("mongoose schema created")
   var validation = isComplex(password);
 
   if (validation != "Valid Password") {
@@ -360,9 +354,10 @@ app.post("/api/register", async (req, res, next) => {
     res.status(200).json(ret);
   } else {
     try {
-      console.log("about to search db");
+      console.log("connected to users db")
       var user = await db.collection("Users").findOne({ email: email });
-      console.log("searched db");
+      console.log("connected to users db")
+
       // error occur
       // if email is exist into database i.e. email is associated with another user.
       if (user) {
@@ -400,7 +395,9 @@ app.post("/api/register", async (req, res, next) => {
               index: { expires: 86400000 },
             },
           });
+          console.log("adding token")
           await db.collection("Tokens").insertOne(token);
+          console.log("added token")
         } catch (e) {
           return res
             .status(500)
@@ -442,7 +439,7 @@ app.post("/api/register", async (req, res, next) => {
             msg:
               "A verification email has been sent to " +
               user.email +
-              ". It will be expire after one day. If you not get verification Email click on resend token.",
+              ". It will be expire after one day. ",
           });
         // sendEmail()
       }
@@ -452,6 +449,7 @@ app.post("/api/register", async (req, res, next) => {
         .send({ msg: "Failed to register user. Please try again." });
     }
   }
+
 });
 
 app.post("/api/login", async (req, res, next) => {

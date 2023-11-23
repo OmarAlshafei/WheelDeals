@@ -41,16 +41,34 @@
   align-items: center;
   justify-content: center;
   height: 70vh;
-
-  
 }
+
 #info{
-  width: 100%;
+  /* width: 100%; */
+  width: 700px;
   margin-bottom: 20px;
   background: none;
   border: 2px solid #fca311;
   border-radius: 3px;
   color: black;
+  padding-left: 1%;
+}
+
+#info2{
+  width: 100%;
+  margin-bottom: 20px;
+  background: none;
+  /* border: 2px solid #E5e5e5; */
+  border: 1px solid grey;
+  border-radius: 3px;
+  color: black;
+  padding-top: 0.3%;
+  padding-bottom: 0.3%;
+  /* padding-left: 20%; */
+  text-align: center; 
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
 }
 
 /* #box{

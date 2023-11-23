@@ -27,6 +27,9 @@ var tokenSchema = new mongoose.Schema({
   expireAt: { type: Date, default: Date.now, index: { expires: 86400000 } }
 });
 
+const Token = mongoose.model('Token', tokenSchema);
+exports.Token = Token;
+
 exports.login = async function (req, res, next) {
   var db = client.db("cop4331");
 
@@ -55,15 +58,15 @@ exports.login = async function (req, res, next) {
 };
 
 
-const forgotPassword = (password, id) => {
-  // Set isVerified to false
-  // Send the email to confirm and set isVerified to true
-  // Change password
-}
+// const forgotPassword = (password, id) => {
+//   // Set isVerified to false
+//   // Send the email to confirm and set isVerified to true
+//   // Change password
+// }
 
-const sendEmail = async({userName, email, token, host}) => {
+// const sendEmail = async({userName, email, token, host}) => {
   
-}
+// }
 
 // exports.signup = async function (req, res, next) {
 //   var db = client.db("cop4331");
@@ -209,7 +212,7 @@ exports.resendLink = function (req, res, next) {
           if (err) {
             return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
           }
-          return res.status(200).send('A verification email has been sent to ' + user.email + '. It will be expire after one day. If you not get verification Email click on resend token.');
+          return res.status(200).send('A verification email has been sent to ' + user.email + '. It will be expire after one day.');
         });
       });
     }
@@ -219,12 +222,16 @@ exports.resendLink = function (req, res, next) {
 
 // try to map the link to the new password page after 
 exports.resetPassword = async function (req, res, next) {
+  console.log("connecting to db")
   var db = client.db("cop4331");
+  console.log("connected to db")
   const {email} = req.body;
-  var Token = mongoose.model('Token', tokenSchema);
+  // var Token = mongoose.model('Token', tokenSchema);
 
   try {
+    console.log("connecting to users")
     var user = await db.collection("Users").findOne({ email: req.body.email })
+    console.log("connected to users")
     // error occur
     // if email is exist into database i.e. email is associated with another user.
     if (!user) {
@@ -232,12 +239,16 @@ exports.resetPassword = async function (req, res, next) {
     }
     // if user is not exist into database then save the user into database for register account
     else {
+      console.log("updating user")
       await db.collection("Users").updateOne({ _id: new ObjectId(user._id) }, { $set: { isVerified: false,} });
+      console.log("updated user")
 
       // generate token and save
       try {
         var token = new Token({ _userId: user._id, token: crypto.randomBytes(16).toString('hex'), expireAt: { type: Date, default: Date.now, index: { expires: 86400000 } } });
+        console.log("connecting to token")
         await db.collection("Tokens").insertOne(token);
+        console.log("connected to token")
       }
       catch (e) {
         return res.status(500).send({ msg: "Failed to generate token. Please try again." });
@@ -261,7 +272,7 @@ exports.resetPassword = async function (req, res, next) {
       catch (e) {
         return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
       }
-      return res.status(200).send({ msg: 'A verification email has been sent to ' + user.email + '. It will be expire after one day. If you not get verification Email click on resend token.' });
+      return res.status(200).send({ msg: 'A verification email has been sent to ' + user.email + '. It will be expire after one day.' });
 
     }
   }

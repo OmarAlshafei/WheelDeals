@@ -63,7 +63,7 @@ const CarDetail = (props) => {
           />
         </div>
         <div className="title-container">
-          <a href="/favorites" className="favorites-title">
+          <a href="/cardetail" className="favorites-title">
           CAR DETAILS
           </a> 
         </div>
