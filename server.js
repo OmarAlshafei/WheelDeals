@@ -439,7 +439,7 @@ app.post("/api/register", async (req, res, next) => {
             msg:
               "A verification email has been sent to " +
               user.email +
-              ". It will be expire after one day. If you not get verification Email click on resend token.",
+              ". It will be expire after one day. ",
           });
         // sendEmail()
       }
