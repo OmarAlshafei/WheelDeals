@@ -1,4 +1,9 @@
 /* FavoritesPage.css */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500&display=swap");
+
+.container {
+  font-family: "Roboto Slab", serif;
+}
 
 .favorites-header {
   position: relative;
