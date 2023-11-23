@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Register.css";
 import logo from "./main-logo.png";
 import { faEnvelopeCircleCheck } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +12,8 @@ const Register = (props) => {
   const [lastName, setLastName] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [emailToken, setEmailToken] = useState("");
+  const [tokenStatus, setTokenStatus] = useState('');
+  const [tokenError, setTokenError] = useState('');
 
   const doRegister = async (event) => {
     event.preventDefault();
@@ -44,9 +46,9 @@ const Register = (props) => {
   };
 
   const handleSubmitToken = async () => {
-    console.log("submit token button clicked");
-    console.log("email token " + emailToken);
-    console.log("email " + email);
+    //console.log("submit token button clicked");
+    //console.log("email token " + emailToken);
+    //console.log("email " + email);
 
     try {
       const app_name = "wheeldeals-d3e9615ad014";
@@ -65,19 +67,39 @@ const Register = (props) => {
       });
 
       if (!res.ok) {
+        setTokenError('Invalid token. Please try again.');
         throw new Error(`Request failed with status: ${res.status}`);
       }
 
       const result = await res.json();
+      setTokenStatus(result.msg);
+      setTokenError('');
       console.log("API Response:", result);
+
     } catch (error) {
       console.error("Error:", error);
+      setTokenError('Invalid token. Please try again.');
     }
   };
 
+  useEffect(() => {
+    //console.log("token status:", tokenStatus);
+  }, [tokenStatus, tokenError]);
+
   return (
     <div>
-      {confirmationMessage && (
+        {tokenStatus && (
+        <div className="token-status-message">
+          <div className="message">{tokenStatus}</div>
+          <button
+            onClick={() => props.onFormSwitch("Login")}
+            className="logbutton"
+          >
+            Login here
+          </button>
+        </div>
+      )}
+      {!tokenStatus && confirmationMessage && (
         <div className="confirmation-message">
           <a href="/" className="header">
             <img
@@ -108,6 +130,11 @@ const Register = (props) => {
               placeholder="Token"
               onChange={(e) => setEmailToken(e.target.value)}
             />
+            {tokenError && (
+              <div className="token-error-message">
+                <div className="error-message">{tokenError}</div>
+              </div>
+            )}
           </div>
           <button
             variant="primary"
@@ -118,7 +145,7 @@ const Register = (props) => {
           </button>
         </div>
       )}
-      {!confirmationMessage && (
+      {!tokenStatus && !confirmationMessage && (
         <form onSubmit={doRegister} className="register-form">
           <span id="inner-title" className="register-title">
             REGISTER
