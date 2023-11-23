@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useHistory } from "react";
+import "./ForgetPassword.css";
+import { Link } from "react-router-dom";
+import Login from "./Login.js";
 
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
@@ -6,6 +9,8 @@ const ForgetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [currentForm, setCurrentForm] = useState("enterEmail");
   const [message, setMessage] = useState("");
+
+  // const history = useHistory();
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -85,31 +90,43 @@ const ForgetPassword = () => {
 
   return (
     <div>
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleFormSubmit} className="login-form">
         {currentForm === "enterEmail" && (
           <>
-            <span>FORGOT PASSWORD</span>
-            <div>Please enter the email address you use to sign in</div>
+            <span id="inner-title" className="login-title">
+              FORGOT PASSWORD
+            </span>
+            <div className="login-remind">
+              Please enter the email address you use to sign in
+            </div>
             <br />
-            <label>Email</label>
+            <label className="login-label">Email</label>
             <br></br>
             <input
-              type="email"
+              type="text"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <br></br>
-            <button type="submit">Submit</button>
+            <button type="submit" className="login-button">
+              Submit
+            </button>
+            {/* <button onClick={() => history.goBack()}>Go Back</button> */}
           </>
         )}
 
         {currentForm === "enterCode" && (
           <>
-            <span>ENTER YOUR CODE</span>
-            <div>Please enter the reset code that has been sent to you</div>
+            <span id="inner-title" className="login-title">
+              ENTER YOUR CODE
+            </span>
+            <div className="login-remind">
+              {message && <div>{message}</div>}
+            </div>
+            {/* {message && <div>{message}</div>} */}
             <br />
-            <label>Code</label>
+            <label className="login-label">Code</label>
             <br></br>
             <input
               type="text"
@@ -118,16 +135,22 @@ const ForgetPassword = () => {
               onChange={(e) => setToken(e.target.value)}
             />
             <br></br>
-            <button type="submit">Verify code</button>
+            <button type="submit" className="login-button">
+              Verify code
+            </button>
           </>
         )}
 
         {currentForm === "enterPassword" && (
           <>
-            <span>RESET YOUR PASSWORD</span>
-            <div>Please enter the new password</div>
+            <span id="inner-title" className="login-title">
+              RESET YOUR PASSWORD
+            </span>
+            <div className="login-remind">
+              {message && <div>{message}</div>}Please enter the new password
+            </div>
             <br />
-            <label>New Password</label>
+            <label className="login-label">New Password</label>
             <br></br>
             <input
               type="password"
@@ -136,17 +159,21 @@ const ForgetPassword = () => {
               onChange={(e) => setNewPassword(e.target.value)}
             />
             <br></br>
-            <button type="submit">Submit</button>
+            <button type="submit" className="login-button">
+              Submit
+            </button>
           </>
         )}
 
         {currentForm === "resetSuccess" && (
           <>
-            <span>Password reset successfully. Please try to login again.</span>
+            <span id="inner-title" className="login-title">
+              Password reset successfully. Please try to login again.
+            </span>
           </>
         )}
 
-        {message && <div>{message}</div>}
+        {/* {message && <div>{message}</div>} */}
       </form>
     </div>
   );

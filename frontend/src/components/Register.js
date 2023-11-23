@@ -61,7 +61,7 @@ const Register = (props) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({jwtToken: emailToken, email: email}),
+        body: JSON.stringify({ jwtToken: emailToken, email: email }),
       });
 
       if (!res.ok) {
@@ -70,7 +70,6 @@ const Register = (props) => {
 
       const result = await res.json();
       console.log("API Response:", result);
-    
     } catch (error) {
       console.error("Error:", error);
     }
@@ -97,8 +96,8 @@ const Register = (props) => {
           </a>
           <div className="message">{confirmationMessage}</div>
           <div className="second-message">
-            We emailed you a login token. Enter the token below to confirm your account.
-            If you don't see it, please check your spam folder.
+            We emailed you a login token. Enter the token below to confirm your
+            account. If you don't see it, please check your spam folder.
           </div>
           <div className="emailToken">
             <label>Login Token</label>
@@ -124,6 +123,8 @@ const Register = (props) => {
           <span id="inner-title" className="register-title">
             REGISTER
           </span>
+          <div className="login-remind">Please enter your information!</div>
+          <br></br>
           <label>First Name</label>
           <br></br>
           <input

@@ -99,7 +99,7 @@ const Login = (props) => {
           LOGIN
         </span>
         <div className="login-remind">
-          Please enter your login and password!
+          Please enter your username and password!
         </div>
         <br />
         <label className="login-label">Username</label>
@@ -141,7 +141,7 @@ const Login = (props) => {
           onClick={() => props.onFormSwitch("ForgetPassword")}
           className="register-link"
         >
-          Forgot Password?
+          Forgot Password? Click here
         </button>
 
         <div id="loginResult">{message}</div>
