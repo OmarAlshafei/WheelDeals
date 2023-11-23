@@ -27,6 +27,9 @@ var tokenSchema = new mongoose.Schema({
   expireAt: { type: Date, default: Date.now, index: { expires: 86400000 } }
 });
 
+const Token = mongoose.model('Token', tokenSchema);
+exports.Token = Token;
+
 exports.login = async function (req, res, next) {
   var db = client.db("cop4331");
 
@@ -223,7 +226,7 @@ exports.resetPassword = async function (req, res, next) {
   var db = client.db("cop4331");
   console.log("connected to db")
   const {email} = req.body;
-  var Token = mongoose.model('Token', tokenSchema);
+  // var Token = mongoose.model('Token', tokenSchema);
 
   try {
     console.log("connecting to users")

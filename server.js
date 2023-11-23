@@ -5,6 +5,7 @@ const {
   confirmEmail,
   resetPassword,
   changePassword,
+  Token
 } = require("./email");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -16,7 +17,6 @@ const app = express();
 const MongoClient = require("mongodb").MongoClient;
 const passwordValidator = require("password-validator");
 const ObjectId = require("mongodb").ObjectId;
-// const tokenSchema = require("./email.js")
 const Bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
@@ -50,17 +50,6 @@ if (process.env.NODE_ENV !== 'test'){
 
 // Global Constants
 const region = "REGION_STATE_FL";
-
-// Functions
-var tokenSchema = new mongoose.Schema({
-  _userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
-  token: { type: String, required: true },
-  expireAt: { type: Date, default: Date.now, index: { expires: 86400000 } },
-});
 
 // incoming: make
 // outgoing: link to logo image (string)
@@ -357,7 +346,6 @@ app.post("/api/register", async (req, res, next) => {
   const db = client.db("cop4331");
   console.log("db connected")
   const { firstName, lastName, userName, email, password } = req.body;
-  var Token = mongoose.model("Token", tokenSchema);
   console.log("mongoose schema created")
   var validation = isComplex(password);
 
