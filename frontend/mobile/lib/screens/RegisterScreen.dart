@@ -106,8 +106,7 @@ class _MainPageState extends State<MainPage> {
     else
     {
       try {
-        String url =
-            'https://wheeldeals-d3e9615ad014.herokuapp.com/api/register';
+        String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/register';
         ret = await CarsData.getJson(url, payload);
         jsonObject = json.decode(ret);
         print(jsonObject);
@@ -152,9 +151,8 @@ class _MainPageState extends State<MainPage> {
           currentUser.email = email.trim();
           currentUser.userName = loginName.trim();
           currentUser.password = password.trim();
-          currentUser.loggedIn = true;
 
-          Navigator.pushNamed(context, Routes.LOGINSCREEN);
+          Navigator.pushNamed(context, Routes.VERIFYSCREEN);
         } else {
           message = "Failed to verify. Please resend the link";
           messageColor = appColors.black;
@@ -337,13 +335,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                     onPressed: () async
                     {
-                      if (verificationSent) {
-                        reVerify(); // resend verification email
-                      }
-                      else {
-                        register();
-                      }
-
+                      register();
                     }
                 ),
               ),

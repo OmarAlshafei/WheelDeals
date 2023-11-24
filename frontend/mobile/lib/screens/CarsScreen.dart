@@ -128,8 +128,8 @@ class histChart extends StatelessWidget {
           child: Column(
             children: [
               const Text(
-                  "Percent of Market with Different Prices",
-                  style: TextStyle(fontSize: 18),
+                  "Price Distribution Histogram",
+                  style: TextStyle(fontSize: 24),
               ),
               Container(
                   height: 500,
@@ -267,6 +267,7 @@ class _MainPageState extends State<MainPage> {
     String make = car.make;
     String model = car.model;
     String price = car.price;
+    String type = car.type;
 
     //print(fav);
 
@@ -279,18 +280,7 @@ class _MainPageState extends State<MainPage> {
                 mainAxisAlignment: MainAxisAlignment.center, //Center Column contents vertically,
                 crossAxisAlignment: CrossAxisAlignment.center, //Center Column contents horizontal
                 children: <Widget>[
-                  Row(
-                    children: [
-                      Container(
-                        margin:const EdgeInsets.only(bottom: 20.0),
-                        child:
-                        const Text(
-                          "Car Information",
-                          style: TextStyle(fontSize: 24),
-                        ),
-                      ),
-                    ],
-                  ),// title
+
                   ListTile(
                     title: Text("$make $model", style: const TextStyle(fontSize: 28),),
                     subtitle: Text(price, style: const TextStyle(color: appColors.black, fontSize: 20),),

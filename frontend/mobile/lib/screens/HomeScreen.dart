@@ -11,8 +11,9 @@ import '../utils/Favorites.dart';
 
 
 final List<String> imgList = [
-  'https://www.lensrentals.com/blog/media/2015/11/Automotive-Photography-Guide-1.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwVLDj3Q7Pmq_x5CNlPHlY4OR3RraFbZZm1Q&usqp=CAU'
+  "images/ss1_2.png",
+  "images/ss2_2.png",
+  "images/ss3_2.png"
 ];
 
 class HomeScreen extends StatefulWidget {
@@ -133,22 +134,28 @@ class _MainPageState extends State<MainPage> {
           Container(
             //margin:const EdgeInsets.only(bottom: 10.0),
             child: CarouselSlider(
-              options: CarouselOptions(),
+              options: CarouselOptions(
+                  autoPlay: false,
+                  aspectRatio: 2.0,
+                  enlargeCenterPage: true,
+                ),
               items: imgList
                   .map((item) => Container(
                 child: Center(
                     child:
-                    Image.network(item, fit: BoxFit.cover, width: 1000)),
+                    Image.asset(item, fit: BoxFit.cover, width: 2000)),
               ))
                   .toList(),
             ),
           ),
           Container(
+            margin: const EdgeInsets.only(top: 10),
             child: const Text(
               "Popular Cars",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 28
+                fontSize: 28,
+                color: appColors.navy
               ),
             )
           ), // TITLE
@@ -272,16 +279,25 @@ class _MainPageState extends State<MainPage> {
 
     return Container(
       child: Column(
+        //mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            alignment: Alignment.centerLeft,
+            alignment: Alignment.center,
             margin: const EdgeInsets.only(left:5, top:10),
-            child: const Text("Search:", style: TextStyle(fontSize: 18),)
+            child: const Text(
+              "Search Our Inventory",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: appColors.navy
+              ),
+            )
           ), // SEARCH TITLE
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: const EdgeInsets.only(top:5, bottom:10, left: 5),
+                margin: const EdgeInsets.only(top:5, bottom:10),
                 height:35,
                 width: 140,
                 decoration: BoxDecoration(
@@ -310,7 +326,7 @@ class _MainPageState extends State<MainPage> {
               ),// MAKE DROPDOWN
               Container(
                 height: 35,
-                margin: const EdgeInsets.only(top:5, bottom:10, left: 5),
+                margin: const EdgeInsets.only(top:5, bottom:10, left: 10),
                 decoration: BoxDecoration(
                   color: appColors.gray,
                   border: Border.all(color: appColors.black),
@@ -333,13 +349,16 @@ class _MainPageState extends State<MainPage> {
                 ),
               ), // MODEL DROPDOWN
               Container(
-                //margin: const EdgeInsets.all(5),
-                child: IconButton(
-                  icon: const Icon(Icons.search),
+                margin: const EdgeInsets.only(left:10, bottom: 5),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: appColors.gold,
+                  ),
                   onPressed: () async {
                     appCars.currentCar = await appCars.searchCar(appCars.searchedMake, appCars.searchedModel,context);
                     Navigator.pushNamed(context, Routes.CARSSCREEN);
-                  },)
+                  },
+                  child: const Text('Search',style: TextStyle(fontSize: 14 ,color:Colors.black)),)
               )
             ],
           ), // SEARCH

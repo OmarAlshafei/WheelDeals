@@ -116,8 +116,7 @@ class _MainPageState extends State<MainPage> {
       // print(jwtDecodedToken["lastName"]);
       print(token);
       print(jwtDecodedToken);
-      //currentUser.userId = jwtDecodedToken["userId"];
-      currentUser.userId = "65579ed44b4737fe6207cddc";
+      currentUser.userId = jwtDecodedToken["userId"];
       currentUser.firstName = jwtDecodedToken["firstName"];
       currentUser.lastName = jwtDecodedToken["lastName"];
       if (jwtDecodedToken["email"] != null) {
@@ -138,6 +137,28 @@ class _MainPageState extends State<MainPage> {
       print("Why no success?");
     }
   }
+
+  Future<void> changePassword(String email, String pass) async {
+    // Send verification code
+    String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/resetPassword';
+    String payload = '{"email":"$email"}';
+    var ret = await CarsData.getJson(url, payload);
+    var jsonObject = json.decode(ret);
+
+    // Actually change password
+    url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/changePassword';
+    payload = '{"password":"$pass","email":"$email"}';
+    ret = await CarsData.getJson(url, payload);
+    jsonObject = json.decode(ret);
+    print(payload);
+    print(jsonObject);
+
+    if (jsonObject["msg"] != "Failed to change password. Please try again.") {
+      currentUser.password = pass;
+      Navigator.pushNamed(context, Routes.LOGINSCREEN);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -253,83 +274,20 @@ class _MainPageState extends State<MainPage> {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
+                    children: [
                       Container(
-                        //margin:const EdgeInsets.only(left: 160.0),
-                        child:
-                        ElevatedButton(
+                        child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: appColors.gold,
                           ),
                           onPressed: () async
                           {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text("Reset Password"),
-                                  content: SingleChildScrollView(
-                                    child: Column(
-                                      children: [
-                                        const Text("Enter your email"),
-                                        Container(
-                                          width: 200,
-                                          margin:const EdgeInsets.only(top:10, bottom: 10),
-                                          child:
-                                          TextField (
-                                            controller: TextEditingController(text: email),
-                                            decoration: const InputDecoration(
-                                                filled: true,
-                                                fillColor: Colors.white,
-                                                border: OutlineInputBorder(),
-                                                hintText: 'Email'
-                                            ),
-                                            onChanged: (text) {
-                                              email = text;
-                                            },
-                                          ),
-                                        ),
-                                        const Text("Enter your new password"),
-                                        Container(
-                                          width: 200,
-                                          margin:const EdgeInsets.only(top:10),
-                                          child:
-                                          TextField (
-                                            controller: TextEditingController(text: newPassword),
-                                            decoration: const InputDecoration(
-                                                filled: true,
-                                                fillColor: Colors.white,
-                                                border: OutlineInputBorder(),
-                                                hintText: 'New Password'
-                                            ),
-                                            onChanged: (text) {
-                                              newPassword = text;
-                                            },
-                                          ),
-                                        ),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: appColors.gold,
-                                          ),
-                                          onPressed: (){
-
-                                          },
-                                          child: const Text(
-                                            "Done",
-                                            style: TextStyle(color: appColors.black),
-                                          )
-                                        )
-                                      ],
-                                    )
-                                  ),
-                                );
-                              }
-                            );
+                            Navigator.pushNamed(context, Routes.PASSVERIFYSCREEN);
                           },
-                          child: const Text('Forgot Password',style: TextStyle(fontSize: 14 ,color:Colors.black)),
-                        ),
-                      ),
-                    ],
+                          child: const Text('Forgot Password',style: TextStyle(fontSize: 14 ,color:Colors.black))
+                        )
+                      )
+                    ]
                   ), // FORGOT PASSWORD
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -350,7 +308,7 @@ class _MainPageState extends State<MainPage> {
                       Container(
                         margin:const EdgeInsets.only(top: 50),
                         child: const Text(
-                          "New User?",
+                          "Don't have an account?",
                           style: TextStyle(fontSize: 18),
                         )
                       ),
@@ -358,7 +316,7 @@ class _MainPageState extends State<MainPage> {
                         margin:const EdgeInsets.only(left:20,top: 50),
                         child:
                         ElevatedButton(
-                          child: Text('Create an Account',style: TextStyle(fontSize: 14 ,color:Colors.black)),
+                          child: Text('Register Here',style: TextStyle(fontSize: 14 ,color:Colors.black)),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: appColors.gold,
                           ),
