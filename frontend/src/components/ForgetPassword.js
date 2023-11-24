@@ -5,6 +5,8 @@ import Login from "./Login.js";
 import logo from "./main-logo.png";
 import { useHistory } from "react-router-dom";
 import "./Register.css";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const ForgetPassword = (props) => {
   const [email, setEmail] = useState("");
@@ -12,6 +14,7 @@ const ForgetPassword = (props) => {
   const [newPassword, setNewPassword] = useState("");
   const [currentForm, setCurrentForm] = useState("enterEmail");
   const [message, setMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const history = useHistory();
 
@@ -89,6 +92,10 @@ const ForgetPassword = (props) => {
         setMessage("An error occurred. Please try again.");
       }
     }
+  };
+
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -186,12 +193,22 @@ const ForgetPassword = (props) => {
             <br />
             <label className="login-label">New Password</label>
             <br></br>
-            <input
-              type="password"
-              placeholder="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
+            <div>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                style={{ width: "85%" }}
+              />
+              <i
+                className={`eye-icon ${showPassword ? "visible" : "hidden"}`}
+                onClick={handleTogglePassword}
+                style={{ marginleft: "4%" }}
+              >
+                <FontAwesomeIcon icon={faEye} />
+              </i>
+            </div>
             <br></br>
             <button type="submit" className="login-button">
               Submit
