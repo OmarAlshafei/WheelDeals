@@ -89,3 +89,34 @@ video {
 .close-button {
   cursor: pointer;
 }
+
+/* Responsive Styles */
+@media screen and (max-width: 768px) {
+  .intro-section {
+    font-size: 1.5rem;
+  }
+
+  .intro-section-button {
+    font-size: 16px;
+  }
+
+  .modal-section {
+    width: 80%;
+    left: 10%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .intro-section {
+    font-size: 1.2rem;
+  }
+
+  .intro-section-button {
+    font-size: 14px;
+  }
+
+  .modal-section {
+    width: 90%;
+    left: 5%;
+  }
+}

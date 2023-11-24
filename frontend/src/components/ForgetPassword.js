@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Login from "./Login.js";
 import logo from "./main-logo.png";
 import { useHistory } from "react-router-dom";
+import "./Register.css";
 
 const ForgetPassword = (props) => {
   const [email, setEmail] = useState("");
@@ -94,11 +95,11 @@ const ForgetPassword = (props) => {
     <div>
       <form onSubmit={handleFormSubmit} className="login-form">
         {currentForm === "enterEmail" && (
-          <>
+          <div>
             <a href="/" className="header">
               <img
                 src={logo}
-                height="60"
+                // height="60"
                 alt="Logo"
                 loading="lazy"
                 className="logo"
@@ -108,7 +109,9 @@ const ForgetPassword = (props) => {
             <span id="inner-title" className="login-title">
               FORGOT PASSWORD
             </span>
-            <div className="login-remind">Please enter your email address!</div>
+            <div className="login-remind">
+              Please enter the email address you use to Sign In!
+            </div>
             <br />
             <label className="login-label">Email</label>
             <br></br>
@@ -123,7 +126,8 @@ const ForgetPassword = (props) => {
               Submit
             </button>
             {/* <button onClick={() => history.goBack()}>Go Back</button> */}
-          </>
+            {message && <div>{message}</div>}
+          </div>
         )}
 
         {currentForm === "enterCode" && (
@@ -131,7 +135,7 @@ const ForgetPassword = (props) => {
             <a href="/" className="header">
               <img
                 src={logo}
-                height="60"
+                // height="60"
                 alt="Logo"
                 loading="lazy"
                 className="logo"
@@ -166,7 +170,7 @@ const ForgetPassword = (props) => {
             <a href="/" className="header">
               <img
                 src={logo}
-                height="60"
+                // height="60"
                 alt="Logo"
                 loading="lazy"
                 className="logo"
@@ -200,7 +204,7 @@ const ForgetPassword = (props) => {
             <a href="/" className="header">
               <img
                 src={logo}
-                height="60"
+                // height="60"
                 alt="Logo"
                 loading="lazy"
                 className="logo"

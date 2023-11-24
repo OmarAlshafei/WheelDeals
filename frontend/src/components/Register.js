@@ -118,7 +118,7 @@ const Register = (props) => {
           <a href="/" className="header">
             <img
               src={logo}
-              height="60"
+              height="80"
               alt="Logo"
               loading="lazy"
               className="logo"
