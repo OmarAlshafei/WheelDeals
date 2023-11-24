@@ -107,7 +107,7 @@ const Register = (props) => {
           <div className="message">{tokenStatus}</div>
           <button
             onClick={() => props.onFormSwitch("Login")}
-            className="logbutton"
+            className="submit-token-button"
           >
             Login here
           </button>
@@ -132,16 +132,15 @@ const Register = (props) => {
           </a>
           <div className="message">{confirmationMessage}</div>
           <div className="second-message">
-            We emailed you a login token. Enter the token below to confirm your
-            account. If you don't see it, please check your spam folder.
+            We emailed you a verification code. Enter the code below to confirm account. If you don't see it, please check your spam folder.
           </div>
           <div className="emailToken">
-            <label>Login Token</label>
+            <label>Code</label>
             <input
               type="text"
               name="firstName"
               value={emailToken}
-              placeholder="Token"
+              placeholder="Code"
               onChange={(e) => setEmailToken(e.target.value)}
             />
             {tokenError && (
@@ -152,7 +151,7 @@ const Register = (props) => {
           </div>
           <button
             variant="primary"
-            className="edit-button"
+            className="submit-token-button"
             onClick={handleSubmitToken}
           >
             Submit
