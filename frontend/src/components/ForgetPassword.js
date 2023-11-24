@@ -204,9 +204,9 @@ const ForgetPassword = (props) => {
               <i
                 className={`eye-icon ${showPassword ? "visible" : "hidden"}`}
                 onClick={handleTogglePassword}
-                style={{ marginleft: "4%" }}
+                // style={{ marginleft: "4%" }}
               >
-                <FontAwesomeIcon icon={faEye} />
+                <FontAwesomeIcon icon={faEye} style={{ marginLeft: "4%" }} />
               </i>
             </div>
             <br></br>
