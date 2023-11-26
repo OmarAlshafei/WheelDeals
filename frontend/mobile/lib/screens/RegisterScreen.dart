@@ -217,10 +217,11 @@ class _MainPageState extends State<MainPage> {
               ), //title
 
               Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
                       width: 200,
-                      margin:const EdgeInsets.only(left: 95.0, top:20),
+                      margin:const EdgeInsets.only(top:20),
                       child:
                       TextField (
                         decoration: InputDecoration(
@@ -239,10 +240,11 @@ class _MainPageState extends State<MainPage> {
               ), // first name
 
               Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
                       width: 200,
-                      margin:const EdgeInsets.only(left: 95.0, top:20),
+                      margin:const EdgeInsets.only(top:20),
                       child:
                       TextField (
                         decoration: InputDecoration(
@@ -261,10 +263,11 @@ class _MainPageState extends State<MainPage> {
               ), // last name
 
               Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
                       width: 200,
-                      margin:const EdgeInsets.only(left: 95.0, top:20),
+                      margin:const EdgeInsets.only(top:20),
                       child:
                       TextField (
                         decoration: InputDecoration(
@@ -283,10 +286,11 @@ class _MainPageState extends State<MainPage> {
               ), // username
 
               Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
                       width: 200,
-                      margin:const EdgeInsets.only(top: 20.0, left:95.0),
+                      margin:const EdgeInsets.only(top: 20.0),
                       child:
                       TextField (
                         obscureText: false,
@@ -306,10 +310,11 @@ class _MainPageState extends State<MainPage> {
               ), // password
 
               Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
                       width: 200,
-                      margin:const EdgeInsets.only(left: 95.0, top:20),
+                      margin:const EdgeInsets.only(top:20),
                       child:
                       TextField (
                         decoration: InputDecoration(
@@ -326,6 +331,7 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ]
               ), // email
+
               Container(
                 margin:const EdgeInsets.only(top:20),
                 child: ElevatedButton(

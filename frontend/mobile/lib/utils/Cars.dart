@@ -44,7 +44,6 @@ class appCars {
     var ret = await CarsData.getJson(url, payload);
     var jsonObject = json.decode(ret);
     var obj;
-    //print(jsonObject["matchedCars"]);
 
     for (int i=0; i < jsonObject["matchedCars"].length; i++) {
       obj = jsonObject["matchedCars"][i];
@@ -62,10 +61,7 @@ class appCars {
 
     String ret = await search(context, searchedMake, searchedModel);
     var jsonObj = json.decode(ret);
-    print(ret);
     currentCar = Car(-1, searchedMake, searchedModel, price, jsonObj["type"], carsScreen.histData.makeHist(jsonObj['histogramData']));
-    print("In select car");
-    print(currentCar);
 
     return currentCar;
   }
@@ -119,12 +115,10 @@ class appCars {
     String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/makes';
     String payload = '{"jwtToken":"${currentUser.token}"}';
     var ret = await CarsData.getJson(url,payload);
-    print("Make API: $ret");
     var makesDyn = json.decode(ret);
     var makesStr = makesDyn.cast<String>();
     int count = 0;
     for (String m in makesStr) {
-      //print(makes);
       if (!makes.contains(m)) {
         count = count + 1;
         makes.add(m);
@@ -139,7 +133,6 @@ class appCars {
 
   static Future<void> modelApi() async {
     String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/models';
-    //print("Selected Make: $selectedMake");
     String payload = '{"jwtToken":"${currentUser.token}","make":"$searchedMake"}';
     var ret = await CarsData.getJson(url,payload);
     var modelsDyn = json.decode(ret);
@@ -147,7 +140,6 @@ class appCars {
     int count = 0;
     models = [];
     for (String m in modelsStr) {
-      //print(m);
       if (!models.contains(m)) {
         count = count + 1;
         models.add(m);
@@ -161,9 +153,7 @@ class appCars {
   static List<DropdownMenuItem<String>> getMakeOptions() {
     makeApi();
     List<DropdownMenuItem<String>> makeItems = [];
-    //print(makes);
     for (String make in makes) {
-      //print(make);
       makeItems.add(DropdownMenuItem(value: make, child: Text(make)));
     }
     return makeItems;
@@ -175,7 +165,6 @@ class appCars {
     List<DropdownMenuItem<String>> modelItems = [];
 
     if (searchedMake == "") {
-      //print("Empty make");
       modelItems.add(const DropdownMenuItem(value: "", child: Text("Select a Make")));
       return modelItems;
     }
@@ -183,7 +172,6 @@ class appCars {
       modelItems = [];
       modelApi();
       for (String model in models) {
-        //print(model);
         modelItems.add(DropdownMenuItem(value: model, child: Text(model)));
       }
       return modelItems;
@@ -198,40 +186,17 @@ class appCars {
     var ret = '';
     var jsonObj;
 
-    print("In search\nSearching $make $model");
-
     if (model == "") {
       print("uh oh");
     }
-    // if (selectedMake == "") {
-    //   showDialog(
-    //     context: context,
-    //     builder: (context) => const AlertDialog(
-    //       title: Text('Select a car make'),
-    //     ),//
-    //   );
-    // }
-    // else if (selectedModel == "" ){
-    //   showDialog(
-    //     context: context,
-    //     builder: (context) => const AlertDialog(
-    //       title: Text('Select a car model'),
-    //     ),//
-    //   );
-    // }
+
     else {
       String url = 'https://wheeldeals-d3e9615ad014.herokuapp.com/api/search';
       String payload = '{"jwtToken":"${currentUser.token}","make":"$make","model":"$model"}';
       ret = await CarsData.getJson(url,payload);
       jsonObj = json.decode(ret);
 
-      // print(jsonObj["histogramData"].runtimeType);
-      // print(jsonObj["histogramData"]);
-
-      print("Searching for $make $model");
-
       price = "\$${jsonObj["price"]}";
-      print(price);
 
       currentCar = Car(-1, make, model, price, jsonObj["type"], carsScreen.histData.makeHist(jsonObj['histogramData']));
 

@@ -129,7 +129,7 @@ class _MainPageState extends State<MainPage> {
       currentUser.token = token;
 
       await appCars.getHomeApi();
-      Favorites.getFavorites(context);
+      await Favorites.getFavorites(context);
       Navigator.pushNamed(context, Routes.HOMESCREEN);
       //Navigator.push(context, MaterialPageRoute(builder:(context)=>HomeScreen(token:token)));
     }
@@ -185,9 +185,10 @@ class _MainPageState extends State<MainPage> {
                     ),
                   ),// image
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        margin:const EdgeInsets.only(left: 55.0),
+                        //margin:const EdgeInsets.only(left: 55.0),
                         child:
                         Text(
                           "Welcome to Wheel Deals!",
@@ -198,10 +199,11 @@ class _MainPageState extends State<MainPage> {
                   ),// title
 
                   Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           width: 200,
-                          margin:const EdgeInsets.only(left: 95.0, top:20),
+                          margin:const EdgeInsets.only(top:20),
                           child:
                           TextField (
                             controller: TextEditingController(text: loginName),
@@ -220,10 +222,11 @@ class _MainPageState extends State<MainPage> {
                       ]
                   ),// username
                   Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
                           width: 200,
-                          margin:const EdgeInsets.only(top: 10.0, left:95.0),
+                          margin:const EdgeInsets.only(top: 10.0),
                           child:
                           TextField (
                             obscureText: obscurePassword,

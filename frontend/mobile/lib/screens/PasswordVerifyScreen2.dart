@@ -125,10 +125,11 @@ class _MainPageState extends State<MainPage> {
                     ),//title
 
                     Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
                             width: 320,
-                            margin:const EdgeInsets.only(left: 50.0, top:20),
+                            margin:const EdgeInsets.only(top:20),
                             child:
                             TextField (
                               decoration: const InputDecoration(

@@ -21,6 +21,8 @@ void clear() {
   email = '';
   loggedIn = false;
   favCars = [];
+  appCars.searchedMake = "";
+  appCars.searchedModel = "";
 }
 
 

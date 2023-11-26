@@ -48,11 +48,11 @@ class histData {
   static List<histData> consolidate(List jsonData) {
     int numBuckets = 5;
     int len = jsonData.length;
-    print("len: $len");
+    //print("len: $len");
     int numPerBucket = (len/(numBuckets-1)).floor();
-    print("numPerBucket: $numPerBucket");
+    //print("numPerBucket: $numPerBucket");
     int maxNumFull = (len/numPerBucket).floor();
-    print("max full buckets: $maxNumFull");
+    //print("max full buckets: $maxNumFull");
     int numFull = 0;
     int objNum = 0;
     int i;
@@ -68,7 +68,7 @@ class histData {
       percent = 0;
       //print("Bucket #" "${numFull}");
       for (i = 0; i < numPerBucket; i++) {
-        print("Object number: $objNum");
+        //print("Object number: $objNum");
         obj = jsonData[objNum++];  // Get next object
         price = "\$${(obj["bucket"] / 1000).toStringAsFixed(0)}k";
         if (i == 0) { minPrice = price; }
@@ -77,14 +77,14 @@ class histData {
       }
       numFull++;
       bar = histData(percent, "$minPrice-$maxPrice");
-      print(bar);
+      //print(bar);
       data.add(bar);
     }
     // Fill up last bar/bin
     bool first = true;
     percent = 0;
     while (objNum < len) {
-      print("Object Number: $objNum");
+      //print("Object Number: $objNum");
       // print(obj["bucket"]);
       // print(obj["percentOfMarket"]);
       obj = jsonData[objNum++];
@@ -99,7 +99,7 @@ class histData {
     if (!first) {
       maxPrice = price;
       bar = histData(percent, "$minPrice-$maxPrice");
-      print(bar);
+      //print(bar);
       data.add(bar);
     }
 
