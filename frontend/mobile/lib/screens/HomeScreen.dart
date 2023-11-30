@@ -14,8 +14,7 @@ final List<String> imgList = [
   "images/ss3_2.png",
   "images/ss1_2.png",
   "images/ss2_2.png",
-];
-
+]
 class HomeScreen extends StatefulWidget {
   // final token;
   // const HomeScreen({@required this.token,Key? key}) : super(key: key);
